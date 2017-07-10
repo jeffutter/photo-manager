@@ -14,6 +14,8 @@ defmodule PhotoManagementApi.Web.Router do
 
   scope "/api", PhotoManagementApi.Web do
     pipe_through :api
+
+    post "/sign_in", SessionController, :sign_in
   end
 
   scope "/" do

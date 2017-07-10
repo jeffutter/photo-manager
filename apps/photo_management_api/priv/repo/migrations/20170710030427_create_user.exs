@@ -4,7 +4,10 @@ defmodule PhotoManagementApi.Repo.Migrations.CreateUser do
   def change do
     create table(:users) do
       add :id, :integer
+      add :name, :string
       add :email, :string
+      add :password_hash, :string
+      add :is_admin, :boolean
 
       timestamps()
     end
