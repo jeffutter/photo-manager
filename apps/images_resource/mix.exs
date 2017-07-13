@@ -37,6 +37,8 @@ defmodule ImagesResource.Mixfile do
   #
   # Type "mix help deps" for more examples and options
   defp deps do
-    []
+    [
+      arc: "~> 0.8.0"
+    ]
   end
 end
