@@ -32,15 +32,18 @@ defmodule PhotoManagementApi.Web.Mixfile do
   #
   # Type `mix help deps` for examples and options.
   defp deps do
-    [{:phoenix, "~> 1.3.0-rc", override: true},
-     {:phoenix_pubsub, "~> 1.0"},
-     {:phoenix_ecto, "~> 3.2"},
-     {:gettext, "~> 0.11"},
-     {:photo_management_api, in_umbrella: true},
-     {:guardian, "~> 0.14"},
-     {:absinthe, "~> 1.3.2"},
-     {:absinthe_plug, "~> 1.3.1"},
-     {:cowboy, "~> 1.0"}]
+    [
+      {:phoenix, "~> 1.3.0-rc", override: true},
+      {:phoenix_pubsub, "~> 1.0"},
+      {:phoenix_ecto, "~> 3.2"},
+      {:gettext, "~> 0.11"},
+      {:photo_management_api, in_umbrella: true},
+      {:guardian, "~> 0.14"},
+      {:absinthe, "~> 1.3.2"},
+      {:absinthe_plug, "~> 1.3.1"},
+      {:cowboy, "~> 1.0"},
+      {:cors_plug, "~> 1.2"}
+    ]
   end
 
   # Aliases are shortcuts or tasks specific to the current project.

@@ -3,6 +3,8 @@ defmodule PhotoManagementApi.Web.Endpoint do
 
   socket "/socket", PhotoManagementApi.Web.UserSocket
 
+  plug CORSPlug#, origin: "http://localhost:4000"
+
   # Serve at "/" the static files from "priv/static" directory.
   #
   # You should set gzip to true if you are running phoenix.digest
