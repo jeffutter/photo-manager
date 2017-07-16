@@ -1,0 +1,13 @@
+version: "3.3"
+services:
+  s3:
+    image: minio/minio:latest
+    ports:
+      - 9000:9000
+    volumes:
+      - ./s3/data:/s3
+      - ./s3/config:/root/.minio
+    environment:
+      MINIO_ACCESS_KEY: minio
+      MINIO_SECRET_KEY: minio123
+    command: server /s3

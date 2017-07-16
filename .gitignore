@@ -4,3 +4,7 @@
 erl_crash.dump
 *.ez
 priv/data/mnesia
+/s3/data/*
+!/s3/data/.gitkeep
+/s3/config/*
+!/s3/config/.gitkeep
