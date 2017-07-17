@@ -3,11 +3,13 @@ defmodule ImagesResource.Image do
   Documentation for ImagesResource.
   """
 
-  @type t :: %{name: String.t, path: String.t}
-  defstruct name: "", path: ""
+  alias ImagesResource.{Gallery}
 
-  def to_struct(path, file_name) do
-    %__MODULE__{name: file_name, path: path}
+  @type t :: %{name: String.t, path: String.t, gallery: Gallery.t}
+  defstruct name: "", path: "", gallery: %Gallery{}
+
+  def to_struct(gallery = %Gallery{name: name}, file_name) do
+    %__MODULE__{name: file_name, path: name, gallery: gallery}
   end
 
   def stat(image) do
@@ -28,7 +30,7 @@ defmodule ImagesResource.Image do
 
   def url(image, version) do
     image
-    |> full_path
+    |> to_arc_tuple
     |> ImagesResource.Uploaders.Image.url(version)
   end
 
@@ -54,13 +56,17 @@ defmodule ImagesResource.Image do
       else
         {:error, :enoent} ->
           {:ok, _} = image
-          |> full_path
+          |> to_arc_tuple
           |> ImagesResource.Uploaders.Image.store
 
           {:ok, output} = base_64(image, version)
           {:ok, output}
-        e ->
+        _e ->
           {:error, "Unable to read file #{ImagesResource.Uploaders.Image.url(full_path(image))}"}
     end
+  end
+
+  defp to_arc_tuple(image) do
+    {full_path(image), image.gallery}
   end
 end

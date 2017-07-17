@@ -9,17 +9,15 @@ defmodule ImagesResource.Gallery do
   defstruct name: ""
 
   def ls(path \\ "/")
-  def ls(path) when is_map(path) do
-    path
-    |> Map.get(:name)
-    |> ls
+  def ls(gallery = %__MODULE__{name: name}) do
+    ls(name)
+    |> Enum.map(&Image.to_struct(gallery, &1))
   end
   def ls(path) do
     [ImagesResource.base_dir, path]
     |> Path.join
     |> File.ls!
     |> Enum.filter(&image?(path, &1))
-    |> Enum.map(&Image.to_struct(path, &1))
   end
 
   def to_struct(file_name) do

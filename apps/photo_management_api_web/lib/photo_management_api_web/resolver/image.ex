@@ -3,8 +3,8 @@ defmodule PhotoManagementApi.Web.Resolver.Image do
   alias ImagesResource.{Gallery,Image}
   alias Absinthe.Resolution.Helpers
 
-  def all(%Gallery{name: name}, _args, _info) do
-    {:ok, Gallery.ls(name)}
+  def all(gallery = %Gallery{}, _args, _info) do
+    {:ok, Gallery.ls(gallery)}
   end
   def all(_parent, _args, _info) do
     {:ok, Gallery.ls}
@@ -29,7 +29,7 @@ defmodule PhotoManagementApi.Web.Resolver.Image do
   end
 
   def url(image, _args, _info) do
-    {:ok, Image.url(image, :original)}
+    {:ok, Image.url(image, :full)}
   end
 
   def file_data(_, files) do

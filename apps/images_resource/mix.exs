@@ -38,7 +38,11 @@ defmodule ImagesResource.Mixfile do
   # Type "mix help deps" for more examples and options
   defp deps do
     [
-      arc: "~> 0.8.0"
+      arc: "~> 0.8.0",
+      ex_aws: "~> 1.1",
+      hackney: "~> 1.6",
+      poison: "~> 3.1",
+      sweet_xml: "~> 0.6"
     ]
   end
 end

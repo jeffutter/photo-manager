@@ -6,7 +6,18 @@ config :images_resource,
   dir: to_charlist Path.join(File.cwd!, "priv/data/images")
 
 config :arc,
-  storage: Arc.Storage.Local
+  storage: Arc.Storage.S3,
+  bucket: "images"
+
+config :ex_aws,
+  access_key_id: "minio",
+  secret_access_key: "minio123",
+  region: "us-east-1",
+  s3: [
+    scheme: "http://",
+    host: "localhost",
+    port: 9000
+  ]
 
 # This configuration is loaded before any dependency and is restricted
 # to this project. If another project depends on this project, this
