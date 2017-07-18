@@ -5,11 +5,11 @@ defmodule ImagesResource.Image do
 
   alias ImagesResource.{Gallery}
 
-  @type t :: %{name: String.t, path: String.t, gallery: Gallery.t}
-  defstruct name: "", path: "", gallery: %Gallery{}
+  @type t :: %{name: String.t, gallery: Gallery.t}
+  defstruct name: "", gallery: %Gallery{}
 
-  def to_struct(gallery = %Gallery{name: name}, file_name) do
-    %__MODULE__{name: file_name, path: name, gallery: gallery}
+  def to_struct(gallery = %Gallery{}, file_name) do
+    %__MODULE__{name: file_name, gallery: gallery}
   end
 
   def stat(image) do
@@ -18,7 +18,7 @@ defmodule ImagesResource.Image do
     |> File.stat([time: :posix])
   end
 
-  def full_path(%__MODULE__{name: name, path: path}) do
+  def full_path(%__MODULE__{name: name, gallery: %Gallery{name: path}}) do
     [ImagesResource.base_dir, path, name]
     |> Path.join
   end
