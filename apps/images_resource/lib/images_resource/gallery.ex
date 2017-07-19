@@ -10,24 +10,17 @@ defmodule ImagesResource.Gallery do
 
   def ls(path \\ "/")
   def ls(gallery = %__MODULE__{name: name}) do
-    ls(name)
-    |> Enum.map(&Image.to_struct(gallery, &1))
+    case ls(name) do
+      {:ok, list} ->
+        {:ok, Enum.map(list, &Image.to_struct(gallery, &1))}
+      {:error, e} -> {:error, e}
+    end
   end
   def ls(path) do
-    [ImagesResource.base_dir, path]
-    |> Path.join
-    |> File.ls!
-    |> Enum.filter(&image?(path, &1))
+    ImagesResource.Storage.S3.ls(path, bucket: "image-source")
   end
 
   def to_struct(file_name) do
     %__MODULE__{name: file_name}
-  end
-
-  defp image?(path, file_name) do
-    [ImagesResource.base_dir, path, file_name]
-    |> Path.join
-    |> File.dir?
-    |> Kernel.!
   end
 end

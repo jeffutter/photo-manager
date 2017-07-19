@@ -1,7 +1,8 @@
 defmodule ImagesResource.Uploaders.Image do
   use Arc.Definition
 
-  @versions [:original, :full, :thumb]
+  @versions [:original, :large, :thumb]
+  @acl :public_read
 
   def validate({file, _}) do
     ~w(.jpg .jpeg .gif .png)
@@ -12,17 +13,22 @@ defmodule ImagesResource.Uploaders.Image do
   def transform(:thumb, _) do
     {:convert, "-strip -thumbnail 250x250^ -gravity center -extent 250x250 -interlace none -quality 75 -format jpg", :jpg}
   end
-  def transform(:original, _) do
+  def transform(:large, _) do
     {:convert, "-strip -resize 1920x1080\> -interlace none -quality 85 -format jpg", :jpg}
   end
 
   def filename(version, {file, _scope}) do
     file_name = Path.basename(file.file_name, Path.extname(file.file_name))
-    "#{version}_#{file_name}"
+    if version == :original do
+      file_name
+    else
+      "#{version}_#{file_name}"
+    end
   end
 
+  def storage_dir(_version, {_file, nil}), do: ""
   def storage_dir(_version, {_file, scope}) do
-    "uploads/#{scope.name}"
+    "#{scope.name}"
   end
 
   def s3_object_headers(_version, {file, _scope}) do

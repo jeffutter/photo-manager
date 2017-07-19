@@ -5,7 +5,7 @@ defmodule PhotoManagementApi.Web.Schema.Types do
 
   object :image do
     field :name, :string
-    field :ctime, :string, resolve: &Resolver.Image.ctime/3
+    field :last_modified, :string, resolve: &Resolver.Image.last_modified/3
     field :size, :string, resolve: &Resolver.Image.size/3
     field :embed, :string, resolve: &Resolver.Image.embed/3
     field :url, :string, resolve: &Resolver.Image.url/3

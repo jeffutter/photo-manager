@@ -6,16 +6,10 @@ defmodule ImagesResource.Galleries do
   alias ImagesResource.Gallery
 
   def ls(path \\ "/") do
-    [ImagesResource.base_dir, path]
-    |> Path.join
-    |> File.ls!
-    |> Enum.filter(&dir?(path, &1))
-    |> Enum.map(&Gallery.to_struct/1)
-  end
-
-  defp dir?(path, file_name) do
-    [ImagesResource.base_dir, path, file_name]
-    |> Path.join
-    |> File.dir?
+    case ImagesResource.Storage.S3.ls_directories(path, bucket: "image-source") do
+      {:ok, list} ->
+        {:ok, Enum.map(list, &Gallery.to_struct/1)}
+      {:error, e} -> {:error, e}
+    end
   end
 end

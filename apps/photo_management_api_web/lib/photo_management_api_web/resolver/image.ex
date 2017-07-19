@@ -4,22 +4,18 @@ defmodule PhotoManagementApi.Web.Resolver.Image do
   alias Absinthe.Resolution.Helpers
 
   def all(gallery = %Gallery{}, _args, _info) do
-    {:ok, Gallery.ls(gallery)}
+    Gallery.ls(gallery)
   end
   def all(_parent, _args, _info) do
-    {:ok, Gallery.ls}
+    Gallery.ls
   end
 
-  def ctime(image, _args, _info) do
-    Helpers.batch({__MODULE__, :file_data}, image, fn path_data ->
-      {:ok, path_data[image].ctime}
-    end)
+  def last_modified(image, _args, _info) do
+    {:ok, image.last_modified}
   end
 
   def size(image, _args, _info) do
-    Helpers.batch({__MODULE__, :file_data}, image, fn path_data ->
-      {:ok, path_data[image].size}
-    end)
+    {:ok, image.size}
   end
 
   def embed(image, _args, _info) do
@@ -29,13 +25,6 @@ defmodule PhotoManagementApi.Web.Resolver.Image do
   end
 
   def url(image, _args, _info) do
-    {:ok, Image.url(image, :full)}
-  end
-
-  def file_data(_, files) do
-    for file <- files, into: %{} do
-      {:ok, file_stats} = ImagesResource.Image.stat(file)
-      {file, file_stats}
-    end
+    {:ok, Image.url(image, :large)}
   end
 end

@@ -2,12 +2,10 @@
 # and its dependencies with the aid of the Mix.Config module.
 use Mix.Config
 
-config :images_resource,
-  dir: to_charlist Path.join(File.cwd!, "priv/data/images")
-
 config :arc,
   storage: Arc.Storage.S3,
-  bucket: "images"
+  bucket: "images",
+  asset_host: "http://localhost:9000/images"
 
 config :ex_aws,
   access_key_id: "minio",
