@@ -13,6 +13,12 @@ defmodule ImagesResource.Uploaders.Image do
   def transform(:thumb, _) do
     {:convert, "-strip -thumbnail 250x250^ -gravity center -extent 250x250 -interlace none -quality 75 -format jpg", :jpg}
   end
+  def transform(:small, _) do
+    {:convert, "-strip -resize 800x600\> -interlace none -quality 85 -format jpg", :jpg}
+  end
+  def transform(:medium, _) do
+    {:convert, "-strip -resize 1280x800\> -interlace none -quality 85 -format jpg", :jpg}
+  end
   def transform(:large, _) do
     {:convert, "-strip -resize 1920x1080\> -interlace none -quality 85 -format jpg", :jpg}
   end

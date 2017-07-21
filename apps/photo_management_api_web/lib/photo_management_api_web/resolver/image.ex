@@ -18,13 +18,19 @@ defmodule PhotoManagementApi.Web.Resolver.Image do
     {:ok, image.size}
   end
 
-  def embed(image, _args, _info) do
+  def thumbnail(image, _args, _info) do
     Helpers.async(fn ->
       Image.base_64(image, :thumb)
     end)
   end
 
-  def url(image, _args, _info) do
+  def small_url(image, _args, _info) do
+    {:ok, Image.url(image, :small)}
+  end
+  def medium_url(image, _args, _info) do
+    {:ok, Image.url(image, :medium)}
+  end
+  def large_url(image, _args, _info) do
     {:ok, Image.url(image, :large)}
   end
 end
