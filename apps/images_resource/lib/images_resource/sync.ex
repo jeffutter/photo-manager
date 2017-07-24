@@ -13,22 +13,36 @@ defmodule ImagesResource.Sync do
   end
 
   def handle_cast({:updated, from_name, images}, state = %{source: source_name, dest_images: dest_images}) when from_name == source_name do
-    Enum.filter(images, fn source_image ->
-      !Enum.find(dest_images, false, fn dest_image ->
-        Image.relative_path(source_image) == Image.relative_path(dest_image)
-      end)
-    end)
-    |> Enum.each(fn image ->
-      Logger.info "Storing: #{inspect image}"
-      relative_path = Image.relative_path(image)
-      {:ok, data} = S3.get_data(relative_path, bucket: "image-source")
-      ImagesResource.Uploaders.Image.store(%{filename: relative_path, binary: data})
-    end)
+    images
+    |> Enum.filter(&not_exists_in_dest?(&1, dest_images))
+    |> Enum.each(&sync_missing/1)
 
     {:noreply, %{state | source_images: images}}
   end
 
   def handle_cast({:updated, from_name, images}, state = %{dest: dest_name}) when from_name == dest_name do
     {:noreply, %{state | dest_images: images}}
+  end
+
+  defp not_exists_in_dest?(source_image, dest_images) do
+    !exists_in_dest?(source_image, dest_images)
+  end
+  defp exists_in_dest?(source_image, dest_images) do
+    file = dest_images
+           |> Enum.find(fn dest_image ->
+             Image.relative_path(source_image) == Image.relative_path(dest_image)
+           end)
+
+    case file do
+      nil -> false
+      _ -> true
+    end
+  end
+
+  defp sync_missing(image) do
+    Logger.info "Storing: #{inspect image}"
+    relative_path = Image.relative_path(image)
+    {:ok, data} = S3.get_data(relative_path, bucket: "image-source")
+    ImagesResource.Uploaders.Image.store(%{filename: relative_path, binary: data})
   end
 end

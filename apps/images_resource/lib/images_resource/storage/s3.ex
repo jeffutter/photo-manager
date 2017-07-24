@@ -15,6 +15,7 @@ defmodule ImagesResource.Storage.S3 do
           last_modified: obj.last_modified
          }
       end)
+
       {:ok, list}
     rescue
       e in ExAws.Error ->
