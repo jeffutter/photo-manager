@@ -1,20 +1,37 @@
 defmodule ImagesResource.Storage.S3 do
   alias ExAws.{S3}
+  alias ImagesResource.Storage.{File, Tree}
+
+  def ls_tree(path \\ "/", opts \\ []) do
+    bucket = Keyword.get(opts, :bucket, bucket())
+    try do
+      tree = bucket
+             |> S3.list_objects(prefix: path)
+             |> ExAws.stream!
+             |> Enum.to_list
+             |> Enum.map(&File.from_aws_obj/1)
+             |> Tree.from_list("root")
+      {:ok, tree}
+    rescue
+      e in ExAws.Error ->
+        {:error, "Unable to list bucket: #{bucket}, path: #{path} - #{inspect e}"}
+    end
+  end
 
   def ls(path \\ "/", opts \\ []) do
     bucket = Keyword.get(opts, :bucket, bucket())
     try do
       list = bucket
-      |> S3.list_objects(prefix: path)
-      |> ExAws.stream!
-      |> Enum.to_list
-      |> Enum.map(fn obj ->
-        %{
-          name: obj.key,
-          size: obj.size,
-          last_modified: obj.last_modified
-         }
-      end)
+             |> S3.list_objects(prefix: path)
+             |> ExAws.stream!
+             |> Enum.to_list
+             |> Enum.map(fn obj ->
+               %{
+                 name: obj.key,
+                 size: obj.size,
+                 last_modified: obj.last_modified
+               }
+             end)
 
       {:ok, list}
     rescue
@@ -52,22 +69,6 @@ defmodule ImagesResource.Storage.S3 do
   def get_data(full_path, opts \\ []) do
     {:ok, %{body: data}} = get(full_path, opts)
     {:ok, data}
-  end
-
-  def stat(full_path, opts \\ []) do
-    {:ok, %{status_code: 200, headers: headers}} = Keyword.get(opts, :bucket, bucket())
-    |> S3.head_object(full_path)
-    |> ExAws.request
-
-    h = headers
-    |> Enum.into(%{})
-
-    %{
-      size: Map.get(h, "Content-Length"),
-      type: Map.get(h, "Content-Type"),
-      updated_at: Map.get(h, "Last-Modified"),
-      full_path: full_path
-    }
   end
 
   defp bucket do

@@ -2,11 +2,11 @@ defmodule ImagesResource.Sources.S3 do
   require Logger
   use GenServer
 
-  alias ImagesResource.{Gallery, Image}
+  alias ImagesResource.{Gallery}
   alias ImagesResource.Storage.S3
 
-  @type t :: %{bucket_name: String.t, galleries: [Gallery.t], images: [Image.t], name: atom()}
-  defstruct bucket_name: "", galleries: [], images: [], name: nil
+  @type t :: %{bucket_name: String.t, tree: Gallery.t, name: atom()}
+  defstruct bucket_name: "", tree: nil, name: nil
 
   def start_link(bucket_name, name) do
     GenServer.start_link(__MODULE__, %__MODULE__{bucket_name: bucket_name, name: name}, name: name)
@@ -50,47 +50,28 @@ defmodule ImagesResource.Sources.S3 do
     end
   end
 
-  defp to_image_struct(image_data, galleries) do
-    galleries
-    |> Enum.find(fn gallery -> Path.dirname(image_data.name) == gallery.name end)
-    |> Image.to_struct(image_data)
-  end
-
   defp refresh(state = %__MODULE__{bucket_name: bucket_name, name: name}) do
     Logger.info "Refreshing #{inspect bucket_name} for #{inspect name}"
-    with {:ok, list} <- S3.ls_directories("/", bucket: bucket_name),
-         galleries   <- Enum.map(list, &Gallery.to_struct/1),
-         {:ok, list} <- S3.ls("/", bucket: bucket_name),
-         images      <- Enum.map(list, &to_image_struct(&1, galleries)) do
-      state = state
-      |> Map.put(:galleries, galleries)
-      |> Map.put(:images, images)
 
-      GenServer.cast(ImagesResource.Sync, {:updated, name, state.images})
-      Logger.info "Refresh complete for #{inspect bucket_name} for #{inspect name}"
+    case S3.ls_tree("/", bucket: bucket_name) do
+      {:ok, tree} ->
+        state = %__MODULE__{state | tree: tree}
 
-      {:ok, state}
-    else
-      {:error, e} ->
-        {:error, e}
-      e ->
-        {:error, "Unknown error occured: #{inspect e}"}
+        GenServer.cast(ImagesResource.Sync, {:updated, name, tree})
+        Logger.info "Refresh complete for #{inspect bucket_name} for #{inspect name}"
+
+        {:ok, state}
+      {:error, e} -> {:error, e}
     end
   end
 
   def handle_call(:state, _from, state) do
     {:reply, state, state}
   end
-  def handle_call(:images, _from, state) do
-    {:reply, state.images, state}
+  def handle_call(:tree, _from, state) do
+    {:reply, state.tree, state}
   end
-  def handle_call(:galleries, _from, state) do
-    {:reply, state.galleries, state}
-  end
-  def images(name) do
-    GenServer.call(name, :images)
-  end
-  def galleries(name) do
-    GenServer.call(name, :images)
+  def tree(name) do
+    GenServer.call(name, :tree)
   end
 end

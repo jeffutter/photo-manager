@@ -4,6 +4,8 @@ defmodule ImagesResource.Uploaders.Image do
   @versions [:original, :large, :thumb]
   @acl :public_read
 
+  @type arc_location :: {String.t, list(String.t)}
+
   def validate({file, _}) do
     ~w(.jpg .jpeg .gif .png)
     |> Enum.member?(Path.extname(file.file_name))
@@ -23,8 +25,8 @@ defmodule ImagesResource.Uploaders.Image do
     {:convert, "-strip -resize 1920x1080\> -interlace none -quality 85 -format jpg", :jpg}
   end
 
-  def filename(version, {file, _scope}) do
-    file_name = Path.basename(file.file_name, Path.extname(file.file_name))
+  def filename(version, {%{file_name: name}, _path}) do
+    file_name = Path.basename(name, Path.extname(name))
     if version == :original do
       file_name
     else
@@ -32,10 +34,10 @@ defmodule ImagesResource.Uploaders.Image do
     end
   end
 
-  def storage_dir(_version, {_file, nil}), do: ""
-  def storage_dir(_version, {_file, scope}) do
-    "#{scope.name}"
-  end
+  def storage_dir(_version, {_file, nil}),  do: ""
+  def storage_dir(_version, {_file, ""}),   do: ""
+  def storage_dir(_version, {_file, []}),   do: ""
+  def storage_dir(_version, {_file, path}), do: Path.join(path)
 
   def s3_object_headers(_version, {file, _scope}) do
     [content_type: Plug.MIME.path(file.file_name)]

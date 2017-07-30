@@ -3,24 +3,18 @@ defmodule ImagesResource.Gallery do
   Documentation for ImagesResource.
   """
 
-  alias ImagesResource.Image
+  alias ImagesResource.Storage.{File, Tree}
+  alias ImagesResource.Sources.S3
 
-  @type t :: %{name: String.t}
-  defstruct name: ""
-
-  def ls(path \\ "/")
-  def ls(gallery = %__MODULE__{name: name}) do
-    case ls(name) do
-      {:ok, list} ->
-        {:ok, Enum.map(list, &Image.to_struct(gallery, &1))}
-      {:error, e} -> {:error, e}
-    end
+  def ls(path \\ [])
+  def ls(path) when is_binary(path) do
+    path <> "/"
+    |> File.split_path
+    |> ls
   end
-  def ls(path) do
-    ImagesResource.Storage.S3.ls(path, bucket: "image-source")
-  end
-
-  def to_struct(file_name) do
-    %__MODULE__{name: file_name}
+  def ls(path) when is_list(path) do
+    ImageSource
+    |> S3.tree
+    |> Tree.find_in(path)
   end
 end

@@ -3,6 +3,18 @@ defmodule PhotoManagementApi.Web.Schema.Types do
 
   alias PhotoManagementApi.Web.Resolver
 
+  alias ImagesResource.Storage.{File, Directory}
+
+  union :directory_child do
+    description "A child of a directory"
+
+    types [:image, :gallery]
+    resolve_type fn
+      %File{}, _ -> :image
+      %Directory{}, _ -> :gallery
+    end
+  end
+
   object :image do
     field :name, :string
     field :last_modified, :string, resolve: &Resolver.Image.last_modified/3
@@ -15,6 +27,6 @@ defmodule PhotoManagementApi.Web.Schema.Types do
 
   object :gallery do
     field :name, :string
-    field :images, list_of(:image), resolve: &Resolver.Image.all/3
+    field :children, list_of(:directory_child), resolve: &Resolver.Gallery.children/3
   end
 end
