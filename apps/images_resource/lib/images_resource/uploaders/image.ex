@@ -1,7 +1,7 @@
 defmodule ImagesResource.Uploaders.Image do
   use Arc.Definition
 
-  @versions [:original, :large, :thumb]
+  @versions [:original, :thumb, :small, :medium, :large]
   @acl :public_read
 
   @type arc_location :: {String.t, list(String.t)}
@@ -34,10 +34,13 @@ defmodule ImagesResource.Uploaders.Image do
     end
   end
 
-  def storage_dir(_version, {_file, nil}),  do: ""
-  def storage_dir(_version, {_file, ""}),   do: ""
-  def storage_dir(_version, {_file, []}),   do: ""
-  def storage_dir(_version, {_file, path}), do: Path.join(path)
+  def storage_dir(:original, {_file, path}) do
+    Path.join(["original"] ++ Path.split(storage_dir(nil, {nil, path})))
+  end
+  def storage_dir(_version, {_file, nil}),   do: ""
+  def storage_dir(_version, {_file, ""}),    do: ""
+  def storage_dir(_version, {_file, []}),    do: ""
+  def storage_dir(_version, {_file, path}),  do: Path.join(path)
 
   def s3_object_headers(_version, {file, _scope}) do
     [content_type: Plug.MIME.path(file.file_name)]

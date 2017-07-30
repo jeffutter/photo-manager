@@ -4,12 +4,13 @@ defmodule ImagesResource.Storage.S3 do
 
   def ls_tree(path \\ "/", opts \\ []) do
     bucket = Keyword.get(opts, :bucket, bucket())
+    strip_prefix = Keyword.get(opts, :strip_prefix, [])
     try do
       tree = bucket
              |> S3.list_objects(prefix: path)
              |> ExAws.stream!
              |> Enum.to_list
-             |> Enum.map(&File.from_aws_obj/1)
+             |> Enum.map(&File.from_aws_obj(&1, strip_prefix: strip_prefix))
              |> Tree.from_list("root")
       {:ok, tree}
     rescue

@@ -53,7 +53,19 @@ defmodule ImagesResource.Sources.S3 do
   defp refresh(state = %__MODULE__{bucket_name: bucket_name, name: name}) do
     Logger.info "Refreshing #{inspect bucket_name} for #{inspect name}"
 
-    case S3.ls_tree("/", bucket: bucket_name) do
+    path = if bucket_name == "images" do
+             "/original"
+           else
+             "/"
+           end
+
+    strip_prefix = if bucket_name == "images" do
+                     ["original"]
+                   else
+                     []
+                   end
+
+    case S3.ls_tree(path, bucket: bucket_name, strip_prefix: strip_prefix) do
       {:ok, tree} ->
         state = %__MODULE__{state | tree: tree}
 

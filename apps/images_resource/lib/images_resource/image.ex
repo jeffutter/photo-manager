@@ -5,14 +5,12 @@ defmodule ImagesResource.Image do
 
   alias ImagesResource.Storage.{File, S3}
 
-  def url(file = %File{}, version) do
-    file
-    |> File.full_path
-    |> ImagesResource.Uploaders.Image.url(version)
+  def url(file = %File{name: name, path: path}, version) do
+    ImagesResource.Uploaders.Image.url({name, path}, version)
   end
 
   def s3_path(image, version) do
-    base_url = ImagesResource.Uploaders.Image.url("")
+    base_url = Path.dirname(ImagesResource.Uploaders.Image.url("", version))
     image
     |> url(version)
     |> String.split(base_url, trim: true)

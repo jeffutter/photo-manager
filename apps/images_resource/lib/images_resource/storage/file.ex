@@ -18,8 +18,11 @@ defmodule ImagesResource.Storage.File do
     end
   end
 
-  def from_aws_obj(%{key: key, last_modified: last_modified, size: size}) do
-    path = split_path(key)
+  def from_aws_obj(%{key: key, last_modified: last_modified, size: size}, opts \\ []) do
+    strip_prefix = Keyword.get(opts, :strip_prefix, [])
+    path = key
+           |> split_path
+           |> strip_prefix(strip_prefix)
 
     %__MODULE__{
       name: Path.basename(key),
@@ -28,4 +31,8 @@ defmodule ImagesResource.Storage.File do
       path: path
     }
   end
+
+  defp strip_prefix([], _), do: []
+  defp strip_prefix([h|t], [i|u]) when h == i, do: strip_prefix(t, u)
+  defp strip_prefix(path, _), do: path
 end
