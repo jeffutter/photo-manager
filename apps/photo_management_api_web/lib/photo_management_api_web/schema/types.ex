@@ -17,6 +17,7 @@ defmodule PhotoManagementApi.Web.Schema.Types do
 
   object :image do
     field :name, :string
+    field :path, list_of(:string)
     field :last_modified, :string, resolve: &Resolver.Image.last_modified/3
     field :size, :string, resolve: &Resolver.Image.size/3
     field :thumbnail, :string, resolve: &Resolver.Image.thumbnail/3
@@ -27,6 +28,7 @@ defmodule PhotoManagementApi.Web.Schema.Types do
 
   object :gallery do
     field :name, :string
+    field :path, list_of(:string)
     field :children, list_of(:directory_child), resolve: &Resolver.Gallery.children/3
   end
 end
