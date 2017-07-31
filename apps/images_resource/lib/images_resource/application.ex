@@ -7,6 +7,7 @@ defmodule ImagesResource.Application do
     import Supervisor.Spec, warn: false
 
     children = [
+      worker(Cachex, [:my_cache, [limit: 500, default_ttl: 21600000]]),
       worker(ImagesResource.Sync, [[source: ImageSource, dest: ImageDest]]),
       worker(ImagesResource.Sources.S3, ["images", ImageDest], id: ImageDest),
       worker(ImagesResource.Sources.S3, ["image-source", ImageSource], id: ImageSource)
