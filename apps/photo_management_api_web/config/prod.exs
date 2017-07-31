@@ -15,8 +15,8 @@ use Mix.Config
 # which you typically run after static files are built.
 config :photo_management_api_web, PhotoManagementApi.Web.Endpoint,
   on_init: {PhotoManagementApi.Web.Endpoint, :load_from_system_env, []},
-  url: [host: "example.com", port: 80],
-  cache_static_manifest: "priv/static/cache_manifest.json"
+  http: [port: 4000],
+  url: [host: "localhost", port: 4000]
 
 # ## SSL Support
 #
@@ -48,7 +48,7 @@ config :photo_management_api_web, PhotoManagementApi.Web.Endpoint,
 # If you are doing OTP releases, you need to instruct Phoenix
 # to start the server for all endpoints:
 #
-#     config :phoenix, :serve_endpoints, true
+config :phoenix, :serve_endpoints, true
 #
 # Alternatively, you can configure exactly which server to
 # start per endpoint:
