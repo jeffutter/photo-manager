@@ -1,0 +1,7 @@
+.app {
+  transition: .4s all ease;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  position: absolute;
+  width: 100%;
+}
