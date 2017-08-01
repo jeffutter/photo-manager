@@ -28,7 +28,7 @@ defmodule ImagesResource.Sync do
     Logger.info "Storing: #{inspect file}"
     {:ok, data} = file
                   |> File.full_path
-                  |> S3.get_data(bucket: "image-source")
+                  |> S3.get_data(bucket: Application.get_env(:images_resource, :source_bucket))
     Image.store({%{filename: name, binary: data}, path})
   end
   defp process_sync({:remove, file = %File{name: name, path: path}}) do

@@ -53,13 +53,13 @@ defmodule ImagesResource.Sources.S3 do
   defp refresh(state = %__MODULE__{bucket_name: bucket_name, name: name}) do
     Logger.info "Refreshing #{inspect bucket_name} for #{inspect name}"
 
-    path = if bucket_name == "images" do
+    path = if bucket_name == Application.get_env(:images_resource, :dest_bucket) do
              "/original"
            else
              "/"
            end
 
-    strip_prefix = if bucket_name == "images" do
+    strip_prefix = if bucket_name == Application.get_env(:images_resource, :dest_bucket) do
                      ["original"]
                    else
                      []

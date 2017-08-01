@@ -1,45 +1,28 @@
-# This file is responsible for configuring your application
-# and its dependencies with the aid of the Mix.Config module.
 use Mix.Config
+
+config :images_resource,
+  source_bucket: System.get_env("SOURCE_BUCKET"),
+  dest_bucket: System.get_env("AWS_S3_BUCKET")
 
 config :arc,
   storage: Arc.Storage.S3,
-  bucket: "images",
-  asset_host: "http://localhost:9000/images"
+  bucket: System.get_env("AWS_S3_BUCKET"),
+  asset_host: System.get_env("ASSET_HOST")
 
 config :ex_aws,
-  access_key_id: "minio",
-  secret_access_key: "minio123",
-  region: "us-east-1",
-  s3: [
-    scheme: "http://",
-    host: "localhost",
-    port: 9000
-  ]
+  access_key_id: System.get_env("AWS_ACCESS_KEY_ID"),
+  secret_access_key: System.get_env("AWS_SECRET_ACCESS_KEY")
+  region: System.get_env("AWS_DEFAULT_REGION")
 
-# This configuration is loaded before any dependency and is restricted
-# to this project. If another project depends on this project, this
-# file won't be loaded nor affect the parent project. For this reason,
-# if you want to provide default values for your application for
-# 3rd-party users, it should be done in your "mix.exs" file.
+case System.get_env('AWS_ENDPOINT') do
+  nil -> :noop
+  uri ->
+    %{scheme: scheme, host: host, port: port} = URI.parse(uri)
 
-# You can configure for your application as:
-#
-#     config :images_resource, key: :value
-#
-# And access this configuration in your application as:
-#
-#     Application.get_env(:images_resource, :key)
-#
-# Or configure a 3rd-party app:
-#
-#     config :logger, level: :info
-#
-
-# It is also possible to import configuration files, relative to this
-# directory. For example, you can emulate configuration per environment
-# by uncommenting the line below and defining dev.exs, test.exs and such.
-# Configuration from the imported file will override the ones defined
-# here (which is why it is important to import them last).
-#
-#     import_config "#{Mix.env}.exs"
+    config :ex_aws,
+      s3: [
+        scheme: "http://",
+        host: "localhost",
+        port: 9000
+      ]
+end
