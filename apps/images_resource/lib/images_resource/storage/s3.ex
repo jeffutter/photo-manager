@@ -15,6 +15,7 @@ defmodule ImagesResource.Storage.S3 do
       {:ok, tree}
     rescue
       e in ExAws.Error ->
+        raise e
         {:error, "Unable to list bucket: #{bucket}, path: #{path} - #{inspect e}"}
     end
   end

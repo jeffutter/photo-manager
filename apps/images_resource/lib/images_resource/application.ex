@@ -10,9 +10,9 @@ defmodule ImagesResource.Application do
         %{scheme: scheme, host: host, port: port} = URI.parse(uri)
 
         Application.put_env(:ex_aws, :s3, [
-            scheme: "http://",
-            host: "localhost",
-            port: 9000
+            scheme: scheme,
+            host: host,
+            port: port
           ]
         )
     end

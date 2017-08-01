@@ -42,7 +42,7 @@ defmodule ImagesResource.Image do
         Logger.info "Cache Miss: #{inspect cache_key}"
 
         with path            <- s3_path(file, version),
-             {:ok, raw_data} <- S3.get_data(path, Config.get(:images_resource, :source_bucket)),
+             {:ok, raw_data} <- S3.get_data(path, bucket: Config.get(:images_resource, :dest_bucket)),
              base64_data     <- :base64.encode(raw_data),
              extension       <- type(file, version),
              output          <- "data:image/" <> extension <> ";base64," <> base64_data do
