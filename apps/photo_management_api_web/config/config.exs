@@ -13,7 +13,7 @@ config :photo_management_api_web,
 # Configures the endpoint
 config :photo_management_api_web, PhotoManagementApi.Web.Endpoint,
   url: [host: "localhost"],
-  secret_key_base: System.get_env("SECRET_KEY_BASE"),
+  secret_key_base: {:system, "SECRET_KEY_BASE"},
   render_errors: [view: PhotoManagementApi.Web.ErrorView, accepts: ~w(json)],
   pubsub: [name: PhotoManagementApi.Web.PubSub,
            adapter: Phoenix.PubSub.PG2]
@@ -38,5 +38,5 @@ config :guardian, Guardian,
   allowed_drift: 2000,
   verify_issuer: true, # optional
   secret_key: "0NScIueNKpesOHc1YC3T1VkERU6YES3NkhYz4rO0BbXxObhd5HMPeM45CUVpGkF+",
-  secret_key: System.get_env("GUARDIAN_SECRET_KEY"),
+  secret_key: {:system, "GUARDIAN_SECRET_KEY"},
   serializer: PhotoManagementApi.Web.GuardianSerializer

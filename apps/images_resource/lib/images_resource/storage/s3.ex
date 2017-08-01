@@ -73,11 +73,6 @@ defmodule ImagesResource.Storage.S3 do
   end
 
   defp bucket do
-    {:ok, bucket_name} = Application.fetch_env(:arc, :bucket)
-
-    case bucket_name do
-      {:system, env_var} when is_binary(env_var) -> System.get_env(env_var)
-      name -> name
-    end
+    Config.get(:arc, :bucket)
   end
 end

@@ -43,6 +43,6 @@ defmodule ImagesResource.Uploaders.Image do
   def storage_dir(_version, {_file, path}),  do: Path.join(path)
 
   def s3_object_headers(_version, {file, _scope}) do
-    [content_type: Plug.MIME.path(file.file_name)]
+    [content_type: MIME.from_path(file.file_name)]
   end
 end
