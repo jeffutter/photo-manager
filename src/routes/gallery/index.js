@@ -30,7 +30,7 @@ export default class Home extends Component {
     const path = subPath == "" ? [] : subPath.split('/');
     const pathString = JSON.stringify(path);
 
-    fetch("http://localhost:4000/graphiql", {
+    fetch("/graphiql", {
       method: "POST",
       headers: new Headers({
         "Content-Type": "application/graphql"
