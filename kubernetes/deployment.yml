@@ -1,0 +1,66 @@
+kind: Deployment
+apiVersion: apps/v1beta1
+metadata:
+  name: photo-manager
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: photo-manager
+    spec:
+      containers:
+        - name: photo-manager
+          image: jeffutter/photo-manager@sha256:5851bc3c4dcf6ff2295d6ea01ce2fe7b1d928da3049626d447e7209589f501c7
+          args: ["foreground"]
+          ports:
+            - name: http
+              containerPort: 4000
+          env:
+            - name: PORT
+              value: "4000"
+            - name: SOURCE_BUCKET
+              valueFrom:
+                secretKeyRef:
+                  name: photo-manager
+                  key: source_bucket
+            - name: AWS_S3_BUCKET
+              valueFrom:
+                secretKeyRef:
+                  name: photo-manager
+                  key: aws_s3_bucket
+            - name: ASSET_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: photo-manager
+                  key: asset_host
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: photo-manager
+                  key: aws_access_key_id
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: photo-manager
+                  key: aws_secret_access_key
+            - name: AWS_DEFAULT_REGION
+              valueFrom:
+                secretKeyRef:
+                  name: photo-manager
+                  key: aws_default_region
+            - name: AWS_ENDPOINT
+              valueFrom:
+                secretKeyRef:
+                  name: photo-manager
+                  key: aws_endpoint
+            - name: SECRET_KEY_BASE
+              valueFrom:
+                secretKeyRef:
+                  name: photo-manager
+                  key: secret_key_base
+            - name: GUARDIAN_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: photo-manager
+                  key: guardian_secret_key

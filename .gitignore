@@ -13,3 +13,4 @@ node_modules
 /apps/photo_management_api_web/priv/static/.gitkeep
 /*.log
 .envrc
+kubernetes/secrets.yml
