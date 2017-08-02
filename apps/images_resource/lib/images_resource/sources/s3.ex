@@ -56,7 +56,7 @@ defmodule ImagesResource.Sources.S3 do
     path = if bucket_name == Config.get(:images_resource, :dest_bucket) do
              "/original"
            else
-             "/"
+             nil
            end
 
     strip_prefix = if bucket_name == Config.get(:images_resource, :dest_bucket) do

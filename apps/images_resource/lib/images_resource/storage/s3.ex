@@ -2,7 +2,7 @@ defmodule ImagesResource.Storage.S3 do
   alias ExAws.{S3}
   alias ImagesResource.Storage.{File, Tree}
 
-  def ls_tree(path \\ "/", opts \\ []) do
+  def ls_tree(path \\ nil, opts \\ []) do
     bucket = Keyword.get(opts, :bucket, bucket())
     strip_prefix = Keyword.get(opts, :strip_prefix, [])
     try do
@@ -10,6 +10,7 @@ defmodule ImagesResource.Storage.S3 do
              |> S3.list_objects(prefix: path)
              |> ExAws.stream!
              |> Enum.to_list
+             |> Enum.filter(fn %{size: size} -> size != "0" end)
              |> Enum.map(&File.from_aws_obj(&1, strip_prefix: strip_prefix))
              |> Tree.from_list("root")
       {:ok, tree}
@@ -20,7 +21,7 @@ defmodule ImagesResource.Storage.S3 do
     end
   end
 
-  def ls(path \\ "/", opts \\ []) do
+  def ls(path \\ nil, opts \\ []) do
     bucket = Keyword.get(opts, :bucket, bucket())
     try do
       list = bucket
@@ -42,7 +43,7 @@ defmodule ImagesResource.Storage.S3 do
     end
   end
 
-  def ls_directories(path \\ "/", opts \\ []) do
+  def ls_directories(path \\ nil, opts \\ []) do
     case ls(path, opts) do
       {:ok, list} ->
         list = list
@@ -54,7 +55,7 @@ defmodule ImagesResource.Storage.S3 do
     end
   end
 
-  def exist?(full_path, path \\ "/", opts \\ []) do
+  def exist?(full_path, path \\ nil, opts \\ []) do
     case ls(path, opts) do
       {:ok, list} ->
         {:ok, Enum.member?(list, full_path)}
