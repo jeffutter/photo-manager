@@ -51,8 +51,6 @@ defmodule ImagesResource.Sources.S3 do
   end
 
   defp refresh(state = %__MODULE__{bucket_name: bucket_name, name: name}) do
-    Logger.info "Refreshing #{inspect bucket_name} for #{inspect name}"
-
     path = if bucket_name == Config.get(:images_resource, :dest_bucket) do
              "/original"
            else
@@ -64,6 +62,8 @@ defmodule ImagesResource.Sources.S3 do
                    else
                      []
                    end
+
+    Logger.info "Refreshing #{inspect bucket_name} for #{inspect name} with, path: #{inspect path} and stripping: #{inspect strip_prefix}"
 
     case S3.ls_tree(path, bucket: bucket_name, strip_prefix: strip_prefix) do
       {:ok, tree} ->
