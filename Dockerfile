@@ -3,15 +3,15 @@ RUN mkdir -p /src
 WORKDIR /src
 
 ADD package.json /src
-ADD package-lock.json /src
+ADD yarn.lock /src
 
-RUN npm install
+RUN yarn install
 
 ADD preact.config.js /src
 ADD src/ /src/src
 
 RUN mkdir -p apps/photo_management_api_web/priv/static/
-RUN npm run build
+RUN yarn run build
 
 FROM elixir:1.5-alpine as build
 RUN mkdir -p /src
