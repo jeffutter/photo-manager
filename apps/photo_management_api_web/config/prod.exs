@@ -16,10 +16,10 @@ use Mix.Config
 config :photo_management_api_web, PhotoManagementApi.Web.Endpoint,
   http: [port: {:system, "PORT"}],
   url: [host: "localhost", port: {:system, "PORT"}], # This is critical for ensuring web-sockets properly authorize.
+  cache_static_manifest: "priv/static/manifest.json",
   server: true,
   root: ".",
   version: Application.spec(:myapp, :vsn)
-  # cache_static_manifest: "priv/static/manifest.json",
 
 # ## SSL Support
 #
