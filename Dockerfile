@@ -33,7 +33,7 @@ ADD config /src/config
 ADD apps /src/apps
 ADD rel /src/rel
 
-COPY --from=ui /src/apps/photo_management_api_web/priv/static apps/photo_management_api_web/priv/
+COPY --from=ui /src/apps/photo_management_api_web/priv/static/ apps/photo_management_api_web/priv/static/
 
 ENV MIX_ENV prod
 RUN mix compile
