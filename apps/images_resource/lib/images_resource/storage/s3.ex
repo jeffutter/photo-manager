@@ -70,8 +70,10 @@ defmodule ImagesResource.Storage.S3 do
   end
 
   def get_data(full_path, opts \\ []) do
-    {:ok, %{body: data}} = get(full_path, opts)
-    {:ok, data}
+    case get(full_path, opts) do
+      {:ok, %{body: data}} -> {:ok, data}
+      {:error, e} -> {:error, e}
+    end
   end
 
   defp bucket do

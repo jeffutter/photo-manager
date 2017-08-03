@@ -27,18 +27,17 @@ defmodule ImagesResource.Sync do
   defp process_sync({:add, file = %File{name: name, path: path}}) do
     Logger.info "Storing: #{inspect file}"
 
-    source_bucket = Config.get(:images_resource, :source_bucket)
-
-    {:ok, data} = file
-                  |> File.full_path
-                  |> S3.get_data(bucket: source_bucket)
-
-    case Image.store({%{filename: name, binary: data}, path}) do
-      {:ok, _} -> :ok
+    with source_bucket <- Config.get(:images_resource, :source_bucket),
+             full_path <- File.full_path(file),
+           {:ok, data} <- S3.get_data(bucket: source_bucket),
+              {:ok, _} <- Image.store({%{filename: name, binary: data}, path}) do
+      :ok
+    else
       {:error, e} ->
         Logger.error "Failed to upload to S3 #{inspect e}"
     end
   end
+
   defp process_sync({:remove, file = %File{name: name, path: path}}) do
     Logger.info "Deleting: #{inspect file}"
     Image.delete({name, path})

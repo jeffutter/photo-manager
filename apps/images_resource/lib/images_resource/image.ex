@@ -12,11 +12,17 @@ defmodule ImagesResource.Image do
   end
 
   def s3_path(image, version) do
-    base_url = Path.dirname(ImagesResource.Uploaders.Image.url("", version))
+    base_url = ""
+               |> ImagesResource.Uploaders.Image.url(version)
+               |> URI.parse
+               |> Map.get(:path)
+               |> Path.dirname
+
     image
     |> url(version)
     |> String.split(base_url, trim: true)
-    |> Enum.at(0)
+    |> Enum.at(1)
+    |> String.slice(1..-1)
   end
 
   def type(image, version) do
@@ -51,8 +57,8 @@ defmodule ImagesResource.Image do
 
           {:ok, output}
         else
-          _e ->
-            {:error, "Unable to read file #{url(file, version)}"}
+          e ->
+            {:error, "Unable to read file #{url(file, version)}. Error: #{inspect e}"}
         end
     end
   end
