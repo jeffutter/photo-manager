@@ -40,6 +40,7 @@ defmodule ImagesResource.Mixfile do
     [
       {:config, in_umbrella: true},
       arc: "~> 0.8.0",
+      arc_gcs: "~> 0.0.3",
       ex_aws: "~> 1.1",
       hackney: "~> 1.6",
       poison: "~> 3.1",

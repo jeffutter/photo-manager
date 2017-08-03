@@ -64,3 +64,8 @@ spec:
                 secretKeyRef:
                   name: photo-manager
                   key: guardian_secret_key
+            - name: GCP_CREDENTIALS
+              valueFrom:
+                secretKeyRef:
+                  name: photo-manager
+                  key: gcp_credentials
