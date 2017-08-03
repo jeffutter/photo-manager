@@ -2,6 +2,7 @@ defmodule PhotoManagementApi.Web.Endpoint do
   use Phoenix.Endpoint, otp_app: :photo_management_api_web
 
   socket "/socket", PhotoManagementApi.Web.UserSocket
+  socket "/wobserver", Wobserver.Web.PhoenixSocket
 
   plug CORSPlug#, origin: "http://localhost:4000"
 

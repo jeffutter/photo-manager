@@ -40,3 +40,7 @@ config :guardian, Guardian,
   secret_key: "0NScIueNKpesOHc1YC3T1VkERU6YES3NkhYz4rO0BbXxObhd5HMPeM45CUVpGkF+",
   secret_key: {:system, "GUARDIAN_SECRET_KEY"},
   serializer: PhotoManagementApi.Web.GuardianSerializer
+
+config :wobserver,
+  mode: :plug,
+  remote_url_prefix: "/wobserver"

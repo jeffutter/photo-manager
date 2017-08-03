@@ -25,4 +25,8 @@ defmodule PhotoManagementApi.Web.Router do
     post "/graphiql", Absinthe.Plug.GraphiQL, schema: PhotoManagementApi.Web.Schema
     forward "/graphql", Absinthe.Plug, schema: PhotoManagementApi.Web.Schema
   end
+
+  scope "/wobserver" do
+    forward "/", Wobserver.Web.Router
+  end
 end
