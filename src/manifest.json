@@ -1,6 +1,6 @@
 {
-  "name": "Preact PWA",
-  "short_name": "Preact PWA",
+  "name": "Jeffery Utter Gallery",
+  "short_name": "Gallery",
   "start_url": "/",
   "display": "standalone",
   "orientation": "portrait",
