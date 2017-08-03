@@ -29,7 +29,7 @@ defmodule ImagesResource.Sync do
 
     with source_bucket <- Config.get(:images_resource, :source_bucket),
              full_path <- File.full_path(file),
-           {:ok, data} <- S3.get_data(bucket: source_bucket),
+           {:ok, data} <- S3.get_data(full_path, bucket: source_bucket),
               {:ok, _} <- Image.store({%{filename: name, binary: data}, path}) do
       :ok
     else
