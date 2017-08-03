@@ -2,6 +2,7 @@ defmodule ImagesResource.Uploaders.Image do
   use Arc.Definition
 
   @versions [:original, :thumb, :small, :medium, :large]
+  @version_strings Enum.map(@versions, fn v -> "#{v}" end)
   @acl :public_read
 
   @type arc_location :: {String.t, list(String.t)}
@@ -26,6 +27,13 @@ defmodule ImagesResource.Uploaders.Image do
   end
 
   def filename(version, {%{file_name: name}, _path}) do
+
+    # Some hack for GCS client, it was giving me names like larg_larg_file.jpg
+    name = case String.split(name, "_") do
+             [prefix | rest] when prefix in @version_strings -> Enum.join(rest, "_")
+             _ -> name
+           end
+
     file_name = Path.basename(name, Path.extname(name))
     if version == :original do
       file_name

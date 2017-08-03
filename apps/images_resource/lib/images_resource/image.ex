@@ -58,6 +58,7 @@ defmodule ImagesResource.Image do
           {:ok, output}
         else
           e ->
+            Logger.error "Base64 Failed: Unable to read file #{url(file, version)}. Error: #{inspect e}"
             {:error, "Unable to read file #{url(file, version)}. Error: #{inspect e}"}
         end
     end
