@@ -21,6 +21,8 @@ defmodule ImagesResource.Application do
 
     children = [
       worker(Cachex, [:my_cache, [limit: 500, default_ttl: 21600000]]),
+      worker(ImagesResource.Uploaders.Queue, []),
+      worker(ImagesResource.Uploaders.Processor, []),
       worker(ImagesResource.Sync, [[source: ImageSource, dest: ImageDest]]),
       worker(ImagesResource.Sources.S3, [Config.get(:images_resource, :dest_bucket), ImageDest], id: ImageDest),
       worker(ImagesResource.Sources.S3, [Config.get(:images_resource, :source_bucket), ImageSource], id: ImageSource)
