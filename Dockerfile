@@ -17,7 +17,7 @@ FROM elixir:1.5-alpine as build
 RUN mkdir -p /src
 WORKDIR /src
 
-RUN apk add -U make gcc musl-dev \
+RUN apk add -U git make gcc musl-dev \
     && mix local.hex --force \
     && mix local.rebar --force
 
