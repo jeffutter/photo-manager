@@ -20,12 +20,10 @@ defmodule ImagesResource.Storage.File do
 
   def from_aws_obj(%{key: key, last_modified: last_modified, size: size}, opts \\ []) do
     strip_prefix = Keyword.get(opts, :strip_prefix, [])
-    escape = Keyword.get(opts, :escape, true)
 
     path = key
            |> split_path
            |> strip_prefix(strip_prefix)
-#           |> Enum.map(&URI.encode_www_form/1)
 
     name = Path.basename(key)
 

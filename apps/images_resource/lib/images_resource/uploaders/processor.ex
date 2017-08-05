@@ -4,7 +4,7 @@ defmodule ImagesResource.Uploaders.Processor do
   use GenStage
 
   alias ImagesResource.Storage.{S3, File}
-  alias ImagesResource.Uploaders.Image
+  alias ImagesResource.Uploaders.{Image, Queue}
 
   def start_link do
     GenStage.start_link(__MODULE__, :ok, name: __MODULE__)
@@ -23,17 +23,27 @@ defmodule ImagesResource.Uploaders.Processor do
     {:noreply, [], state}
   end
 
-  defp process_sync({:add, file = %File{name: name, path: path}}) do
+  defp process_sync( event = {:add, file = %File{name: name, path: path}}) do
     Logger.info "Storing: #{inspect file}"
 
-    with source_bucket <- Config.get(:images_resource, :source_bucket),
-             full_path <- File.full_path(file),
-           {:ok, data} <- S3.get_data(full_path, bucket: source_bucket),
-              {:ok, _} <- Image.store({%{filename: name, binary: data}, path}) do
-      :ok
-    else
-      {:error, e} ->
-        Logger.error "Failed to upload to S3 #{inspect e}"
+    try do
+      with source_bucket <- Config.get(:images_resource, :source_bucket),
+              full_path <- File.full_path(file),
+            {:ok, data} <- S3.get_data(full_path, bucket: source_bucket),
+                {:ok, _} <- Image.store({%{filename: name, binary: data}, path}) do
+        :ok
+      else
+        {:error, e} ->
+          Logger.error "Failed to upload to S3 #{inspect e}"
+      end
+    rescue
+      e in HTTPoison.Error ->
+        case e.reason do
+          :timeout ->
+            Logger.error "Request timed out for #{inspect file} - requeuing."
+            Queue.add(event)
+          _ -> raise e
+        end
     end
   end
 
