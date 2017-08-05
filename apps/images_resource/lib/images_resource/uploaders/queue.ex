@@ -1,4 +1,6 @@
 defmodule ImagesResource.Uploaders.Queue do
+  require Logger
+
   use GenStage
 
   def start_link() do
@@ -18,6 +20,7 @@ defmodule ImagesResource.Uploaders.Queue do
       {{:value, event}, queue} ->
         dispatch_events(queue, demand - 1, [event | events])
       {:empty, queue} ->
+        Logger.info "Image Uploader Queue Empty"
         {:noreply, Enum.reverse(events), {queue, demand}}
     end
   end
