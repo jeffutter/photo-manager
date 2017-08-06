@@ -28,6 +28,7 @@
     "preact-redux": "^2.0.2",
     "preact-router": "^2.5.5",
     "react-images": "^0.5.5",
+    "react-paginate": "^4.4.3",
     "redux": "^3.7.2"
   }
 }

@@ -31,7 +31,7 @@ export default class Home extends Component {
     const pathString = JSON.stringify(path);
     const pg = page && page.length > 0 ? page : "0";
 
-    fetch("http://localhost:4000/graphiql", {
+    fetch("/graphiql", {
       method: "POST",
       headers: new Headers({
         "Content-Type": "application/graphql"
@@ -64,7 +64,7 @@ export default class Home extends Component {
   }
 
   componentWillReceiveProps({ subPath, page }) {
-    this.fetchGallery(subPath);
+    this.fetchGallery(subPath, page);
   }
 
   componentDidMount() {

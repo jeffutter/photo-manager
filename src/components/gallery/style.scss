@@ -104,3 +104,23 @@
 .blur {
   filter: blur(30px);
 }
+
+.pagination {
+  grid-column-start: 1;
+  grid-column-end: 6;
+  text-align: center;
+  margin: 0;
+  padding: 0;
+  display: inline-block;
+  padding-left: 15px;
+  padding-right: 15px;
+
+  li {
+    display: inline-block;
+    margin: 0 8px;
+  }
+
+  .break a {
+    cursor: default;
+  }
+}
