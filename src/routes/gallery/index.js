@@ -26,20 +26,25 @@ export default class Home extends Component {
     });
   }
 
-  fetchGallery(subPath) {
-    const path = subPath == "" ? [] : subPath.split('/');
+  fetchGallery(subPath, page) {
+    const path = subPath == "" ? [] : subPath.split("/");
     const pathString = JSON.stringify(path);
+    const pg = page && page.length > 0 ? page : "0";
 
-    fetch("/graphiql", {
+    fetch("http://localhost:4000/graphiql", {
       method: "POST",
       headers: new Headers({
         "Content-Type": "application/graphql"
       }),
       body: `
         {
-          gallery(path: ${pathString}) {
+          gallery(path: ${pathString}, page: ${pg}) {
             name,
             path,
+            page_number,
+            page_size,
+            total_pages,
+            total_entries,
             children {
               ... on Gallery { name, path }
               ... on Image { name, path, size, thumbnail, small_url, medium_url, large_url }
@@ -58,21 +63,21 @@ export default class Home extends Component {
       });
   }
 
-  componentWillReceiveProps({ subPath }) {
+  componentWillReceiveProps({ subPath, page }) {
     this.fetchGallery(subPath);
   }
 
   componentDidMount() {
-    const { subPath } = this.props;
-    this.fetchGallery(subPath);
+    const { subPath, page } = this.props;
+    this.fetchGallery(subPath, page);
   }
 
   render() {
     return (
       <div class={style.home}>
-        {
-          this.state.data && this.state.data.gallery && <Gallery {...this.state.data.gallery} />
-        }
+        {this.state.data &&
+          this.state.data.gallery &&
+          <Gallery {...this.state.data.gallery} />}
       </div>
     );
   }

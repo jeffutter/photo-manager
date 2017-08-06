@@ -5,9 +5,24 @@ defmodule PhotoManagementApi.Web.Resolver.Gallery do
 
   def all(_parent, args, _info) do
     path = Map.get(args, :path, [])
-    {:ok, Gallery.ls(path)}
-  end
-  def children(%Directory{children: children}, _args, _info) do
-    {:ok, children}
+    page = Map.get(args, :page, 0)
+
+    case Gallery.ls(path) do
+      %Directory{name: name, children: children, path: path} ->
+        children = Scrivener.paginate(children, %{page: page, page_size: 30})
+
+        {:ok, %{
+            name: name,
+            path: path,
+            children: children.entries,
+            page_number: children.page_number,
+            page_size: children.page_size,
+            total_pages: children.total_pages,
+            total_entries: children.total_entries
+         }}
+      _ ->
+        {:error, "Directory #{path} not found"}
+    end
+
   end
 end

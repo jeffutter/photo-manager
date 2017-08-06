@@ -33,8 +33,8 @@ export default class App extends Component {
         <Header />
         <Router onChange={this.handleRoute}>
           <Redirect path="/" to="/gallery" />
-          <Gallery path="/gallery" subPath="" />
-          <Gallery path="/gallery/:subPath*" />
+          <Gallery path="/gallery:params?" subPath="" />
+          <Gallery path="/gallery/:subPath*/:params?" />
         </Router>
       </div>
     );

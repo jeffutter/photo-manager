@@ -29,6 +29,10 @@ defmodule PhotoManagementApi.Web.Schema.Types do
   object :gallery do
     field :name, :string
     field :path, list_of(:string)
-    field :children, list_of(:directory_child), resolve: &Resolver.Gallery.children/3
+    field :page_number, :integer
+    field :page_size, :integer
+    field :total_pages, :integer
+    field :total_entries, :integer
+    field :children, list_of(:directory_child)
   end
 end
