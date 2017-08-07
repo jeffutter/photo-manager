@@ -7,19 +7,20 @@ defmodule ImagesResource.Image do
 
   alias ImagesResource.Storage.{File, S3}
 
-  def url(%File{name: name, path: path}, version) do
-    ImagesResource.Uploaders.Image.url({name, path}, version)
-  end
+  def url(%File{name: name, path: path}, version), do: ImagesResource.Uploaders.Image.url({name, path}, version)
+  def url(string, version), do: ImagesResource.Uploaders.Image.url(string, version)
 
   def s3_path(image, version) do
     base_url = ""
-               |> ImagesResource.Uploaders.Image.url(version)
+               |> url(version)
+               |> URI.decode
                |> URI.parse
                |> Map.get(:path)
                |> Path.dirname
 
     image
     |> url(version)
+    |> URI.decode
     |> String.split(base_url, trim: true)
     |> Enum.at(1)
     |> String.slice(1..-1)

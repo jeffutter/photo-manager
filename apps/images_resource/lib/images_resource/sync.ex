@@ -3,7 +3,7 @@ defmodule ImagesResource.Sync do
   use GenServer
 
   alias ImagesResource.Storage.{Directory, Tree}
-  alias ImagesResource.Uploaders.Image
+  alias ImagesResource.Uploaders.Queue
 
   @type t :: %{source: atom(), dest: atom(), source_tree: Directory.t, dest_tree: Directory.t }
   defstruct source: nil, dest: nil, source_tree: nil, dest_tree: nil
@@ -15,7 +15,7 @@ defmodule ImagesResource.Sync do
   def handle_cast({:updated, from_name, tree}, state = %{source: source_name, dest_tree: dest_tree}) when from_name == source_name do
     tree
     |> Tree.diff(dest_tree)
-    |> Enum.each(&ImagesResource.Uploaders.Queue.add/1)
+    |> Enum.each(&Queue.add/1)
 
     {:noreply, %{state | source_tree: tree}}
   end
