@@ -1,8 +1,8 @@
 .gallery {
-  display: grid;
-  grid-gap: 30px;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  grid-auto-flow: row dense;
+  margin: 0 auto;
+  padding: .5vw;
+  display: flex;
+  flex-flow: row wrap;
 }
 
 .galleryHeader {
@@ -11,14 +11,13 @@
 }
 
 .item {
+  flex: auto;
+  width: 300px;
+  max-width: 300px;
+  margin: 2vh 1vw;
   position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
   box-sizing: border-box;
   color: #fff;
-  grid-column-start: auto;
-  grid-row-start: auto;
   color: #fff;
   background-size: cover;
   background-position: center;
@@ -107,16 +106,14 @@
 }
 
 .pagination {
-  grid-column-start: 1;
-  grid-column-end: 6;
-  text-align: center;
+  display: block;
+  width: 100%;
   margin: 0;
   padding: 0;
-  display: inline-block;
-  padding-left: 15px;
-  padding-right: 15px;
   font-weight: bold;
   font-size: 1.2em;
+  text-align: center;
+  clear: both;
 
   a {
     text-decoration: none;

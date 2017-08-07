@@ -195,8 +195,8 @@ export default class Gallery extends Component {
     return (
       <div>
         <BreadCrumbs path={path} name={name} />
+        {pagination}
         <div class={style.gallery}>
-          {pagination}
           {galleries.map((gallery, idx) =>
             <GalleryThumb
               key={idx}
@@ -215,8 +215,8 @@ export default class Gallery extends Component {
               {...image}
             />
           )}
-          {pagination}
         </div>
+        {pagination}
         <Lightbox
           images={lightboxImages}
           isOpen={this.state.lightboxIsOpen}

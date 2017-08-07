@@ -39,7 +39,7 @@ defmodule ImagesResource.Mixfile do
   defp deps do
     [
       {:config, in_umbrella: true},
-      {:arc_gcs, github: "jeffutter/arc_gcs", branch: "fix-uri-encoding"},
+      arc_gcs: "~> 0.0.4",
       gen_stage: "~> 0.12.1",
       arc: "~> 0.8.0",
       ex_aws: "~> 1.1",
