@@ -13,40 +13,33 @@ type imageArgs = {
   index: number,
   handleOpen: () => void
 };
-class Image extends Component {
-  render({ name, thumbnail, src, index, handleOpen }: imageArgs) {
-    const openFunc = event => handleOpen(index, event);
-    return (
-      <div class={style.item} onClick={openFunc}>
-        <div>
-          <img src={thumbnail} class={style.thumbnail} />
-        </div>
-        <div class={style.item__details}>
-          {name}
-        </div>
-      </div>
-    );
-  }
-}
 
-class GalleryThumb extends Component {
-  render({ name, path, handleClick }) {
-    const clickFunc = event => handleClick(path, name, event);
-    return (
-      <div class={style.item} onClick={clickFunc}>
-        <svg viewBox="0 0 8 8" class="icon" width="200px" class={style.icon}>
-          <path
-            d="M0 0v2h8v-1h-5v-1h-3zm0 3v4.5c0 .28.22.5.5.5h7c.28 0 .5-.22.5-.5v-4.5h-8z"
-            id="folder"
-          />
-        </svg>
-        <div class={style.item__details}>
-          {name}
-        </div>
+const Image = ({ name, thumbnail, src, index, handleOpen }: imageArgs) => {
+  return (
+    <div class={style.item} onClick={handleOpen}>
+      <img src={thumbnail} class={style.thumbnail} />
+      <div class={style.item__details}>
+        {name}
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
+
+const GalleryThumb = ({ name, path, handleClick }) => {
+  return (
+    <div class={style.item} onClick={handleClick}>
+      <svg viewBox="0 0 8 8" class="icon" width="200px" class={style.icon}>
+        <path
+          d="M0 0v2h8v-1h-5v-1h-3zm0 3v4.5c0 .28.22.5.5.5h7c.28 0 .5-.22.5-.5v-4.5h-8z"
+          id="folder"
+        />
+      </svg>
+      <div class={style.item__details}>
+        {name}
+      </div>
+    </div>
+  );
+};
 
 const BreadCrumbs = ({ path, name }) => {
   if (path.length == 0 && name == "root") {
@@ -100,18 +93,24 @@ export default class Gallery extends Component {
 
   clickGallery = (path, name, event) => {
     event && event.preventDefault();
-    path.unshift("gallery");
-    path.push(name);
-    const joinedPath = path.join("/");
-    route("/" + joinedPath);
+    route("/" + this.joinPath(path, name));
   };
 
   handlePageClick = (path, name, { selected }) => {
-    if (!selected) return;
-    path.unshift("gallery");
-    path.push(name);
-    const joinedPath = path.join("/");
-    route(`/${joinedPath}?page=${selected}`);
+    if (selected == undefined) return;
+    route(`/${this.joinPath(path, name)}?page=${selected + 1}`);
+  };
+
+  buildPaginationLink = (path, name, page) => {
+    //return `/${this.joinPath(path, name)}?page=${page}`;
+    return "#";
+  };
+
+  joinPath = (path, name) => {
+    const p = path.slice(0);
+    p.unshift("gallery");
+    p.push(name);
+    return p.join("/");
   };
 
   openLightbox = (index: number, event) => {
@@ -170,39 +169,53 @@ export default class Gallery extends Component {
 
     if (!(images.length > 0 || galleries.length > 0)) return;
 
+    let pagination = null;
+    if (total_pages && total_pages > 1) {
+      pagination = (
+        <ReactPaginate
+          previousLabel={"<"}
+          nextLabel={">"}
+          breakLabel={<a href="">...</a>}
+          breakClassName={"break-me"}
+          pageCount={total_pages}
+          initialPage={page_number - 1}
+          marginPagesDisplayed={2}
+          pageRangeDisplayed={5}
+          onPageChange={this.handlePageClick.bind(null, path, name)}
+          //handlePageSelected={this.handlePageClick.bind(null, path, name)}
+          disableInitialCallback={true}
+          containerClassName={style.pagination}
+          subContainerClassName={"pages pagination"}
+          activeClassName={"active"}
+          hrefBuilder={this.buildPaginationLink.bind(null, path, name)}
+        />
+      );
+    }
+
     return (
       <div>
         <BreadCrumbs path={path} name={name} />
         <div class={style.gallery}>
+          {pagination}
           {galleries.map((gallery, idx) =>
             <GalleryThumb
               key={idx}
-              handleClick={this.clickGallery}
+              handleClick={this.clickGallery.bind(
+                this,
+                gallery.path,
+                gallery.name
+              )}
               {...gallery}
             />
           )}
           {lightboxImages.map(image =>
             <Image
               key={image.index}
-              handleOpen={this.openLightbox}
+              handleOpen={this.openLightbox.bind(this, image.index)}
               {...image}
             />
           )}
-          <ReactPaginate
-            previousLabel={"previous"}
-            nextLabel={"next"}
-            breakLabel={<a href="">...</a>}
-            breakClassName={"break-me"}
-            pageCount={total_pages}
-            initialPage={page_number}
-            marginPagesDisplayed={2}
-            pageRangeDisplayed={5}
-            onPageChange={this.handlePageClick.bind(null, path, name)}
-            disableInitialCallback={true}
-            containerClassName={style.pagination}
-            subContainerClassName={"pages pagination"}
-            activeClassName={"active"}
-          />
+          {pagination}
         </div>
         <Lightbox
           images={lightboxImages}
