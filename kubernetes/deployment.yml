@@ -16,6 +16,18 @@ spec:
           ports:
             - name: http
               containerPort: 4000
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 4000
+            initialDelaySeconds: 3
+            periodSeconds: 3
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 4000
+            initialDelaySeconds: 3
+            periodSeconds: 3
           env:
             - name: PORT
               value: "4000"
