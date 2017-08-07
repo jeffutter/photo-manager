@@ -19,12 +19,12 @@ defmodule PhotoManagementApi.Web.Resolver.Image do
   end
 
   def small_url(file = %File{}, _args, _info) do
-    {:ok, Image.url(file, :small)}
+    {:ok, Image.url(file, :small) |> URI.encode}
   end
   def medium_url(file = %File{}, _args, _info) do
-    {:ok, Image.url(file, :medium)}
+    {:ok, Image.url(file, :medium) |> URI.encode}
   end
   def large_url(file = %File{}, _args, _info) do
-    {:ok, Image.url(file, :large)}
+    {:ok, Image.url(file, :large) |> URI.encode}
   end
 end

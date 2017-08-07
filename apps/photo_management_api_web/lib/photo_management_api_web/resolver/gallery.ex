@@ -9,7 +9,7 @@ defmodule PhotoManagementApi.Web.Resolver.Gallery do
 
     case Gallery.ls(path) do
       %Directory{name: name, children: children, path: path} ->
-        children = Scrivener.paginate(children, %{page: page, page_size: 30})
+        children = Scrivener.paginate(children, %{page: page, page_size: 20})
 
         {:ok, %{
             name: name,
