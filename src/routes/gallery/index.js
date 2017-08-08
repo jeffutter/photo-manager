@@ -4,9 +4,12 @@ import { graphql } from "react-apollo";
 import style from "./style";
 
 import Gallery from "../../components/gallery";
+import Spinner from "../../components/full_page_spinner";
 
 class GalleryContainer extends Component {
   render({ data }) {
+    if(data.loading) return <Spinner />;
+
     return (
       <div class={style.home}>
         {data && data.gallery && <Gallery {...data.gallery} />}

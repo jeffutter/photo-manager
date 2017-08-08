@@ -101,10 +101,7 @@ export default class Gallery extends Component {
     route(`/${this.joinPath(path, name)}?page=${selected + 1}`);
   };
 
-  buildPaginationLink = (path, name, page) => {
-    //return `/${this.joinPath(path, name)}?page=${page}`;
-    return "#";
-  };
+  buildPaginationLink = (path, name, page) => { return "#" };
 
   joinPath = (path, name) => {
     const p = path.slice(0);
@@ -182,7 +179,6 @@ export default class Gallery extends Component {
           marginPagesDisplayed={2}
           pageRangeDisplayed={5}
           onPageChange={this.handlePageClick.bind(null, path, name)}
-          //handlePageSelected={this.handlePageClick.bind(null, path, name)}
           disableInitialCallback={true}
           containerClassName={style.pagination}
           subContainerClassName={"pages pagination"}
