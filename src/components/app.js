@@ -1,5 +1,11 @@
 import { h, Component } from "preact";
 import { Router, route } from "preact-router";
+import {
+  ApolloClient,
+  ApolloProvider,
+  createNetworkInterface,
+  IntrospectionFragmentMatcher
+} from "react-apollo";
 
 import Header from "./header";
 import Gallery from "../routes/gallery";
@@ -7,6 +13,27 @@ import Gallery from "../routes/gallery";
 // import Profile from 'async!./profile';
 
 import style from "./style";
+
+const myFragmentMatcher = new IntrospectionFragmentMatcher({
+  introspectionQueryResultData: {
+    __schema: {
+      types: [
+        {
+          kind: "INTERFACE",
+          name: "Child",
+          possibleTypes: [{ name: "Gallery" }, { name: "Image" }]
+        }
+      ]
+    }
+  }
+});
+
+const client = new ApolloClient({
+  networkInterface: createNetworkInterface({
+    uri: "/graphiql"
+  }),
+  fragmentMatcher: myFragmentMatcher
+});
 
 class Redirect extends Component {
   componentWillMount() {
@@ -29,14 +56,16 @@ export default class App extends Component {
 
   render() {
     return (
-      <div id="app" class={style.app}>
-        <Header />
-        <Router onChange={this.handleRoute}>
-          <Redirect path="/" to="/gallery" />
-          <Gallery path="/gallery:params?" subPath="" />
-          <Gallery path="/gallery/:subPath*/:params?" />
-        </Router>
-      </div>
+      <ApolloProvider client={client}>
+        <div id="app" class={style.app}>
+          <Header />
+          <Router onChange={this.handleRoute}>
+            <Redirect path="/" to="/gallery" />
+            <Gallery path="/gallery:params?" subPath="" />
+            <Gallery path="/gallery/:subPath*/:params?" />
+          </Router>
+        </div>
+      </ApolloProvider>
     );
   }
 }
