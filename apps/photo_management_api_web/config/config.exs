@@ -12,6 +12,7 @@ config :photo_management_api_web,
 
 # Configures the endpoint
 config :photo_management_api_web, PhotoManagementApi.Web.Endpoint,
+  http: [compress: true],
   url: [host: "localhost"],
   secret_key_base: {:system, "SECRET_KEY_BASE"},
   render_errors: [view: PhotoManagementApi.Web.ErrorView, accepts: ~w(json)],
