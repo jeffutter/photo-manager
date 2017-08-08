@@ -5,7 +5,7 @@ defmodule PhotoManagementApi.Web.Schema.Types do
 
   alias ImagesResource.Storage.{File, Directory}
 
-  union :directory_child do
+  union :descendants do
     description "A child of a directory"
 
     types [:image, :gallery]
@@ -33,6 +33,6 @@ defmodule PhotoManagementApi.Web.Schema.Types do
     field :page_size, :integer
     field :total_pages, :integer
     field :total_entries, :integer
-    field :children, list_of(:directory_child)
+    field :descendants, list_of(:descendants), resolve: fn %{children: children}, _, _ -> {:ok, children} end
   end
 end

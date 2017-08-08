@@ -2,20 +2,34 @@
 import { h, Component } from "preact";
 import style from "./style";
 
+import ApolloClient, {
+  createNetworkInterface,
+  IntrospectionFragmentMatcher
+} from "apollo-client";
+import gql from "graphql-tag";
+
 import Gallery from "../../components/gallery";
 
-const checkStatus = response => {
-  if (response.status >= 200 && response.status < 300) return response;
-  else {
-    var error = new Error(response.statusText);
-    // error.response = response;
-    throw error;
+const myFragmentMatcher = new IntrospectionFragmentMatcher({
+  introspectionQueryResultData: {
+    __schema: {
+      types: [
+        {
+          kind: "INTERFACE",
+          name: "Child",
+          possibleTypes: [{ name: "Gallery" }, { name: "Image" }]
+        }
+      ]
+    }
   }
-};
+});
 
-const parseJSON = response => {
-  return response.json();
-};
+const client = new ApolloClient({
+  networkInterface: createNetworkInterface({
+    uri: "/graphiql"
+  }),
+  fragmentMatcher: myFragmentMatcher
+});
 
 export default class Home extends Component {
   state = {};
@@ -29,32 +43,43 @@ export default class Home extends Component {
   fetchGallery(subPath, page) {
     const path = subPath == "" ? [] : subPath.split("/");
     const pathString = JSON.stringify(path);
-    const pg = page && page.length > 0 ? page : "0";
+    const pg = page && page.length > 0 ? parseInt(page) : 0;
 
-    fetch("/graphiql", {
-      method: "POST",
-      headers: new Headers({
-        "Content-Type": "application/graphql"
-      }),
-      body: `
-        {
-          gallery(path: ${pathString}, page: ${pg}) {
-            name,
-            path,
-            page_number,
-            page_size,
-            total_pages,
-            total_entries,
-            children {
-              ... on Gallery { name, path }
-              ... on Image { name, path, size, thumbnail, small_url, medium_url, large_url }
+    client
+      .query({
+        query: gql`
+          query gallery($path: [String]!, $page: Int!) {
+            gallery(path: $path, page: $page) {
+              name
+              path
+              page_number
+              page_size
+              total_pages
+              total_entries
+              descendants {
+                ... on Gallery {
+                  name
+                  path
+                }
+                ... on Image {
+                  name
+                  path
+                  size
+                  thumbnail
+                  small_url
+                  medium_url
+                  large_url
+                }
+              }
             }
           }
-        }
-      `
-    })
-      .then(checkStatus)
-      .then(parseJSON)
+        `,
+        variables: {
+          path: path,
+          page: pg
+        },
+        fetchPolicy: "cache-first"
+      })
       .then(data => {
         this.setStateAsync({ data: data.data });
       })

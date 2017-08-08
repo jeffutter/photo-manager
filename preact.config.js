@@ -3,4 +3,5 @@ export default (config, env, helpers) => {
     loader.match(/babel-loader/)
   );
   babel.options.plugins.push("transform-flow-strip-types");
+  babel.options.plugins.push("graphql-tag");
 };

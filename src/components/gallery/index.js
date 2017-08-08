@@ -145,12 +145,12 @@ export default class Gallery extends Component {
       currentImage: index
     });
 
-  render({ name, path, total_pages, page_number, children }: galleryArgs) {
-    const images = children
-      ? children.filter(child => "thumbnail" in child)
+  render({ name, path, total_pages, page_number, descendants }: galleryArgs) {
+    const images = descendants
+      ? descendants.filter(child => "thumbnail" in child)
       : [];
-    const galleries = children
-      ? children.filter(child => !("thumbnail" in child))
+    const galleries = descendants
+      ? descendants.filter(child => !("thumbnail" in child))
       : [];
 
     const lightboxImages = images.map((image, i) => {
