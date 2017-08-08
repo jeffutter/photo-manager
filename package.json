@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "eslint src && preact test",
-    "start": "if-env NODE_ENV=production && npm run -s serve || npm run -s dev",
+    "start": "if-env NODE_ENV=production && yarn run -s serve || yarn run -s dev",
     "build": "preact build --dest=apps/photo_management_api_web/priv/static/",
     "serve": "preact build --dest=apps/photo_management_api_web/priv/static/ && preact serve --dest=apps/photo_management_api_web/priv/static/",
     "dev": "preact watch"
@@ -16,6 +16,7 @@
   "devDependencies": {
     "babel-plugin-graphql-tag": "^1.1.0",
     "babel-plugin-transform-flow-strip-types": "^6.22.0",
+    "compression-webpack-plugin": "^1.0.0",
     "eslint": "^4.3.0",
     "eslint-config-synacor": "^1.0.1",
     "if-env": "^1.0.0",
@@ -25,13 +26,10 @@
   },
   "dependencies": {
     "apollo-client": "^1.9.0",
-    "graphql-tag": "^2.4.2",
     "preact": "^8.2.1",
     "preact-compat": "^3.16.0",
-    "preact-redux": "^2.0.2",
     "preact-router": "^2.5.5",
     "react-images": "^0.5.5",
-    "react-paginate": "^4.4.3",
-    "redux": "^3.7.2"
+    "react-paginate": "^4.4.3"
   }
 }
