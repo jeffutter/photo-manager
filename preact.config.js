@@ -12,8 +12,8 @@ export default (config, env, helpers) => {
       new CompressionPlugin({
         asset: "[path].gz[query]",
         algorithm: "gzip",
-        test: /\.(js|html)$/,
-        threshold: 10240,
+        test: /\.(js|html|css)$/,
+        threshold: 1024,
         minRatio: 0.8
       })
     );
