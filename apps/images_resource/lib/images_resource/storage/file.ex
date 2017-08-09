@@ -1,6 +1,6 @@
 defmodule ImagesResource.Storage.File do
-  @type t :: %{name: String.t, size: integer, last_modified: DateTime.t, path: list(String.t)}
-  defstruct name: "", size: nil, last_modified: nil, path: []
+  @type t :: %{name: String.t, size: integer, last_modified: DateTime.t, path: list(String.t), slug: String.t}
+  defstruct name: "", size: nil, last_modified: nil, path: [], slug: ""
 
   def full_path(%__MODULE__{name: name, path: path}) do
     path ++ [name]
@@ -29,9 +29,10 @@ defmodule ImagesResource.Storage.File do
 
     %__MODULE__{
       name: name,
+      path: path,
+      slug: slug(path, name),
       size: size,
       last_modified: last_modified,
-      path: path
     }
   end
 
@@ -41,6 +42,18 @@ defmodule ImagesResource.Storage.File do
              arry -> Path.join(arry)
            end
     {name, path, last_modified}
+  end
+
+  def slug(path, name) do
+    path ++ [name]
+    |> Path.join
+    |> slug
+  end
+  def slug(name) do
+    name
+    |> String.downcase
+    |> String.replace(~r/([^a-z0-9\/\.])+/, "-")
+    |> String.trim("-")
   end
 
   defp strip_prefix([], _), do: []

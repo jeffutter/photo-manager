@@ -8,7 +8,7 @@ import Spinner from "../../components/full_page_spinner";
 
 class GalleryContainer extends Component {
   render({ data }) {
-    if(data.loading) return <Spinner />;
+    if (data.loading) return <Spinner />;
 
     return (
       <div class={style.home}>
@@ -19,22 +19,25 @@ class GalleryContainer extends Component {
 }
 
 const query = gql`
-  query gallery($path: [String]!, $page: Int!) {
-    gallery(path: $path, page: $page) {
+  query gallery($slug: String!, $page: Int!) {
+    gallery(slug: $slug, page: $page) {
       name
       path
       page_number
       page_size
+      slug
       total_pages
       total_entries
       descendants {
         ... on Gallery {
           name
           path
+          slug
         }
         ... on Image {
           name
           path
+          slug
           size
           thumbnail
           small_url
@@ -47,13 +50,13 @@ const query = gql`
 `;
 
 export default graphql(query, {
-  options: ({ subPath, page }) => {
-    const p = subPath == "" ? [] : subPath.split("/");
+  options: ({ slug, page }) => {
+    const s = slug || "root";
     const pg = page && page.length > 0 ? parseInt(page) : 0;
 
     return {
       variables: {
-        path: p,
+        slug: s,
         page: pg
       },
       fetchPolicy: "cache-first"

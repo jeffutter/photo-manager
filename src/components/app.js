@@ -61,8 +61,8 @@ export default class App extends Component {
           <Header />
           <Router onChange={this.handleRoute}>
             <Redirect path="/" to="/gallery" />
-            <Gallery path="/gallery:params?" subPath="" />
-            <Gallery path="/gallery/:subPath*/:params?" />
+            <Gallery path="/gallery:params?" slug="" />
+            <Gallery path="/gallery/:slug*/:params?" />
           </Router>
         </div>
       </ApolloProvider>
