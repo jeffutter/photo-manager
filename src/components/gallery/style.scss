@@ -70,12 +70,10 @@
     padding: 15px;
     color: #444;
     background: #fff;
-    text-transform: lowercase;
     letter-spacing: 1px;
     color: #828282;
 
     &:before {
-      content: counter(item-counter);
       font-weight: bold;
       font-size: 1.1rem;
       padding-right: 0.5em;
@@ -100,6 +98,7 @@
 .icon {
   margin: 0 auto;
   padding: 8px;
+  display: block;
 }
 
 .blur {
