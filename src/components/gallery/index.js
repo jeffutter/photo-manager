@@ -25,7 +25,7 @@ const Image = ({ name, thumbnail, src, index, handleOpen }: imageArgs) => {
   );
 };
 
-const GalleryThumb = ({ name, path, handleClick }) => {
+const GalleryThumb = ({ name, handleClick }) => {
   return (
     <div class={style.item} onClick={handleClick}>
       <svg viewBox="0 0 8 8" class="icon" width="200px" class={style.icon}>
@@ -41,8 +41,8 @@ const GalleryThumb = ({ name, path, handleClick }) => {
   );
 };
 
-const BreadCrumbs = ({ path, name }) => {
-  if (path.length == 0 && name == "root") {
+const BreadCrumbs = ({ path, slug, name }) => {
+  if (slug == "root") {
     return (
       <div class={style.galleryHeader}>
         <Link activeClassName="active" href="/gallery">
@@ -52,12 +52,16 @@ const BreadCrumbs = ({ path, name }) => {
     );
   }
 
-  const pathObjs = path.reduce((acc, section, idx) => {
-    let p = path.slice(0, idx);
-    p.push(section);
+  const splitSlug = slug.split("/").slice(0, -1);
+
+  const pathObjs = splitSlug.reduce((acc, section, idx) => {
+    let s = splitSlug.slice(0, idx);
+    console.log(path, idx, path[idx]);
+    let name = path[idx];
+    s.push(section);
     acc.push({
-      name: section,
-      path: p.join("/")
+      name: name,
+      path: `/gallery/${s.join("/")}`
     });
     return acc;
   }, []);
@@ -84,30 +88,33 @@ const BreadCrumbs = ({ path, name }) => {
   );
 };
 
-type galleryArgs = { name: string, path: any, images: any };
+type galleryArgs = {
+  name: string,
+  path: any,
+  descendants: any,
+  slug: string,
+  page_number: int,
+  total_pages: int
+};
 export default class Gallery extends Component {
   state = {
     lightboxIsOpen: false,
     currentImage: 0
   };
 
-  clickGallery = (path, name, event) => {
+  clickGallery = (slug, event) => {
     event && event.preventDefault();
-    route("/" + this.joinPath(path, name));
+    console.log(slug);
+    route("/gallery/" + slug);
   };
 
-  handlePageClick = (path, name, { selected }) => {
+  handlePageClick = (slug, { selected }) => {
     if (selected == undefined) return;
-    route(`/${this.joinPath(path, name)}?page=${selected + 1}`);
+    route(`/gallery/${slug}?page=${selected + 1}`);
   };
 
-  buildPaginationLink = (path, name, page) => { return "#" };
-
-  joinPath = (path, name) => {
-    const p = path.slice(0);
-    p.unshift("gallery");
-    p.push(name);
-    return p.join("/");
+  buildPaginationLink = (path, name, page) => {
+    return "#";
   };
 
   openLightbox = (index: number, event) => {
@@ -142,7 +149,14 @@ export default class Gallery extends Component {
       currentImage: index
     });
 
-  render({ name, path, total_pages, page_number, descendants }: galleryArgs) {
+  render({
+    name,
+    path,
+    slug,
+    total_pages,
+    page_number,
+    descendants
+  }: galleryArgs) {
     const images = descendants
       ? descendants.filter(child => "thumbnail" in child)
       : [];
@@ -178,29 +192,25 @@ export default class Gallery extends Component {
           initialPage={page_number - 1}
           marginPagesDisplayed={2}
           pageRangeDisplayed={5}
-          onPageChange={this.handlePageClick.bind(null, path, name)}
+          onPageChange={this.handlePageClick.bind(null, slug)}
           disableInitialCallback={true}
           containerClassName={style.pagination}
           subContainerClassName={"pages pagination"}
           activeClassName={"active"}
-          hrefBuilder={this.buildPaginationLink.bind(null, path, name)}
+          hrefBuilder={this.buildPaginationLink.bind(null, slug)}
         />
       );
     }
 
     return (
       <div>
-        <BreadCrumbs path={path} name={name} />
+        <BreadCrumbs slug={slug} path={path} name={name} />
         {pagination}
         <div class={style.gallery}>
           {galleries.map((gallery, idx) =>
             <GalleryThumb
               key={idx}
-              handleClick={this.clickGallery.bind(
-                this,
-                gallery.path,
-                gallery.name
-              )}
+              handleClick={this.clickGallery.bind(this, gallery.slug)}
               {...gallery}
             />
           )}

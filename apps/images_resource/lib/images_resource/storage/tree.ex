@@ -6,11 +6,11 @@ defmodule ImagesResource.Storage.Tree do
 
   ## Examples
       iex> ImagesResource.Storage.Tree.from_list([], "root")
-      %ImagesResource.Storage.Directory{name: "root", children: [], path: []}
+      %ImagesResource.Storage.Directory{name: "root", children: [], path: [], slug: "root"}
 
       iex> [
-      ...>   %ImagesResource.Storage.File{name: "baz.txt", path: ["foo", "bar"]},
-      ...>   %ImagesResource.Storage.File{name: "foo.txt", path: []}
+      ...>   %ImagesResource.Storage.File{name: "baz.txt", path: ["foo", "bar"], slug: "foo/bar/baz.txt"},
+      ...>   %ImagesResource.Storage.File{name: "foo.txt", path: [], slug: "foo.txt"}
       ...> ]
       ...> |> ImagesResource.Storage.Tree.from_list("root")
       %ImagesResource.Storage.Directory{
@@ -24,20 +24,26 @@ defmodule ImagesResource.Storage.Tree do
                 children: [
                   %ImagesResource.Storage.File{
                     name: "baz.txt",
-                    path: ["foo", "bar"]
+                    path: ["foo", "bar"],
+                    slug: "foo/bar/baz.txt"
                   }
                 ],
-                path: ["foo"]
+                path: ["foo"],
+                slug: "foo/bar"
               }
             ],
-            path: []
+            path: [],
+            slug: "foo"
           },
           %ImagesResource.Storage.File{
             name: "foo.txt",
-            path: []
+            path: [],
+            slug: "foo.txt"
           }
         ],
-        path: []}
+        path: [],
+        slug: "root"
+      }
   """
   def from_list(file_list, root_name) when is_binary(root_name) do
     root = root_name
@@ -55,20 +61,25 @@ defmodule ImagesResource.Storage.Tree do
 
   ## Examples
       iex> [
-      ...>   %ImagesResource.Storage.File{name: "baz.txt", path: ["foo", "bar"]},
-      ...>   %ImagesResource.Storage.File{name: "foo.txt", path: []}
+      ...>   %ImagesResource.Storage.File{name: "baz.txt", path: ["foo", "bar"], slug: "foo/bar/baz.txt"},
+      ...>   %ImagesResource.Storage.File{name: "foo.txt", path: [], slug: "foo.txt"}
       ...> ]
       ...> |> ImagesResource.Storage.Tree.from_list("root")
       ...> |> ImagesResource.Storage.Tree.find_in(["foo", "bar", "baz.txt"])
-      %ImagesResource.Storage.File{last_modified: nil, name: "baz.txt", path: ["foo", "bar"], size: nil}
+      %ImagesResource.Storage.File{last_modified: nil, name: "baz.txt", path: ["foo", "bar"], slug: "foo/bar/baz.txt", size: nil}
 
       iex> [
-      ...>   %ImagesResource.Storage.File{name: "baz.txt", path: ["foo", "bar"]},
-      ...>   %ImagesResource.Storage.File{name: "foo.txt", path: []}
+      ...>   %ImagesResource.Storage.File{name: "baz.txt", path: ["foo", "bar"], slug: "foo/bar/baz.txt"},
+      ...>   %ImagesResource.Storage.File{name: "foo.txt", path: [], slug: "foo.txt"}
       ...> ]
       ...> |> ImagesResource.Storage.Tree.from_list("root")
       ...> |> ImagesResource.Storage.Tree.find_in(["foo", "bar" ])
-      %ImagesResource.Storage.Directory{children: [%ImagesResource.Storage.File{last_modified: nil, name: "baz.txt", path: ["foo", "bar"], size: nil}], name: "bar", path: ["foo"]}
+      %ImagesResource.Storage.Directory{
+        children: [%ImagesResource.Storage.File{last_modified: nil, name: "baz.txt", path: ["foo", "bar"], slug: "foo/bar/baz.txt", size: nil}],
+        name: "bar",
+        path: ["foo"],
+        slug: "foo/bar"
+      }
   """
   def find_in(result, []), do: result
   def find_in(tree, [h | t]) do
@@ -79,16 +90,49 @@ defmodule ImagesResource.Storage.Tree do
   end
 
   @doc ~S"""
+  Looks up a path in the tree
+
+  ## Examples
+      iex> [
+      ...>   %ImagesResource.Storage.File{name: "baz.txt", path: ["foo", "bar"], slug: "foo/bar/baz.txt"},
+      ...>   %ImagesResource.Storage.File{name: "foo.txt", path: [], slug: "foo.txt"}
+      ...> ]
+      ...> |> ImagesResource.Storage.Tree.from_list("root")
+      ...> |> ImagesResource.Storage.Tree.find_by_slug("foo/bar/baz.txt")
+      %ImagesResource.Storage.File{last_modified: nil, name: "baz.txt", path: ["foo", "bar"], slug: "foo/bar/baz.txt", size: nil}
+  """
+  def find_by_slug(directory = %Directory{children: children, slug: dir_slug}, slug) do
+    if dir_slug == slug do
+      directory
+    else
+      if String.starts_with?(slug, dir_slug) || dir_slug == "root" do
+        Enum.find_value(children, &find_by_slug(&1, slug))
+      else
+        nil
+      end
+    end
+  end
+
+  def find_by_slug(file = %File{slug: file_slug}, slug) do
+    if file_slug == slug do
+      file
+    else
+      nil
+    end
+  end
+
+  @doc ~S"""
   Insert a child in a give path
 
   ## Examples
   iex> new_image = %ImagesResource.Storage.File{
   ...>   name: "qux.txt",
-  ...>   path: []
+  ...>   path: [],
+  ...>   slug: "qux.txt"
   ...> }
   ...> [
-  ...>   %ImagesResource.Storage.File{name: "baz.txt", path: ["foo", "bar"]},
-  ...>   %ImagesResource.Storage.File{name: "foo.txt", path: []}
+  ...>   %ImagesResource.Storage.File{name: "baz.txt", path: ["foo", "bar"], slug: "foo/bar/baz.txt"},
+  ...>   %ImagesResource.Storage.File{name: "foo.txt", path: [], slug: "foo.txt"}
   ...> ]
   ...> |> ImagesResource.Storage.Tree.from_list("root")
   ...> |> ImagesResource.Storage.Tree.insert_in(["foo"], new_image)
@@ -102,31 +146,37 @@ defmodule ImagesResource.Storage.Tree do
                 last_modified: nil,
                 name: "baz.txt",
                 path: ["foo", "bar"],
+                slug: "foo/bar/baz.txt",
                 size: nil
               }
             ],
             name: "bar",
-            path: ["foo"]
+            path: ["foo"],
+            slug: "foo/bar"
           },
           %ImagesResource.Storage.File{
             last_modified: nil,
             name: "qux.txt",
             path: ["foo"],
+            slug: "foo/qux.txt",
             size: nil
           }
         ],
         name: "foo",
-        path: []
+        path: [],
+        slug: "foo"
       },
       %ImagesResource.Storage.File{
         last_modified: nil,
         name: "foo.txt",
         path: [],
+        slug: "foo.txt",
         size: nil
       }
     ],
     name: "root",
-    path: []
+    path: [],
+    slug: "root"
   }
 
   """
@@ -138,6 +188,11 @@ defmodule ImagesResource.Storage.Tree do
     value = case path_name do
               "root" -> Map.put(value, :path, [])
               _ -> Map.put(value, :path, path ++ [path_name])
+            end
+
+    value = case path_name do
+              "root" -> Map.put(value, :slug, File.slug(value.name))
+              _ -> Map.put(value, :slug, File.slug(path ++ [path_name], value.name))
             end
 
     if index do
@@ -195,23 +250,23 @@ defmodule ImagesResource.Storage.Tree do
 
   ## Examples
   iex> source = [
-  ...>   %ImagesResource.Storage.File{name: "baz.txt", path: ["foo", "bar"]},
-  ...>   %ImagesResource.Storage.File{name: "qux.txt", path: ["foo"]},
-  ...>   %ImagesResource.Storage.File{name: "foo.txt", path: []}
+  ...>   %ImagesResource.Storage.File{name: "baz.txt", path: ["foo", "bar"], slug: "foo/bar/baz.txt"},
+  ...>   %ImagesResource.Storage.File{name: "qux.txt", path: ["foo"], slug: "foo/qux.txt"},
+  ...>   %ImagesResource.Storage.File{name: "foo.txt", path: [], slug: "foo.txt"}
   ...> ]
   ...> |> ImagesResource.Storage.Tree.from_list("root")
   ...> dest = [
-  ...>   %ImagesResource.Storage.File{name: "bae.txt", path: ["foo", "bar"]},
-  ...>   %ImagesResource.Storage.File{name: "baz.txt", path: ["foo", "bar"]},
-  ...>   %ImagesResource.Storage.File{name: "qux.txt", path: ["qux"]}
+  ...>   %ImagesResource.Storage.File{name: "bae.txt", path: ["foo", "bar"], slug: "foo/bar/bae.txt"},
+  ...>   %ImagesResource.Storage.File{name: "baz.txt", path: ["foo", "bar"], slug: "foo/bar/baz.txt"},
+  ...>   %ImagesResource.Storage.File{name: "qux.txt", path: ["qux"], slug: "qux/qux.txt"}
   ...> ]
   ...> |> ImagesResource.Storage.Tree.from_list("root")
   ...> ImagesResource.Storage.Tree.diff(source, dest)
   [
-    {:remove, %ImagesResource.Storage.File{last_modified: nil, name: "bae.txt", path: ["foo", "bar"], size: nil}},
-    {:remove, %ImagesResource.Storage.File{last_modified: nil, name: "qux.txt", path: ["qux"], size: nil}},
-    {:add, %ImagesResource.Storage.File{last_modified: nil, name: "qux.txt", path: ["foo"], size: nil}},
-    {:add, %ImagesResource.Storage.File{last_modified: nil, name: "foo.txt", path: [], size: nil}}
+    {:remove, %ImagesResource.Storage.File{last_modified: nil, name: "bae.txt", path: ["foo", "bar"], slug: "foo/bar/bae.txt", size: nil}},
+    {:remove, %ImagesResource.Storage.File{last_modified: nil, name: "qux.txt", path: ["qux"], slug: "qux/qux.txt", size: nil}},
+    {:add, %ImagesResource.Storage.File{last_modified: nil, name: "qux.txt", path: ["foo"], slug: "foo/qux.txt", size: nil}},
+    {:add, %ImagesResource.Storage.File{last_modified: nil, name: "foo.txt", path: [], slug: "foo.txt", size: nil}}
   ]
   """
   def diff(source, dest), do: diff(:remove, source, dest) ++ diff(:add, source, dest)

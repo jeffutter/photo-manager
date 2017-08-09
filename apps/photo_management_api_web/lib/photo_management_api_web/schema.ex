@@ -7,7 +7,7 @@ defmodule PhotoManagementApi.Web.Schema do
 
   query do
     field :gallery, :gallery do
-      arg :path, list_of(:string)
+      arg :slug, :string
       arg :page, :integer
       resolve &Resolver.Gallery.all/3
     end
