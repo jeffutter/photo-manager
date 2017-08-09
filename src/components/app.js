@@ -30,7 +30,7 @@ const myFragmentMatcher = new IntrospectionFragmentMatcher({
 
 const client = new ApolloClient({
   networkInterface: createNetworkInterface({
-    uri: "/graphiql"
+    uri: "http://gallery.sadclown.net/graphiql"
   }),
   fragmentMatcher: myFragmentMatcher
 });

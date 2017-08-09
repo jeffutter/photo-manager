@@ -104,7 +104,6 @@ export default class Gallery extends Component {
 
   clickGallery = (slug, event) => {
     event && event.preventDefault();
-    console.log(slug);
     route("/gallery/" + slug);
   };
 
