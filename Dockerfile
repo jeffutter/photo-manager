@@ -5,7 +5,8 @@ WORKDIR /src
 ADD package.json /src
 ADD yarn.lock /src
 
-RUN yarn install
+RUN yarn install \
+    && rm -rf node_modules/iltorb/ # seems to crash on alpine, falls back to brotli.js
 
 ADD preact.config.js /src
 ADD src/ /src/src

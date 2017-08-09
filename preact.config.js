@@ -1,4 +1,7 @@
 var CompressionPlugin = require("compression-webpack-plugin");
+var BrotliPlugin = require('brotli-webpack-plugin');
+
+var compressExtensions = /\.(js|css|html|svg|ico)$/;
 
 export default (config, env, helpers) => {
   let babel = config.module.loaders.find(({ loader }) =>
@@ -12,7 +15,16 @@ export default (config, env, helpers) => {
       new CompressionPlugin({
         asset: "[path].gz[query]",
         algorithm: "gzip",
-        test: /\.(js|html|css)$/,
+        test: compressExtensions,
+        threshold: 1024,
+        minRatio: 0.8
+      })
+    );
+
+    config.plugins.push(
+      new BrotliPlugin({
+        asset: '[path].br[query]',
+        test: compressExtensions,
         threshold: 1024,
         minRatio: 0.8
       })

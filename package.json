@@ -16,6 +16,7 @@
   "devDependencies": {
     "babel-plugin-graphql-tag": "^1.1.0",
     "babel-plugin-transform-flow-strip-types": "^6.22.0",
+    "brotli-webpack-plugin": "^0.4.0",
     "compression-webpack-plugin": "^1.0.0",
     "eslint": "^4.3.0",
     "eslint-config-synacor": "^1.0.1",

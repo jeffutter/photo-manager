@@ -11,11 +11,13 @@ defmodule PhotoManagementApi.Web.Endpoint do
   # You should set gzip to true if you are running phoenix.digest
   # when deploying your static files in production.
   plug Plug.Static,
-    at: "/", from: :photo_management_api_web, gzip: true,
+    at: "/", from: :photo_management_api_web,
+    gzip: true, brotli: true,
     cache_control_for_etags: "public, max-age=31536000"
   plug PhotoManagementApi.Web.Plug.SPA
   plug Plug.Static,
-    at: "/", from: :photo_management_api_web, gzip: true,
+    at: "/", from: :photo_management_api_web,
+    gzip: true, brotli: true,
     cache_control_for_etags: "public, max-age=31536000",
     only: ["index.html"]
 
