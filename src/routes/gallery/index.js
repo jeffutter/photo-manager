@@ -39,6 +39,8 @@ const query = gql`
           path
           slug
           size
+          width
+          height
           thumbnail
           small_url
           medium_url

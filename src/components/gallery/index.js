@@ -1,10 +1,11 @@
 /* @flow */
 import { h, Component } from "preact";
 import style from "./style";
-import Lightbox from "react-images";
 import { route } from "preact-router";
 import { Link } from "preact-router/match";
 import ReactPaginate from "react-paginate";
+import 'react-photoswipe/lib/photoswipe.css';
+import {PhotoSwipe} from 'react-photoswipe';
 
 type imageArgs = {
   name: string,
@@ -102,6 +103,23 @@ export default class Gallery extends Component {
     currentImage: 0
   };
 
+  openLightbox = (index: number, event) => {
+    event && event.preventDefault();
+    //document.getElementById("app").classList.add(style.blur);
+    this.setState({
+      currentImage: index,
+      lightboxIsOpen: true
+    });
+  };
+
+  closeLightbox = () => {
+    //document.getElementById("app").classList.remove(style.blur);
+    this.setState({
+      currentImage: 0,
+      lightboxIsOpen: false
+    });
+  };
+
   clickGallery = (slug, event) => {
     event && event.preventDefault();
     route("/gallery/" + slug);
@@ -114,23 +132,6 @@ export default class Gallery extends Component {
 
   buildPaginationLink = (path, name, page) => {
     return "#";
-  };
-
-  openLightbox = (index: number, event) => {
-    event && event.preventDefault();
-    document.getElementById("app").classList.add(style.blur);
-    this.setState({
-      currentImage: index,
-      lightboxIsOpen: true
-    });
-  };
-
-  closeLightbox = () => {
-    document.getElementById("app").classList.remove(style.blur);
-    this.setState({
-      currentImage: 0,
-      lightboxIsOpen: false
-    });
   };
 
   gotoPrevious = () =>
@@ -177,6 +178,20 @@ export default class Gallery extends Component {
       };
     });
 
+    const swipeImages = images.map((image, i) => {
+      return {
+        src: image.large_url,
+        msrc: image.small_url,
+        w: image.width,
+        h: image.height,
+        title: image.name
+      };
+    });
+
+    const swipeOptions = {
+      index: this.state.currentImage
+    }
+
     if (!(images.length > 0 || galleries.length > 0)) return;
 
     let pagination = null;
@@ -222,18 +237,7 @@ export default class Gallery extends Component {
           )}
         </div>
         {pagination}
-        <Lightbox
-          images={lightboxImages}
-          isOpen={this.state.lightboxIsOpen}
-          onClose={this.closeLightbox}
-          onClickNext={this.gotoNext}
-          onClickPrev={this.gotoPrevious}
-          onClickImage={this.gotoPrevious}
-          currentImage={this.state.currentImage}
-          showThumbnails={true}
-          onClickThumbnail={this.gotoImage}
-          backdropClosesModal={true}
-        />
+        <PhotoSwipe isOpen={this.state.lightboxIsOpen} items={swipeImages} onClose={this.closeLightbox} options={swipeOptions} />
       </div>
     );
   }

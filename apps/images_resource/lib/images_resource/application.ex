@@ -21,6 +21,8 @@ defmodule ImagesResource.Application do
 
     children = [
       worker(Cachex, [:my_cache, [limit: 500, default_ttl: 21600000]]),
+      worker(ImagesResource.Sizer.Queue, []),
+      worker(ImagesResource.Sizer.Processor, []),
       worker(ImagesResource.Uploaders.Queue, []),
       worker(ImagesResource.Uploaders.Processor, []),
       worker(ImagesResource.Sync, [[source: ImageSource, dest: ImageDest]]),
