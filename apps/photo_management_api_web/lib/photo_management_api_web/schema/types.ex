@@ -4,6 +4,7 @@ defmodule PhotoManagementApi.Web.Schema.Types do
   alias PhotoManagementApi.Web.Resolver
 
   alias ImagesResource.Storage.{File, Directory}
+  alias ImagesResource.Image
 
   union :descendants do
     description "A child of a directory"
@@ -21,6 +22,20 @@ defmodule PhotoManagementApi.Web.Schema.Types do
     field :slug, :string
     field :last_modified, :string, resolve: &Resolver.Image.last_modified/3
     field :size, :string, resolve: &Resolver.Image.size/3
+    field :width, :integer do
+      resolve fn file = %File{}, _, _ ->
+        batch({__MODULE__, :size_by_file}, file, fn batch_results ->
+          {:ok, batch_results |> Map.get(file) |> Map.get(:width)}
+        end)
+      end
+    end
+    field :height, :integer do
+      resolve fn file = %File{}, _, _ ->
+        batch({__MODULE__, :size_by_file}, file, fn batch_results ->
+          {:ok, batch_results |> Map.get(file) |> Map.get(:height)}
+        end)
+      end
+    end
     field :thumbnail, :string, resolve: &Resolver.Image.thumbnail/3
     field :small_url, :string, resolve: &Resolver.Image.small_url/3
     field :medium_url, :string, resolve: &Resolver.Image.medium_url/3
@@ -36,5 +51,13 @@ defmodule PhotoManagementApi.Web.Schema.Types do
     field :total_pages, :integer
     field :total_entries, :integer
     field :descendants, list_of(:descendants), resolve: fn %{children: children}, _, _ -> {:ok, children} end
+  end
+
+  def size_by_file(_, files) do
+    Enum.map(files, fn file ->
+      {:ok, size} = Image.size(file, :original)
+      {file, size}
+    end)
+    |> Enum.into(%{})
   end
 end

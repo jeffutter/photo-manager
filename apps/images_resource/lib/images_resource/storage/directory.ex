@@ -1,9 +1,11 @@
 defmodule ImagesResource.Storage.Directory do
+  alias ImagesResource.Utils
+
   @type t :: %{name: String.t, children: list(Directory.t | File.t), path: list(String.t), slug: String.t}
   defstruct name: "", children: [], path: [], slug: ""
 
   def new(name, path \\ []) do
-    %__MODULE__{name: name, path: path, slug: slug(path, name)}
+    %__MODULE__{name: name, path: path, slug: Utils.slug(path, name)}
   end
 
   @doc ~S"""
@@ -48,13 +50,5 @@ defmodule ImagesResource.Storage.Directory do
     else
       {nil, nil}
     end
-  end
-
-  defp slug(path, name) do
-    path ++ [name]
-    |> Path.join
-    |> String.downcase
-    |> String.replace(~r/([^a-z0-9\/])+/, "-")
-    |> String.trim("-")
   end
 end

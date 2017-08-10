@@ -43,6 +43,7 @@ defmodule ImagesResource.Mixfile do
       gen_stage: "~> 0.12.1",
       arc: "~> 0.8.0",
       ex_aws: "~> 1.1",
+      fastimage: "~> 0.0.7",
       hackney: "~> 1.6",
       poison: "~> 3.1",
       sweet_xml: "~> 0.6",

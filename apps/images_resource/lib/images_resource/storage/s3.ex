@@ -21,48 +21,6 @@ defmodule ImagesResource.Storage.S3 do
     end
   end
 
-  def ls(path \\ nil, opts \\ []) do
-    bucket = Keyword.get(opts, :bucket, bucket())
-    try do
-      list = bucket
-             |> S3.list_objects(prefix: path)
-             |> ExAws.stream!
-             |> Enum.to_list
-             |> Enum.map(fn obj ->
-               %{
-                 name: obj.key,
-                 size: obj.size,
-                 last_modified: obj.last_modified
-               }
-             end)
-
-      {:ok, list}
-    rescue
-      e in ExAws.Error ->
-        {:error, "Unable to list bucket: #{bucket}, path: #{path} - #{inspect e}"}
-    end
-  end
-
-  def ls_directories(path \\ nil, opts \\ []) do
-    case ls(path, opts) do
-      {:ok, list} ->
-        list = list
-        |> Enum.map(fn file -> Path.dirname(file.name) end)
-        |> Enum.uniq
-        |> Enum.sort
-        {:ok, list}
-      {:error, e} -> {:error, e}
-    end
-  end
-
-  def exist?(full_path, path \\ nil, opts \\ []) do
-    case ls(path, opts) do
-      {:ok, list} ->
-        {:ok, Enum.member?(list, full_path)}
-      {:error, e} -> {:error, e}
-    end
-  end
-
   def get(full_path, opts \\ []) do
     Keyword.get(opts, :bucket, bucket())
     |> S3.get_object(full_path)

@@ -38,12 +38,12 @@ defmodule ImagesResource.Image do
   end
 
   def base_64(file = %File{}, version) do
-    cache_key = File.cache_key(file)
-    Logger.info "Fetching #{inspect cache_key} from cache"
+    cache_key = {File.cache_key(file), :base64, version}
+    Logger.debug "Fetching #{inspect cache_key} from cache"
 
     case Cachex.get(:my_cache, cache_key) do
       {:ok, output} ->
-        Logger.info "Cache Hit: #{inspect cache_key}"
+        Logger.debug "Cache Hit: #{inspect cache_key}"
         {:ok, output}
       { :missing, nil } ->
         Logger.info "Cache Miss: #{inspect cache_key}"
@@ -60,6 +60,33 @@ defmodule ImagesResource.Image do
         else
           e ->
             Logger.error "Base64 Failed: Unable to read file #{url(file, version)}. Error: #{inspect e}"
+            {:error, "Unable to read file #{url(file, version)}. Error: #{inspect e}"}
+        end
+    end
+  end
+
+  def size(file = %File{}, version) do
+    cache_key = {File.cache_key(file), :size, version}
+    Logger.debug "Fetching #{inspect cache_key} from cache"
+
+    case Cachex.get(:my_cache, cache_key) do
+      {:ok, output} ->
+        Logger.debug "Cache Hit: #{inspect cache_key}"
+        {:ok, output}
+      { :missing, nil } ->
+        Logger.info "Cache Miss: #{inspect cache_key}"
+
+        try do
+          size = file
+                 |> url(version)
+                 |> Fastimage.size
+
+            Cachex.set(:my_cache, cache_key, size)
+
+            {:ok, size}
+        rescue
+          e ->
+            Logger.error "Fast Image Failed: Unable to read file #{url(file, version)}. Error: #{inspect e}"
             {:error, "Unable to read file #{url(file, version)}. Error: #{inspect e}"}
         end
     end

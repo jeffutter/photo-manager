@@ -1,5 +1,6 @@
 defmodule ImagesResource.Storage.Tree do
   alias ImagesResource.Storage.{File, Directory}
+  alias ImagesResource.Utils
 
   @doc ~S"""
   Takes a name for the directory and a list of files and returns the file/directory tree
@@ -191,8 +192,8 @@ defmodule ImagesResource.Storage.Tree do
             end
 
     value = case path_name do
-              "root" -> Map.put(value, :slug, File.slug(value.name))
-              _ -> Map.put(value, :slug, File.slug(path ++ [path_name], value.name))
+              "root" -> Map.put(value, :slug, Utils.slug(value.name))
+              _ -> Map.put(value, :slug, Utils.slug(path ++ [path_name], value.name))
             end
 
     if index do
