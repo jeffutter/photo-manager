@@ -7,27 +7,24 @@ import Gallery from "../../components/gallery";
 import Spinner from "../../components/full_page_spinner";
 
 class GalleryContainer extends Component {
-  render({ data }) {
-    if (data.loading) return <Spinner />;
+  render({ loading, gallery, loadNextPage }) {
+    if (loading && !gallery) return <Spinner />;
 
     return (
       <div class={style.home}>
-        {data && data.gallery && <Gallery {...data.gallery} />}
+        {gallery && <Gallery loading={loading} loadNextPage={loadNextPage} {...gallery} />}
       </div>
     );
   }
 }
 
 const query = gql`
-  query gallery($slug: String!, $page: Int!) {
-    gallery(slug: $slug, page: $page) {
+  query gallery($slug: String!, $offset: Int!) {
+    gallery(slug: $slug, offset: $offset) {
       name
       path
-      page_number
-      page_size
       slug
-      total_pages
-      total_entries
+      total_descendants
       descendants {
         ... on Gallery {
           name
@@ -52,16 +49,38 @@ const query = gql`
 `;
 
 export default graphql(query, {
-  options: ({ slug, page }) => {
+  options: ({ slug, offset }) => {
     const s = slug || "root";
-    const pg = page && page.length > 0 ? parseInt(page) : 0;
+    const of = of && of.length > 0 ? parseInt(of) : 0;
 
     return {
       variables: {
         slug: s,
-        page: pg
+        offset: of
       },
       fetchPolicy: "cache-first"
     };
+  },
+  props({ data: { gallery, loading, fetchMore } }) {
+    return {
+      gallery,
+      loading,
+      loadNextPage() {
+        return fetchMore({
+          variables: {
+            offset: gallery.descendants.length
+          },
+          updateQuery: (previousResult, { fetchMoreResult }) => {
+            if (!fetchMoreResult) { return previousResult; }
+
+            return Object.assign({}, previousResult, {
+              gallery: Object.assign({}, previousResult.gallery, {
+                descendants: [...previousResult.gallery.descendants, ...fetchMoreResult.gallery.descendants]
+              })
+            });
+          }
+        })
+      }
+    }
   }
 })(GalleryContainer);

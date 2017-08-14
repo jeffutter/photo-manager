@@ -9,8 +9,6 @@ import {
 
 import Header from "./header";
 import Gallery from "../routes/gallery";
-// import Home from 'async!./home';
-// import Profile from 'async!./profile';
 
 import style from "./style";
 
@@ -30,7 +28,7 @@ const myFragmentMatcher = new IntrospectionFragmentMatcher({
 
 const client = new ApolloClient({
   networkInterface: createNetworkInterface({
-    uri: "/graphiql"
+    uri: "http://localhost:4000/graphiql"
   }),
   fragmentMatcher: myFragmentMatcher
 });

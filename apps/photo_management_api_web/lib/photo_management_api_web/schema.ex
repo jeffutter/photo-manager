@@ -8,7 +8,7 @@ defmodule PhotoManagementApi.Web.Schema do
   query do
     field :gallery, :gallery do
       arg :slug, :string
-      arg :page, :integer
+      arg :offset, :integer
       resolve &Resolver.Gallery.all/3
     end
   end

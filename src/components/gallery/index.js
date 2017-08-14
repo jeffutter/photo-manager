@@ -3,9 +3,9 @@ import { h, Component } from "preact";
 import style from "./style";
 import { route } from "preact-router";
 import { Link } from "preact-router/match";
-import ReactPaginate from "react-paginate";
-import 'react-photoswipe/lib/photoswipe.css';
-import {PhotoSwipe} from 'react-photoswipe';
+import "react-photoswipe/lib/photoswipe.css";
+import { PhotoSwipe } from "react-photoswipe";
+import MasonryInfiniteScroller from "react-masonry-infinite";
 
 type imageArgs = {
   name: string,
@@ -18,10 +18,19 @@ type imageArgs = {
 const Image = ({ name, thumbnail, src, index, handleOpen }: imageArgs) => {
   return (
     <div class={style.item} onClick={handleOpen}>
-      <img src={thumbnail} class={style.thumbnail} />
+      <img src={thumbnail} class={style.thumbnail} width="300" height="225" />
       <div class={style.item__details}>
         {name}
       </div>
+    </div>
+  );
+};
+
+const Empty = () => {
+  return (
+    <div class={style.item}>
+      <img src="" class={style.thumbnail} width="300" height="225" />
+      <div class={style.item__details}>Loading...</div>
     </div>
   );
 };
@@ -94,8 +103,7 @@ type galleryArgs = {
   path: any,
   descendants: any,
   slug: string,
-  page_number: int,
-  total_pages: int
+  total_descendants: int
 };
 export default class Gallery extends Component {
   state = {
@@ -125,58 +133,46 @@ export default class Gallery extends Component {
     route("/gallery/" + slug);
   };
 
-  handlePageClick = (slug, { selected }) => {
-    if (selected == undefined) return;
-    route(`/gallery/${slug}?page=${selected + 1}`);
-  };
-
-  buildPaginationLink = (path, name, page) => {
-    return "#";
-  };
-
-  gotoPrevious = () =>
-    this.setState({
-      currentImage: this.state.currentImage - 1
-    });
-
-  gotoNext = () =>
-    this.setState({
-      currentImage: this.state.currentImage + 1
-    });
-
-  gotoImage = (index: number) =>
-    this.setState({
-      currentImage: index
-    });
-
   render({
     name,
     path,
     slug,
-    total_pages,
-    page_number,
-    descendants
+    total_descendants,
+    descendants,
+    loadNextPage,
+    loading
   }: galleryArgs) {
     const images = descendants
       ? descendants.filter(child => "thumbnail" in child)
       : [];
+
     const galleries = descendants
       ? descendants.filter(child => !("thumbnail" in child))
       : [];
 
-    const lightboxImages = images.map((image, i) => {
-      return {
-        src: image.large_url,
-        srcset: [
-          `${image.small_url} 800w`,
-          `${image.medium_url} 1280w`,
-          `${image.large_url} 1920w`
-        ],
-        thumbnail: image.thumbnail,
-        name: image.name,
-        index: i
-      };
+    if (!(images.length > 0 || galleries.length > 0)) return;
+
+    const renderedImages = images.map((image, idx) => {
+      return (
+        <Image
+          key={galleries.length + idx}
+          handleOpen={this.openLightbox.bind(this, idx)}
+          {...image}
+        />
+      );
     });
+
+    const renderedGalleries = galleries.map((gallery, idx) => {
+      return (
+        <GalleryThumb
+          key={idx}
+          handleClick={this.clickGallery.bind(this, gallery.slug)}
+          {...gallery}
+        />
+      );
+    });
+
+    const combinedList = [...renderedGalleries, ...renderedImages];
 
     const swipeImages = images.map((image, i) => {
       return {
@@ -190,54 +186,68 @@ export default class Gallery extends Component {
 
     const swipeOptions = {
       index: this.state.currentImage
-    }
+    };
 
-    if (!(images.length > 0 || galleries.length > 0)) return;
+    const loadMore = loading
+      ? () => {}
+      : _pg => {
+          loadNextPage();
+        };
+    const hasMore = combinedList.length < total_descendants;
 
-    let pagination = null;
-    if (total_pages && total_pages > 1) {
-      pagination = (
-        <ReactPaginate
-          previousLabel={"<"}
-          nextLabel={">"}
-          breakLabel={<a href="">...</a>}
-          breakClassName={"break-me"}
-          pageCount={total_pages}
-          initialPage={page_number - 1}
-          marginPagesDisplayed={2}
-          pageRangeDisplayed={5}
-          onPageChange={this.handlePageClick.bind(null, slug)}
-          disableInitialCallback={true}
-          containerClassName={style.pagination}
-          subContainerClassName={"pages pagination"}
-          activeClassName={"active"}
-          hrefBuilder={this.buildPaginationLink.bind(null, slug)}
-        />
-      );
-    }
+    const imageWidth = 300;
+    const baseGutter = 32;
 
     return (
       <div>
         <BreadCrumbs slug={slug} path={path} name={name} />
-        {pagination}
-        <div class={style.gallery}>
-          {galleries.map((gallery, idx) =>
-            <GalleryThumb
-              key={idx}
-              handleClick={this.clickGallery.bind(this, gallery.slug)}
-              {...gallery}
-            />
-          )}
-          {lightboxImages.map(image =>
-            <Image
-              key={image.index}
-              handleOpen={this.openLightbox.bind(this, image.index)}
-              {...image}
-            />
-          )}
-        </div>
-        {pagination}
-        <PhotoSwipe isOpen={this.state.lightboxIsOpen} items={swipeImages} onClose={this.closeLightbox} options={swipeOptions} />
+
+        <MasonryInfiniteScroller
+          hasMore={hasMore}
+          loadMore={loadMore}
+          pageStart={1}
+          pack={true}
+          useWindow={true}
+          loader={<div className={style.loader}>Loading ...</div>}
+          className={style.gallery}
+          sizes={[
+            { columns: 1, gutter: baseGutter },
+            {
+              mq: `${2 * imageWidth + 3 * baseGutter}px`,
+              columns: 2,
+              gutter: baseGutter
+            },
+            {
+              mq: `${3 * imageWidth + 4 * baseGutter}px`,
+              columns: 3,
+              gutter: baseGutter
+            },
+            {
+              mq: `${4 * imageWidth + 5 * baseGutter}px`,
+              columns: 4,
+              gutter: baseGutter
+            },
+            {
+              mq: `${5 * imageWidth + 6 * baseGutter}px`,
+              columns: 5,
+              gutter: baseGutter
+            },
+            {
+              mq: `${5 * imageWidth + 6 * 2 * baseGutter}px`,
+              columns: 5,
+              gutter: 2 * baseGutter
+            }
+          ]}
+        >
+          {combinedList}
+        </MasonryInfiniteScroller>
+
+        <PhotoSwipe
+          isOpen={this.state.lightboxIsOpen}
+          items={swipeImages}
+          onClose={this.closeLightbox}
+          options={swipeOptions}
+        />
       </div>
     );
   }

@@ -1,9 +1,5 @@
 .gallery {
-  margin: 0 auto;
-  padding: .5vw;
-  display: flex;
-  flex-flow: row wrap;
-  justify-content: center;
+  margin: 0 auto 40px auto;
 }
 
 .galleryHeader {
@@ -12,10 +8,8 @@
 }
 
 .item {
-  flex: auto;
   width: 300px;
   max-width: 300px;
-  margin: 2vh 1vw;
   position: relative;
   box-sizing: border-box;
   color: #fff;
@@ -128,4 +122,12 @@
   .break a {
     cursor: default;
   }
+}
+
+.loader {
+  margin: 12px auto;
+  width: 100%;
+  display: block;
+  font-size: 2em;
+  text-align: center;
 }

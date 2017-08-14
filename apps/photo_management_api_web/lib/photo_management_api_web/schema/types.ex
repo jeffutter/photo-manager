@@ -34,10 +34,7 @@ defmodule PhotoManagementApi.Web.Schema.Types do
     field :name, :string
     field :path, list_of(:string)
     field :slug, :string
-    field :page_number, :integer
-    field :page_size, :integer
-    field :total_pages, :integer
-    field :total_entries, :integer
+    field :total_descendants, :integer, resolve: fn %{total_children: tc}, _, _ -> {:ok, tc} end
     field :descendants, list_of(:descendants), resolve: fn %{children: children}, _, _ -> {:ok, children} end
   end
 

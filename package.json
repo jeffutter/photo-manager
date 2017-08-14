@@ -30,7 +30,7 @@
     "preact-compat": "^3.16.0",
     "preact-router": "^2.5.5",
     "react-apollo": "^1.4.11",
-    "react-paginate": "^4.4.3",
+    "react-masonry-infinite": "^1.2.1",
     "react-photoswipe": "^1.3.0"
   }
 }
