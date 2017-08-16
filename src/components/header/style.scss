@@ -2,50 +2,118 @@
 
 .header {
   position: fixed;
-  left: 0;
   top: 0;
+  left: 0;
+  min-height: 62px;
+  max-height: 62px;
+  z-index: 999;
   width: 100%;
-  height: 56px;
-  padding: 0;
   background: #579591;
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
-  z-index: 50;
+  overflow: hidden;
+  transition: all 0.3s;
+  font-family: "Montserrat", sans-serif;
+  background-color: rgba(255, 255, 255, 0.95);
+  border-bottom: 1px solid gainsboro;
+}
 
-  h1 {
-    font-family: 'Montserrat', sans-serif;
-    float: left;
-    margin: 0;
-    padding: 0 15px;
-    font-size: 24px;
-    line-height: 56px;
-    font-weight: 400;
-    color: #fff;
+.openNav {
+  max-height: 400px !important;
+  .mobileToggle {
+    transform: rotate(-90deg);
   }
+}
 
-  nav {
+.logo {
+  font-size: 25px;
+  color: #8f8f8f;
+  text-transform: uppercase;
+  float: left;
+  display: block;
+  margin: 18px 0 18px 10px;
+  line-height: 1;
+  text-decoration: none;
+  @media only screen and (max-width: 766px) {
+    float: none;
+  }
+}
+
+nav {
+  float: right;
+  width: 60%;
+  height: 100%;
+  margin-right: 10px;
+  @media only screen and (max-width: 766px) {
+    width: 100%;
+    margin: 0;
+  }
+  ul {
+    height: 100%;
+    list-style: none;
+    overflow: hidden;
+    text-align: right;
     float: right;
-    font-size: 100%;
-
-    a {
-      display: inline-block;
-      height: 56px;
-      line-height: 56px;
-      padding: 0 15px;
-      min-width: 50px;
+    padding: 0;
+    margin: 0;
+    @media only screen and (max-width: 766px) {
+      padding-top: 10px;
+      margin-bottom: 22px;
+      float: left;
       text-align: center;
-      background: rgba(255, 255, 255, 0);
+      width: 100%;
+    }
+    li {
+      height: 100%;
+      display: inline-block;
+      position: relative;
+      margin-left: 35px;
+      line-height: 1.5;
+      @media only screen and (max-width: 766px) {
+        width: 100%;
+        padding: 7px 0;
+        margin: 0;
+      }
+    }
+    a {
+      display: block;
+      vertical-align: middle;
+      color: #888888;
+      text-transform: uppercase;
+      font-size: 16px;
       text-decoration: none;
-      color: #eee;
-      will-change: background-color;
-
+      padding: 20px 20px;
       &:hover,
       &:active {
-        background: rgba(255, 255, 255, 0.3);
+        color: #fff;
+        background: rgba(0, 0, 0, 0.2);
       }
 
       &.active {
-        background: rgba(255, 255, 255, 0.4);
+        color: #fff;
+        background: rgba(0, 0, 0, 0.3);
       }
     }
+  }
+}
+
+.mobileToggle {
+  display: none;
+  cursor: pointer;
+  font-size: 20px;
+  position: absolute;
+  right: 22px;
+  top: 0;
+  width: 30px;
+  transition: all 200ms ease-in;
+  span {
+    width: 30px;
+    height: 4px;
+    margin-bottom: 6px;
+    border-radius: 1000px;
+    background: #8f8f8f;
+    display: block;
+  }
+  @media only screen and (max-width: 766px) {
+    display: block;
+    top: 18px;
   }
 }
