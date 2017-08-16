@@ -3,5 +3,9 @@
   font-size: 2em;
   a {
     text-decoration: none;
+    border-bottom: 1px solid #ccc;
+    &:active, &:visited {
+      color: inherit;
+    }
   }
 }
