@@ -45,9 +45,7 @@ defmodule PhotoManagementApi.Web.Mixfile do
       {:absinthe_plug, "~> 1.3.1"},
       {:cowboy, "~> 1.0"},
       {:cors_plug, "~> 1.2"},
-      {:wobserver, "~> 0.1"},
-      {:scrivener, "~> 2.0"},
-      {:scrivener_list, "~> 1.0"}
+      {:wobserver, "~> 0.1"}
     ]
   end
 
