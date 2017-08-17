@@ -1,13 +1,13 @@
 /* @flow */
 import { h, Component } from "preact";
 import style from "./style";
-import { Link } from "preact-router/match";
+import { Link } from "react-router-dom";
 
 export default ({ path, slug, name }) => {
   if (slug == "root") {
     return (
       <div class={style.galleryHeader}>
-        <Link activeClassName="active" href="/gallery">
+        <Link activeClassName="active" to="/gallery">
           Gallery
         </Link>
       </div>
@@ -31,7 +31,7 @@ export default ({ path, slug, name }) => {
   const links = pathObjs.map(({ name, path }, idx) => {
     return (
       <span key={idx}>
-        <Link activeClassName="active" href={path}>
+        <Link activeClassName="active" to={path}>
           {name}
         </Link>{" "}
         /
@@ -41,7 +41,7 @@ export default ({ path, slug, name }) => {
 
   return (
     <div class={style.galleryHeader}>
-      <Link activeClassName="active" href="/gallery">
+      <Link activeClassName="active" to="/gallery">
         Gallery
       </Link>{" "}
       /

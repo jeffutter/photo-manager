@@ -2,6 +2,7 @@ defmodule PhotoManagementApi.Web.Resolver.Gallery do
 
   alias ImagesResource.Gallery
   alias ImagesResource.Storage.Directory
+  alias PhotoManagementApi.User
 
   def all(_parent, args, _info) do
     offset = Map.get(args, :offset, 0)

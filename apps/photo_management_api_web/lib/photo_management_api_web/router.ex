@@ -2,8 +2,8 @@ defmodule PhotoManagementApi.Web.Router do
   use PhotoManagementApi.Web, :router
 
   pipeline :graphql do
-#    plug Guardian.Plug.VerifyHeader
-#    plug Guardian.Plug.LoadResource
+    plug Guardian.Plug.VerifyHeader, realm: "Bearer"
+    plug Guardian.Plug.LoadResource
 #    plug Guardian.Plug.EnsureAuthenticated
     plug PhotoManagementApi.Web.Context
   end
@@ -16,6 +16,11 @@ defmodule PhotoManagementApi.Web.Router do
     pipe_through :api
 
     post "/sign_in", SessionController, :sign_in
+  end
+
+  scope "/auth", PhotoManagementApi.Web do
+    get "/:provider", AuthController, :request
+    get "/:provider/callback", AuthController, :callback
   end
 
   scope "/" do

@@ -44,6 +44,29 @@ defmodule Config do
     end
   end
 
+  @spec get_sub_key(atom, atom, atom, term | nil) :: term
+  def get_sub_key(app, key, sub_key, default \\ nil) when is_atom(app) and is_atom(key) and is_atom(sub_key) do
+    case Application.get_env(app, key) do
+      list when is_list(list) ->
+        case Keyword.get(list, sub_key) do
+          {:system, env_var} ->
+            case System.get_env(env_var) do
+              nil -> default
+              val -> val
+            end
+          {:system, env_var, preconfigured_default} ->
+            case System.get_env(env_var) do
+              nil -> preconfigured_default
+              val -> val
+            end
+        end
+      nil ->
+        default
+      val ->
+        val
+    end
+  end
+
   @doc """
   Same as get/3, but returns the result as an integer.
   If the value cannot be converted to an integer, the

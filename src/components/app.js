@@ -1,69 +1,67 @@
 import { h, Component } from "preact";
-import { Router, route } from "preact-router";
-import {
-  ApolloClient,
-  ApolloProvider,
-  createNetworkInterface,
-  IntrospectionFragmentMatcher
-} from "react-apollo";
+import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
+import { ApolloProvider, withApollo } from "react-apollo";
+import client from "../lib/client";
 
 import Header from "./header";
 import Gallery from "../routes/gallery";
 
 import style from "./style";
+import { eraseCookie, loggedIn } from "../lib/cookies";
 
-const myFragmentMatcher = new IntrospectionFragmentMatcher({
-  introspectionQueryResultData: {
-    __schema: {
-      types: [
-        {
-          kind: "INTERFACE",
-          name: "Child",
-          possibleTypes: [{ name: "Gallery" }, { name: "Image" }]
-        }
-      ]
-    }
-  }
-});
+import Login from "./login_form";
 
-const client = new ApolloClient({
-  networkInterface: createNetworkInterface({
-    uri: "/graphiql"
-  }),
-  fragmentMatcher: myFragmentMatcher
-});
+const logout = () => {
+  eraseCookie("access_token");
+  client.resetStore();
+};
 
-class Redirect extends Component {
-  componentWillMount() {
-    route(this.props.to);
-  }
+const Logout = ({ client }) => {
+  logout();
+  return <Redirect to="/" />;
+};
 
-  render() {
-    return null;
-  }
-}
+const PrivateRoute = ({ component: Component, children, ...rest }) => {
+  const isAuthenticated = loggedIn();
+  if (!isAuthenticated)
+    localStorage.setItem("loginFlash", "Your login has expired or is invalid.");
+  return (
+    <Route
+      {...rest}
+      render={props =>
+        isAuthenticated
+          ? <Component {...props}>
+              {children}
+            </Component>
+          : <Redirect
+              to={{ pathname: "/login", state: { from: props.location } }}
+            />}
+    />
+  );
+};
 
-export default class App extends Component {
-  /** Gets fired when the route changes.
-	 *	@param {Object} event		"change" event from [preact-router](http://git.io/preact-router)
-	 *	@param {string} event.url	The newly routed URL
-	 */
-  handleRoute = e => {
-    this.currentUrl = e.url;
-  };
+const App = ({ children }) => {
+  return (
+    <div id="app" class={style.app}>
+      <Header />
+      {children}
+    </div>
+  );
+};
 
-  render() {
-    return (
-      <ApolloProvider client={client}>
-        <div id="app" class={style.app}>
-          <Header />
-          <Router onChange={this.handleRoute}>
-            <Redirect path="/" to="/gallery" />
-            <Gallery path="/gallery:params?" slug="" />
-            <Gallery path="/gallery/:slug*/:params?" />
-          </Router>
+export default () => {
+  return (
+    <ApolloProvider client={client}>
+      <Router>
+        <div>
+          <Route path="/login" component={Login} />
+          <Route path="/logout" component={Logout} />
+          <PrivateRoute path="/" component={App}>
+            <Route exact path="/gallery" component={Gallery} />
+            <Route path="/gallery/:slug" component={Gallery} />
+          </PrivateRoute>
         </div>
-      </ApolloProvider>
-    );
-  }
-}
+      </Router>
+    </ApolloProvider>
+  );
+};

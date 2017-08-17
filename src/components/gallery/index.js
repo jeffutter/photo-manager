@@ -1,7 +1,7 @@
 /* @flow */
 import { h, Component } from "preact";
 import style from "./style";
-import { route } from "preact-router";
+import { Link } from "react-router-dom";
 import "react-photoswipe/lib/photoswipe.css";
 import { PhotoSwipe } from "react-photoswipe";
 import MasonryInfiniteScroller from "react-masonry-infinite";
@@ -35,9 +35,10 @@ const Empty = () => {
   );
 };
 
-const GalleryThumb = ({ name, handleClick }) => {
+const GalleryThumb = ({ name, slug }) => {
+  const link = "/gallery/" + slug;
   return (
-    <div class={style.item} onClick={handleClick}>
+    <Link to={link} class={style.item}>
       <svg viewBox="0 0 8 8" class="icon" width="200px" class={style.icon}>
         <path
           d="M0 0v2h8v-1h-5v-1h-3zm0 3v4.5c0 .28.22.5.5.5h7c.28 0 .5-.22.5-.5v-4.5h-8z"
@@ -47,7 +48,7 @@ const GalleryThumb = ({ name, handleClick }) => {
       <div class={style.item__details}>
         {name}
       </div>
-    </div>
+    </Link>
   );
 };
 
@@ -81,11 +82,6 @@ export default class Gallery extends Component {
     });
   };
 
-  clickGallery = (slug, event) => {
-    event && event.preventDefault();
-    route("/gallery/" + slug);
-  };
-
   render({
     name,
     path,
@@ -116,13 +112,7 @@ export default class Gallery extends Component {
     });
 
     const renderedGalleries = galleries.map((gallery, idx) => {
-      return (
-        <GalleryThumb
-          key={idx}
-          handleClick={this.clickGallery.bind(this, gallery.slug)}
-          {...gallery}
-        />
-      );
+      return <GalleryThumb key={idx} {...gallery} />;
     });
 
     const combinedList = [...renderedGalleries, ...renderedImages];

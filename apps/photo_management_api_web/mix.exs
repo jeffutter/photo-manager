@@ -33,6 +33,8 @@ defmodule PhotoManagementApi.Web.Mixfile do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
+      {:ueberauth, "~> 0.4"},
+      {:ueberauth_facebook, "~> 0.6"},
       {:phoenix, "~> 1.3.0", override: true},
       {:phoenix_pubsub, "~> 1.0"},
       {:phoenix_ecto, "~> 3.2"},

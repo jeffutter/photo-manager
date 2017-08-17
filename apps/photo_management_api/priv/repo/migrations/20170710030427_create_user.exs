@@ -8,6 +8,9 @@ defmodule PhotoManagementApi.Repo.Migrations.CreateUser do
       add :email, :string
       add :password_hash, :string
       add :is_admin, :boolean
+      add :avatar, :string
+      add :provider, :integer 
+      add :provider_id, :string
 
       timestamps()
     end

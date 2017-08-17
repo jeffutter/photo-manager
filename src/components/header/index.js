@@ -1,6 +1,6 @@
 import { h, Component } from "preact";
-import { Link } from "preact-router/match";
 import style from "./style";
+import { Link } from "react-router-dom";
 
 export default class Header extends Component {
   state = {
@@ -34,13 +34,18 @@ export default class Header extends Component {
         <nav>
           <ul>
             <li>
-              <Link activeClassName={style.active} href="/">
+              <Link activeClassName={style.active} to="/">
                 Home
               </Link>
             </li>
             <li>
-              <Link activeClassName={style.active} href="/gallery">
+              <Link activeClassName={style.active} to="/gallery">
                 Gallery
+              </Link>
+            </li>
+            <li>
+              <Link activeClassName={style.active} to="/logout">
+                Logout
               </Link>
             </li>
           </ul>

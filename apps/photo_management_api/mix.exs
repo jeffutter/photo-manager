@@ -35,6 +35,7 @@ defmodule PhotoManagementApi.Mixfile do
       {:comeonin, "~> 4.0"},
       {:bcrypt_elixir, "~> 0.12"},
       {:ecto_mnesia, "~> 0.9.0"},
+      {:ecto_enum, "~> 1.0"},
       {:ecto, "~> 2.1"}
     ]
   end

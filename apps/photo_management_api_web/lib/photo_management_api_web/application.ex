@@ -4,16 +4,15 @@ defmodule PhotoManagementApi.Web.Application do
   def start(_type, _args) do
     import Supervisor.Spec
 
-    # Define workers and child supervisors to be supervised
+    Application.put_env(:ueberauth, Ueberauth.Strategy.Facebook.OAuth, [
+      {:client_id, Config.get_sub_key(:ueberauth, Ueberauth.Strategy.Facebook.OAuth, :client_id)},
+      {:client_secret, Config.get_sub_key(:ueberauth, Ueberauth.Strategy.Facebook.OAuth, :client_secret)}
+    ])
+
     children = [
-      # Start the endpoint when the application starts
       supervisor(PhotoManagementApi.Web.Endpoint, []),
-      # Start your own worker by calling: PhotoManagementApi.Web.Worker.start_link(arg1, arg2, arg3)
-      # worker(PhotoManagementApi.Web.Worker, [arg1, arg2, arg3]),
     ]
 
-    # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
-    # for other strategies and supported options
     opts = [strategy: :one_for_one, name: PhotoManagementApi.Web.Supervisor]
     Supervisor.start_link(children, opts)
   end

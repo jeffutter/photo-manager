@@ -12,7 +12,12 @@ class GalleryContainer extends Component {
 
     return (
       <div class={style.home}>
-        {gallery && <Gallery loading={loading} loadNextPage={loadNextPage} {...gallery} />}
+        {gallery &&
+          <Gallery
+            loading={loading}
+            loadNextPage={loadNextPage}
+            {...gallery}
+          />}
       </div>
     );
   }
@@ -49,7 +54,9 @@ const query = gql`
 `;
 
 export default graphql(query, {
-  options: ({ slug, offset }) => {
+  options: ({ match: { params: { slug } }, location: { search } }) => {
+    const params = new URLSearchParams(search);
+    const offset = params.get("offset");
     const s = slug || "root";
     const of = of && of.length > 0 ? parseInt(of) : 0;
 
@@ -71,16 +78,21 @@ export default graphql(query, {
             offset: gallery.descendants.length
           },
           updateQuery: (previousResult, { fetchMoreResult }) => {
-            if (!fetchMoreResult) { return previousResult; }
+            if (!fetchMoreResult) {
+              return previousResult;
+            }
 
             return Object.assign({}, previousResult, {
               gallery: Object.assign({}, previousResult.gallery, {
-                descendants: [...previousResult.gallery.descendants, ...fetchMoreResult.gallery.descendants]
+                descendants: [
+                  ...previousResult.gallery.descendants,
+                  ...fetchMoreResult.gallery.descendants
+                ]
               })
             });
           }
-        })
+        });
       }
-    }
+    };
   }
 })(GalleryContainer);

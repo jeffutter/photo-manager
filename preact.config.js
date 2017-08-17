@@ -1,5 +1,5 @@
 var CompressionPlugin = require("compression-webpack-plugin");
-var BrotliPlugin = require('brotli-webpack-plugin');
+var BrotliPlugin = require("brotli-webpack-plugin");
 
 var compressExtensions = /\.(js|css|html|svg|ico)$/;
 
@@ -23,7 +23,7 @@ export default (config, env, helpers) => {
 
     config.plugins.push(
       new BrotliPlugin({
-        asset: '[path].br[query]',
+        asset: "[path].br[query]",
         test: compressExtensions,
         threshold: 1024,
         minRatio: 0.8

@@ -27,9 +27,14 @@ config :logger, :console,
 config :photo_management_api_web, :generators,
   context_app: :photo_management_api
 
-# Import environment specific config. This must remain at the bottom
-# of this file so it overrides the configuration defined above.
-import_config "#{Mix.env}.exs"
+config :ueberauth, Ueberauth,
+  providers: [
+    facebook: {Ueberauth.Strategy.Facebook, []}
+  ]
+
+config :ueberauth, Ueberauth.Strategy.Facebook.OAuth,
+  client_id: {:system, "FACEBOOK_CLIENT_ID"},
+  client_secret: {:system, "FACEBOOK_CLIENT_SECRET"}
 
 config :guardian, Guardian,
   allowed_algos: ["HS512"], # optional
@@ -38,10 +43,13 @@ config :guardian, Guardian,
   ttl: { 30, :days },
   allowed_drift: 2000,
   verify_issuer: true, # optional
-  secret_key: "0NScIueNKpesOHc1YC3T1VkERU6YES3NkhYz4rO0BbXxObhd5HMPeM45CUVpGkF+",
   secret_key: {:system, "GUARDIAN_SECRET_KEY"},
   serializer: PhotoManagementApi.Web.GuardianSerializer
 
 config :wobserver,
   mode: :plug,
   remote_url_prefix: "/wobserver"
+
+# Import environment specific config. This must remain at the bottom
+# of this file so it overrides the configuration defined above.
+import_config "#{Mix.env}.exs"
