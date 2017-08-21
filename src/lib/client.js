@@ -18,7 +18,7 @@ const myFragmentMatcher = new IntrospectionFragmentMatcher({
 });
 
 const apolloFetch = createApolloFetch({
-  uri: "http://localhost:4000/graphiql"
+  uri: "/graphiql"
 });
 
 apolloFetch.use(({ request, options }, next) => {

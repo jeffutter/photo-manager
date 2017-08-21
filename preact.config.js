@@ -4,6 +4,13 @@ var BrotliPlugin = require("brotli-webpack-plugin");
 var compressExtensions = /\.(js|css|html|svg|ico)$/;
 
 export default (config, env, helpers) => {
+  if (config.devServer) {
+    config.devServer.proxy = {
+      "/auth": "http://localhost:4000",
+      "/graphql": "http://localhost:4000",
+      "/graphiql": "http://localhost:4000"
+    };
+  }
   let babel = config.module.loaders.find(({ loader }) =>
     loader.match(/babel-loader/)
   );
