@@ -1,4 +1,5 @@
-/* @flow */
+// @flow
+// @jsx h.CreateElement
 import { h, Component } from "preact";
 import { graphql } from "react-apollo";
 import style from "./style";
@@ -6,22 +7,16 @@ import style from "./style";
 import Gallery from "../../components/gallery";
 import Spinner from "../../components/full_page_spinner";
 
-class GalleryContainer extends Component {
-  render({ loading, gallery, loadNextPage }) {
-    if (loading && !gallery) return <Spinner />;
+const GalleryContainer = ({ loading, gallery, loadNextPage }) => {
+  if (loading && !gallery) return <Spinner />;
 
-    return (
-      <div class={style.home}>
-        {gallery &&
-          <Gallery
-            loading={loading}
-            loadNextPage={loadNextPage}
-            {...gallery}
-          />}
-      </div>
-    );
-  }
-}
+  return (
+    <div class={style.home}>
+      {gallery &&
+        <Gallery loading={loading} loadNextPage={loadNextPage} {...gallery} />}
+    </div>
+  );
+};
 
 const query = gql`
   query gallery($slug: String!, $offset: Int!) {
@@ -58,7 +53,7 @@ export default graphql(query, {
     const params = new URLSearchParams(search);
     const offset = params.get("offset");
     const s = slug || "root";
-    const of = of && of.length > 0 ? parseInt(of) : 0;
+    const of = offset && offset.length > 0 ? parseInt(offset) : 0;
 
     return {
       variables: {
@@ -68,7 +63,7 @@ export default graphql(query, {
       fetchPolicy: "cache-first"
     };
   },
-  props({ data: { gallery, loading, fetchMore } }) {
+  props: ({ data: { gallery, loading, fetchMore } }) => {
     return {
       gallery,
       loading,

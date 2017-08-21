@@ -1,4 +1,5 @@
-export function createCookie(name, value, days) {
+// @flow
+export function createCookie(name: string, value: string, days: number) {
   if (days) {
     var date = new Date();
     date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
@@ -7,7 +8,7 @@ export function createCookie(name, value, days) {
   document.cookie = name + "=" + value + expires + "; path=/";
 }
 
-export function readCookie(name) {
+export function readCookie(name: string) {
   var nameEQ = name + "=";
   var ca = document.cookie.split(";");
   for (var i = 0; i < ca.length; i++) {
@@ -18,7 +19,7 @@ export function readCookie(name) {
   return null;
 }
 
-export function eraseCookie(name) {
+export function eraseCookie(name: string) {
   createCookie(name, "", -1);
 }
 

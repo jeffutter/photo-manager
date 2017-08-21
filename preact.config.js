@@ -1,9 +1,12 @@
 var CompressionPlugin = require("compression-webpack-plugin");
 var BrotliPlugin = require("brotli-webpack-plugin");
+const preactCliFlow = require("preact-cli-plugin-flow");
 
 var compressExtensions = /\.(js|css|html|svg|ico)$/;
 
 export default (config, env, helpers) => {
+  preactCliFlow(config);
+
   if (config.devServer) {
     config.devServer.proxy = {
       "/auth": "http://localhost:4000",
@@ -14,7 +17,6 @@ export default (config, env, helpers) => {
   let babel = config.module.loaders.find(({ loader }) =>
     loader.match(/babel-loader/)
   );
-  babel.options.plugins.push("transform-flow-strip-types");
   babel.options.plugins.push("graphql-tag");
 
   if (env.production) {

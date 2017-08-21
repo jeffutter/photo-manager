@@ -1,3 +1,5 @@
+// @flow
+// @jsx Redirect
 import { h, Component } from "preact";
 import { Redirect } from "react-router-dom";
 
@@ -5,7 +7,7 @@ import style from "./style";
 import { loggedIn } from "../../lib/cookies";
 
 export default () => {
-  if (loggedIn()) render(<Redirect to="/" />);
+  if (loggedIn()) return <Redirect to="/" />;
 
   let loginWarning;
   const loginFlash = localStorage.getItem("loginFlash");

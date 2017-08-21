@@ -1,8 +1,15 @@
+// @flow
+// @jsx h.CreateElement
 import { h, Component } from "preact";
 import style from "./style";
 import { Link } from "react-router-dom";
 
-export default class Header extends Component {
+type Props = {};
+type State = {
+  open: boolean
+};
+
+export default class Header extends Component<Props, State> {
   state = {
     open: false
   };

@@ -1,4 +1,5 @@
-/* @flow */
+// @flow
+// @jsx h.CreateElement
 import { h, Component } from "preact";
 import style from "./style";
 import { Link } from "react-router-dom";
@@ -52,22 +53,27 @@ const GalleryThumb = ({ name, slug }) => {
   );
 };
 
-type galleryArgs = {
+type Props = {
   name: string,
   path: any,
   descendants: any,
   slug: string,
-  total_descendants: int
+  total_descendants: number,
+  loadNextPage: () => void,
+  loading: boolean
 };
-export default class Gallery extends Component {
+type State = {
+  lightboxIsOpen: boolean,
+  currentImage: number
+};
+export default class Gallery extends Component<Props, State> {
   state = {
     lightboxIsOpen: false,
     currentImage: 0
   };
 
-  openLightbox = (index: number, event) => {
+  openLightbox = (index: number, event: Event) => {
     event && event.preventDefault();
-    //document.getElementById("app").classList.add(style.blur);
     this.setState({
       currentImage: index,
       lightboxIsOpen: true
@@ -75,7 +81,6 @@ export default class Gallery extends Component {
   };
 
   closeLightbox = () => {
-    //document.getElementById("app").classList.remove(style.blur);
     this.setState({
       currentImage: 0,
       lightboxIsOpen: false
@@ -90,7 +95,7 @@ export default class Gallery extends Component {
     descendants,
     loadNextPage,
     loading
-  }: galleryArgs) {
+  }: Props) {
     const images = descendants
       ? descendants.filter(child => "thumbnail" in child)
       : [];

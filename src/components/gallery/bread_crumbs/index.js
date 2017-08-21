@@ -1,9 +1,16 @@
-/* @flow */
+// @flow
+// @jsx h.CreateElement
 import { h, Component } from "preact";
 import style from "./style";
 import { Link } from "react-router-dom";
 
-export default ({ path, slug, name }) => {
+type PropTypes = {
+  path: string,
+  slug: string,
+  name: string
+};
+
+export default ({ path, slug, name }: PropTypes) => {
   if (slug == "root") {
     return (
       <div class={style.galleryHeader}>

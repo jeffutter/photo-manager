@@ -1,3 +1,5 @@
+// @flow
+// @jsx h.CreateElement
 import { h, Component } from "preact";
 import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
 import { ApolloProvider, withApollo } from "react-apollo";
@@ -10,11 +12,7 @@ import style from "./style";
 import { eraseCookie, loggedIn } from "../lib/cookies";
 
 import Login from "./login_form";
-
-const logout = () => {
-  eraseCookie("access_token");
-  client.resetStore();
-};
+import logout from "../lib/logout";
 
 const Logout = ({ client }) => {
   logout();
