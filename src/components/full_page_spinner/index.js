@@ -1,5 +1,4 @@
 // @flow
-// @jsx h.CreateElement
 import { h, Component } from "preact";
 import style from "./style";
 

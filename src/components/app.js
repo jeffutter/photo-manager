@@ -1,5 +1,4 @@
 // @flow
-// @jsx h.CreateElement
 import { h, Component } from "preact";
 import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
 import { ApolloProvider, withApollo } from "react-apollo";

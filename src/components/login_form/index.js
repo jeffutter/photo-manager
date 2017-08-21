@@ -1,5 +1,4 @@
 // @flow
-// @jsx Redirect
 import { h, Component } from "preact";
 import { Redirect } from "react-router-dom";
 

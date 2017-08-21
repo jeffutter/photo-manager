@@ -1,5 +1,4 @@
 // @flow
-// @jsx h.CreateElement
 import { h, Component } from "preact";
 import { graphql } from "react-apollo";
 import style from "./style";
