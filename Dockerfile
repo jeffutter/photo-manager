@@ -12,6 +12,9 @@ ADD preact.config.js /src
 ADD src/ /src/src
 
 RUN mkdir -p apps/photo_management_api_web/priv/static/
+# Shouldn't be needed, something odd happening with yarn
+RUN cd node_modules/.bin \
+    && ln -s ../preact-cli/lib/index.js preact
 RUN yarn run build
 
 FROM elixir:1.5-alpine as build
