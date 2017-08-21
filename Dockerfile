@@ -46,7 +46,7 @@ RUN ls -l /src/rel
 RUN mix release --env=prod
 
 FROM alpine:3.6
-RUN apk add -U imagemagick ncurses-libs libcrypto1.0 \
+RUN apk add -U bash imagemagick ncurses-libs libcrypto1.0 \
     && rm -rf /var/cache/apk/*
 COPY --from=build /src/_build/prod/rel/photo_management /photo_management
 ENTRYPOINT ["/photo_management/bin/photo_management"]
