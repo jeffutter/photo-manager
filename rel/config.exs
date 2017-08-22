@@ -46,5 +46,8 @@ release :photo_management do
     photo_management_api: :permanent,
     photo_management_api_web: :permanent
   ]
+  set commands: [
+    "migrate": "rel/commands/migrate.sh"
+  ]
 end
 
