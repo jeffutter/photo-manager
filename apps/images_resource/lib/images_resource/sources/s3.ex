@@ -4,7 +4,6 @@ defmodule ImagesResource.Sources.S3 do
 
   alias ImagesResource.{Gallery}
   alias ImagesResource.Storage.S3
-  alias ImagesResource.Sizer.Queue
 
   @type t :: %{bucket_name: String.t, tree: Gallery.t, name: atom()}
   defstruct bucket_name: "", tree: nil, name: nil

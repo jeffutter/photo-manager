@@ -8,6 +8,8 @@ priv/data/mnesia
 !/s3/data/.gitkeep
 /s3/config/*
 !/s3/config/.gitkeep
+/postgres/data/*
+!/postgres/data/.gitkeep
 node_modules
 /apps/photo_management_api_web/priv/static/
 /apps/photo_management_api_web/priv/static/.gitkeep

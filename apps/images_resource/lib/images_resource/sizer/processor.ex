@@ -1,6 +1,4 @@
 defmodule ImagesResource.Sizer.Processor do
-  use GenStage
-
   alias ImagesResource.Sizer.{Queue,Worker}
 
   def start_link() do

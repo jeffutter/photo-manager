@@ -1,6 +1,4 @@
 defmodule ImagesResource.Uploaders.Processor do
-  use GenStage
-
   alias ImagesResource.Uploaders.{Queue,Worker}
 
   def start_link() do
