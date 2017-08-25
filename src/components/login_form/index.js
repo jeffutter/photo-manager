@@ -1,5 +1,5 @@
 // @flow
-import { h, Component } from "preact";
+import React, { Component } from "react";
 import { Redirect } from "react-router-dom";
 
 import style from "./style";
