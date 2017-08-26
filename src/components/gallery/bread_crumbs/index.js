@@ -1,5 +1,5 @@
 // @flow
-import { h, Component } from "preact";
+import React, { Component } from "react";
 import style from "./style";
 import { Link } from "react-router-dom";
 
@@ -24,7 +24,6 @@ export default ({ path, slug, name }: PropTypes) => {
 
   const pathObjs = splitSlug.reduce((acc, section, idx) => {
     let s = splitSlug.slice(0, idx);
-    console.log(path, idx, path[idx]);
     let name = path[idx];
     s.push(section);
     acc.push({

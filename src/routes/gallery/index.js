@@ -1,5 +1,5 @@
 // @flow
-import { h, Component } from "preact";
+import React, { Component } from "react";
 import { graphql } from "react-apollo";
 import style from "./style";
 
