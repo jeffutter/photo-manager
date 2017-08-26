@@ -2,10 +2,9 @@ defmodule PhotoManagementApi.ReleaseTasks do
   @start_apps [
     :crypto,
     :ssl,
-    :mnesia,
-    :ecto,
-    :ecto_mnesia
-  ]
+    :postgrex,
+    :ecto
+  ]   
   
   @myapps [
     :photo_management_api
@@ -23,8 +22,6 @@ defmodule PhotoManagementApi.ReleaseTasks do
     IO.puts "Starting dependencies.."
     # Start apps necessary for executing migrations
     Enum.each(@start_apps, &Application.ensure_all_started/1)
-
-    Enum.each(@repos, &create_repo/1)
 
     # Start the Repo(s) for myapp
     IO.puts "Starting repos.."
@@ -46,19 +43,6 @@ defmodule PhotoManagementApi.ReleaseTasks do
   end
 
   def priv_dir(app), do: "#{:code.priv_dir(app)}"
-
-  defp create_repo(repo) do
-    case repo.__adapter__.storage_up(repo.config) do
-      :ok ->
-        IO.puts "The database for #{inspect repo} has been created"
-      {:error, :already_up} ->
-        IO.puts "The database for #{inspect repo} has already been created"
-      {:error, term} when is_binary(term) ->
-        raise "The database for #{inspect repo} couldn't be created: #{term}"
-      {:error, term} ->
-        raise "The database for #{inspect repo} couldn't be created: #{inspect term}"
-    end   
-  end
 
   defp run_migrations_for(app) do
     IO.puts "Running migrations for #{app}"
