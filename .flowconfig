@@ -9,6 +9,10 @@ flow-typed
 suppress_comment= \\(.\\|\n\\)*\\$FlowBug
 suppress_comment= \\(.\\|\n\\)*\\$FlowFixMe
 module.ignore_non_literal_requires=true
+module.file_ext=.js
+module.file_ext=.jsx
+module.file_ext=.css
+module.file_ext=.scss
 module.name_mapper.extension='css' -> 'css-module-flow'
 module.name_mapper.extension='less' -> 'css-module-flow'
 module.name_mapper.extension='scss' -> 'css-module-flow'
