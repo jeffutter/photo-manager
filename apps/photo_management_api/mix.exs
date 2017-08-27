@@ -33,7 +33,7 @@ defmodule PhotoManagementApi.Mixfile do
   defp deps do
     [
       {:comeonin, "~> 4.0"},
-      {:bcrypt_elixir, "~> 0.12"},
+      {:bcrypt_elixir, "~> 1.0"},
       {:postgrex, "~> 0.13"},
       {:ecto_enum, "~> 1.0"},
       {:ecto, "~> 2.1"}
