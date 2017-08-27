@@ -55,7 +55,7 @@ const GalleryThumb = ({ name, slug }) => {
 type Props = {
   name: string,
   path: any,
-  descendants: any,
+  descendants: Array<any>,
   slug: string,
   total_descendants: number,
   loadNextPage: () => void,
@@ -95,31 +95,35 @@ export default class Gallery extends Component<Props, State> {
     loadNextPage,
     loading
   }: Props) {
-    const images = descendants
-      ? descendants.filter(child => "thumbnail" in child)
-      : [];
+    const sortedDescendants = descendants.slice().sort((a, b) => {
+      if ("thumbnail" in a && "thumbnail" in b) {
+        if (a.name < b.name) return -1;
+        if (a.name > b.name) return 1;
+        return 0;
+      }
+      if ("thumbnail" in a) return -1;
+      if ("thumbnail" in b) return 1;
+      if (a.name < b.name) return -1;
+      if (a.name > b.name) return 1;
+      return 0;
+    });
 
-    const galleries = descendants
-      ? descendants.filter(child => !("thumbnail" in child))
-      : [];
+    if (sortedDescendants.length <= 0) return;
 
-    if (!(images.length > 0 || galleries.length > 0)) return;
-
-    const renderedImages = images.map((image, idx) => {
+    const renderedDescendants = sortedDescendants.map((item, idx) => {
+      if (!("thumbnail" in item)) return <GalleryThumb key={idx} {...item} />;
       return (
         <Image
-          key={galleries.length + idx}
+          key={idx}
           handleOpen={this.openLightbox.bind(this, idx)}
-          {...image}
+          {...item}
         />
       );
     });
 
-    const renderedGalleries = galleries.map((gallery, idx) => {
-      return <GalleryThumb key={idx} {...gallery} />;
-    });
-
-    const combinedList = [...renderedGalleries, ...renderedImages];
+    const images = descendants
+      ? descendants.filter(child => "thumbnail" in child)
+      : [];
 
     const swipeImages = images.map((image, i) => {
       return {
@@ -140,7 +144,7 @@ export default class Gallery extends Component<Props, State> {
       : _pg => {
           loadNextPage();
         };
-    const hasMore = combinedList.length < total_descendants;
+    const hasMore = renderedDescendants.length < total_descendants;
 
     const imageWidth = 300;
     const baseGutter = 32;
@@ -186,7 +190,7 @@ export default class Gallery extends Component<Props, State> {
             }
           ]}
         >
-          {combinedList}
+          {renderedDescendants}
         </MasonryInfiniteScroller>
 
         <PhotoSwipe

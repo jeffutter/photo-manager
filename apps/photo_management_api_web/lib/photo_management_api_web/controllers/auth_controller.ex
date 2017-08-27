@@ -25,10 +25,9 @@ defmodule PhotoManagementApi.Web.AuthController do
   end
 
   def find_or_create(%Auth{} = auth) do
-    user = auth
-           |> basic_info()
-           |> User.find_or_create()
-    {:ok, user}
+    auth
+    |> basic_info()
+    |> User.find_or_create()
   end
 
   defp basic_info(auth) do

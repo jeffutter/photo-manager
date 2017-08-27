@@ -18,25 +18,6 @@ const Logout = ({ client }) => {
   return <Redirect to="/" />;
 };
 
-const PrivateRoute = ({ component: Component, children, ...rest }) => {
-  const isAuthenticated = loggedIn();
-  if (!isAuthenticated)
-    localStorage.setItem("loginFlash", "Your login has expired or is invalid.");
-  return (
-    <Route
-      {...rest}
-      render={props =>
-        isAuthenticated
-          ? <Component {...props}>
-              {children}
-            </Component>
-          : <Redirect
-              to={{ pathname: "/login", state: { from: props.location } }}
-            />}
-    />
-  );
-};
-
 const App = ({ children }) => {
   return (
     <div id="app" class={style.app}>
@@ -47,17 +28,33 @@ const App = ({ children }) => {
 };
 
 export default () => {
+  let routes = [
+    <Route exact path="/login" component={Login} />,
+    <Route exact path="/logout" component={Logout} />
+  ];
+
+  if (loggedIn()) {
+    routes = routes.concat([
+      <App>
+        <Route path="/gallery/:slug?" component={Gallery} />
+        <Route
+          exact
+          path="/"
+          render={() => {
+            <Redirect to="/gallery" />;
+          }}
+        />
+      </App>
+    ]);
+  } else {
+    routes.push(<Redirect from="/" to="/login" />);
+    localStorage.setItem("loginFlash", "Your login has expired or is invalid.");
+  }
   return (
     <ApolloProvider client={client}>
       <Router>
         <div>
-          <Route path="/login" component={Login} />
-          <Route path="/logout" component={Logout} />
-          <PrivateRoute path="/" component={App}>
-            <Redirect from="/" to="/gallery" />
-            <Route exact path="/gallery" component={Gallery} />
-            <Route path="/gallery/:slug" component={Gallery} />
-          </PrivateRoute>
+          {routes}
         </div>
       </Router>
     </ApolloProvider>

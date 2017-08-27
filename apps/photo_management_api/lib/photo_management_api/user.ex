@@ -29,7 +29,7 @@ defmodule PhotoManagementApi.User do
     if !maybe_user  do
       Repo.insert(user)
     else
-      maybe_user
+      {:ok, maybe_user}
     end
   end
 
