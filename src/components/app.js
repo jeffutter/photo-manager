@@ -54,6 +54,7 @@ export default () => {
           <Route path="/login" component={Login} />
           <Route path="/logout" component={Logout} />
           <PrivateRoute path="/" component={App}>
+            <Redirect from="/" to="/gallery" />
             <Route exact path="/gallery" component={Gallery} />
             <Route path="/gallery/:slug" component={Gallery} />
           </PrivateRoute>

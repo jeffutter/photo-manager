@@ -1,16 +1,20 @@
 defmodule PhotoManagementApi.Web.AuthController do
+  require Logger
+
   use PhotoManagementApi.Web, :controller
+
   plug Ueberauth
+
   alias Ueberauth.Auth
   alias PhotoManagementApi.User
 
   def callback(%Plug.Conn{assigns: %{ueberauth_failure: fails}} = conn, _params) do
-    IO.inspect fails
+    Logger.error "Uberauth Failed: #{inspect fails}"
     conn
   end
 
   def callback(%Plug.Conn{assigns: %{ueberauth_auth: auth}} = conn, _params) do
-    {:ok, user} = find_or_create(auth)
+    {:ok, user = %User{}} = find_or_create(auth)
     {:ok, jwt, full_claims} = Guardian.encode_and_sign(user, :api)
 
     max_age = full_claims["exp"] - full_claims["iat"]
@@ -42,7 +46,7 @@ defmodule PhotoManagementApi.Web.AuthController do
       auth.info.name
     else
       name = [auth.info.first_name, auth.info.last_name]
-      |> Enum.filter(&(&1 != nil and &1 != ""))
+             |> Enum.filter(&(&1 != nil and &1 != ""))
 
       cond do
         length(name) == 0 -> auth.info.nickname

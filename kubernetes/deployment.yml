@@ -8,6 +8,7 @@ spec:
     metadata:
       labels:
         app: photo-manager
+        postgres-postgresql-client: "true"
     spec:
       containers:
         - name: photo-manager
@@ -81,3 +82,18 @@ spec:
                 secretKeyRef:
                   name: photo-manager
                   key: gcp_credentials
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: photo-manager
+                  key: database_url
+            - name: FACEBOOK_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: photo-manager
+                  key: facebook_client_id
+            - name: FACEBOOK_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: photo-manager
+                  key: facebook_client_secret
