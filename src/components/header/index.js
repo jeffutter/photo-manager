@@ -40,17 +40,29 @@ export default class Header extends Component<Props, State> {
         <nav>
           <ul>
             <li>
-              <Link activeClassName={style.active} to="/">
+              <Link
+                activeClassName={style.active}
+                to="/"
+                onClick={this.toggleNav}
+              >
                 Home
               </Link>
             </li>
             <li>
-              <Link activeClassName={style.active} to="/gallery">
+              <Link
+                activeClassName={style.active}
+                to="/gallery"
+                onClick={this.toggleNav}
+              >
                 Gallery
               </Link>
             </li>
             <li>
-              <Link activeClassName={style.active} to="/logout">
+              <Link
+                activeClassName={style.active}
+                to="/logout"
+                onClick={this.toggleNav}
+              >
                 Logout
               </Link>
             </li>

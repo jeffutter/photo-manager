@@ -41,7 +41,7 @@ export default () => {
           exact
           path="/"
           render={() => {
-            <Redirect to="/gallery" />;
+            return <Redirect to="/gallery" />;
           }}
         />
       </App>

@@ -4,7 +4,7 @@ import style from "./style";
 import { Link } from "react-router-dom";
 
 type PropTypes = {
-  path: string,
+  path: Array<string>,
   slug: string,
   name: string
 };

@@ -1,11 +1,12 @@
 // @flow
-import React, { Component } from "react";
+import { Component } from "react";
+import * as React from "react";
 import style from "./style";
 import { Link } from "react-router-dom";
 import "react-photoswipe/lib/photoswipe.css";
 import { PhotoSwipe } from "react-photoswipe";
-import MasonryInfiniteScroller from "react-masonry-infinite";
 import BreadCrumbs from "./bread_crumbs";
+import GalleryBody from "./body";
 
 type imageArgs = {
   name: string,
@@ -54,7 +55,7 @@ const GalleryThumb = ({ name, slug }) => {
 
 type Props = {
   name: string,
-  path: any,
+  path: Array<string>,
   descendants: Array<any>,
   slug: string,
   total_descendants: number,
@@ -86,15 +87,17 @@ export default class Gallery extends Component<Props, State> {
     });
   };
 
-  render({
-    name,
-    path,
-    slug,
-    total_descendants,
-    descendants,
-    loadNextPage,
-    loading
-  }: Props) {
+  render() {
+    const {
+      name = "",
+      path = [],
+      slug = "",
+      total_descendants = 0,
+      descendants = [],
+      loadNextPage = () => {},
+      loading = false
+    }: Props = this.props;
+
     const sortedDescendants = descendants.slice().sort((a, b) => {
       if ("thumbnail" in a && "thumbnail" in b) {
         if (a.name < b.name) return -1;
@@ -121,6 +124,8 @@ export default class Gallery extends Component<Props, State> {
       );
     });
 
+    if (!Array.isArray(renderedDescendants)) return;
+
     const images = descendants
       ? descendants.filter(child => "thumbnail" in child)
       : [];
@@ -139,60 +144,15 @@ export default class Gallery extends Component<Props, State> {
       index: this.state.currentImage
     };
 
-    const loadMore = loading
-      ? () => {}
-      : _pg => {
-          loadNextPage();
-        };
-    const hasMore = renderedDescendants.length < total_descendants;
-
-    const imageWidth = 300;
-    const baseGutter = 32;
-
     return (
       <div>
         <BreadCrumbs slug={slug} path={path} name={name} />
-
-        <MasonryInfiniteScroller
-          hasMore={hasMore}
-          loadMore={loadMore}
-          pageStart={1}
-          pack={true}
-          useWindow={true}
-          loader={<div className={style.loader}>Loading ...</div>}
-          className={style.gallery}
-          sizes={[
-            { columns: 1, gutter: baseGutter },
-            {
-              mq: `${2 * imageWidth + 3 * baseGutter}px`,
-              columns: 2,
-              gutter: baseGutter
-            },
-            {
-              mq: `${3 * imageWidth + 4 * baseGutter}px`,
-              columns: 3,
-              gutter: baseGutter
-            },
-            {
-              mq: `${4 * imageWidth + 5 * baseGutter}px`,
-              columns: 4,
-              gutter: baseGutter
-            },
-            {
-              mq: `${5 * imageWidth + 6 * baseGutter}px`,
-              columns: 5,
-              gutter: baseGutter
-            },
-            {
-              mq: `${5 * imageWidth + 6 * 2 * baseGutter}px`,
-              columns: 5,
-              gutter: 2 * baseGutter
-            }
-          ]}
-        >
-          {renderedDescendants}
-        </MasonryInfiniteScroller>
-
+        <GalleryBody
+          children={renderedDescendants}
+          loading={loading}
+          loadNextPage={loadNextPage}
+          total={total_descendants}
+        />
         <PhotoSwipe
           isOpen={this.state.lightboxIsOpen}
           items={swipeImages}
