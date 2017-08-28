@@ -1273,7 +1273,7 @@ braces@^1.8.2:
     preserve "^0.2.0"
     repeat-element "^1.1.2"
 
-bricks.js@^1.7.0:
+bricks.js@^1.8.0:
   version "1.8.0"
   resolved "https://registry.yarnpkg.com/bricks.js/-/bricks.js-1.8.0.tgz#8fdeb3c0226af251f4d5727a7df7f9ac0092b4b2"
   dependencies:
@@ -5905,19 +5905,11 @@ react-apollo@^1.4.11:
     object-assign "^4.0.1"
     prop-types "^15.5.8"
 
-react-infinite-scroller@^1.0.12:
+react-infinite-scroller@^1.0.15:
   version "1.0.15"
   resolved "https://registry.yarnpkg.com/react-infinite-scroller/-/react-infinite-scroller-1.0.15.tgz#9fad0127be540cb327ea6b0ecb98d164e1a1d3fb"
   dependencies:
     prop-types "^15.5.8"
-
-react-masonry-infinite@^1.2.1:
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/react-masonry-infinite/-/react-masonry-infinite-1.2.1.tgz#7dab7f5ace8964e62d09a3430993515721d3028e"
-  dependencies:
-    bricks.js "^1.7.0"
-    prop-types "^15.5.10"
-    react-infinite-scroller "^1.0.12"
 
 react-photoswipe@^1.3.0:
   version "1.3.0"

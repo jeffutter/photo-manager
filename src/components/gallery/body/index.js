@@ -2,7 +2,7 @@
 import { Component } from "react";
 import * as React from "react";
 import style from "./style";
-import MasonryInfiniteScroller from "react-masonry-infinite";
+import MasonryInfiniteScroller from "./infinite_scroll";
 
 type PropTypes = {
   children: Array<React.Node>,
