@@ -102,3 +102,8 @@ spec:
                 secretKeyRef:
                   name: photo-manager
                   key: sentry_dsn
+            - name: SENTRY_PUBLIC_DSN
+              valueFrom:
+                secretKeyRef:
+                  name: photo-manager
+                  key: sentry_public_dsn

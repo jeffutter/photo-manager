@@ -29,6 +29,7 @@
   "dependencies": {
     "apollo-fetch": "^0.6.0",
     "bricks.js": "^1.8.0",
+    "isomorphic-fetch": "^2.2.1",
     "preact": "^8.2.1",
     "preact-compat": "^3.16.0",
     "react-apollo": "^1.4.11",

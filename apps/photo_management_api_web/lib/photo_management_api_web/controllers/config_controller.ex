@@ -5,7 +5,6 @@ defmodule PhotoManagementApi.Web.ConfigController do
     config = %{
                 sentry_dsn: Config.get(:sentry, :public_dsn)
               }
-    
     render(conn, "config.json", config: config)
   end
 end
