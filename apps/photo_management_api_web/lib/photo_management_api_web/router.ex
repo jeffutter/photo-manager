@@ -20,6 +20,11 @@ defmodule PhotoManagementApi.Web.Router do
     post "/sign_in", SessionController, :sign_in
   end
 
+  scope "/config", PhotoManagementApi.Web do
+    pipe_through :api
+    get "/", ConfigController, :get
+  end
+
   scope "/auth", PhotoManagementApi.Web do
     get "/:provider", AuthController, :request
     get "/:provider/callback", AuthController, :callback

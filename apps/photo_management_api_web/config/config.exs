@@ -51,6 +51,7 @@ config :wobserver,
   remote_url_prefix: "/wobserver"
 
 config :sentry,
+  public_dsn: {:system, "SENTRY_PUBLIC_DSN"},
   enable_source_code_context: true,
   root_source_code_path: File.cwd!,
   included_environments: [:prod],
