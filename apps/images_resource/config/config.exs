@@ -16,4 +16,8 @@ config :ex_aws,
   secret_access_key: {:system, "AWS_SECRET_ACCESS_KEY"},
   region: {:system, "AWS_DEFAULT_REGION"}
 
-import_config "#{Mix.env}.exs"
+config :sentry,
+  enable_source_code_context: true,
+  root_source_code_path: File.cwd!,
+  included_environments: [:prod],
+  environment_name: Mix.env

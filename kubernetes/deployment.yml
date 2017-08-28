@@ -97,3 +97,8 @@ spec:
                 secretKeyRef:
                   name: photo-manager
                   key: facebook_client_secret
+            - name: SENTRY_DSN
+              valueFrom:
+                secretKeyRef:
+                  name: photo-manager
+                  key: sentry_dsn

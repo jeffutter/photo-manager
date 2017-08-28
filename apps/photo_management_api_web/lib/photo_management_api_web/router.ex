@@ -1,5 +1,7 @@
 defmodule PhotoManagementApi.Web.Router do
   use PhotoManagementApi.Web, :router
+  use Plug.ErrorHandler
+  use Sentry.Plug
 
   pipeline :graphql do
     plug Guardian.Plug.VerifyHeader, realm: "Bearer"

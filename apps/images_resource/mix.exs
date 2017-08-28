@@ -39,6 +39,7 @@ defmodule ImagesResource.Mixfile do
   defp deps do
     [
       {:config, in_umbrella: true},
+      {:sentry, github: "getsentry/sentry-elixir"},
       arc_gcs: "~> 0.0.4",
       gen_stage: "~> 0.12.1",
       arc: "~> 0.8.0",
@@ -48,7 +49,7 @@ defmodule ImagesResource.Mixfile do
       poison: "~> 3.1",
       sweet_xml: "~> 0.6",
       cachex: "~> 2.1",
-      flow: "~> 0.11"
+      flow: "~> 0.11",
     ]
   end
 end
