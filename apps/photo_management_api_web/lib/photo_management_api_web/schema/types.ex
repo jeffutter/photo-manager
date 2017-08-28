@@ -35,13 +35,19 @@ defmodule PhotoManagementApi.Web.Schema.Types do
     field :path, list_of(:string)
     field :slug, :string
     field :total_descendants, :integer, resolve: fn %{total_children: tc}, _, _ -> {:ok, tc} end
-    field :descendants, list_of(:descendants), resolve: fn %{children: children}, _, _ -> {:ok, children} end
+    field :descendants, list_of(:descendants) do
+      resolve fn %{children: children}, _, _ -> {:ok, children} end
+    end
   end
 
   defp file_dimension(dimension) do
     fn file = %File{}, _, _ ->
       batch({__MODULE__, :size_by_file}, file, fn batch_results ->
-        {:ok, batch_results |> Map.get(file) |> Map.get(dimension)}
+        dimension = batch_results
+                    |> Map.get(file)
+                    |> Map.get(dimension)
+
+        {:ok, dimension}
       end)
     end
   end

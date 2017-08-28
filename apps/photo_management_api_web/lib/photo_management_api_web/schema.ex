@@ -7,8 +7,10 @@ defmodule PhotoManagementApi.Web.Schema do
 
   query do
     field :gallery, :gallery do
-      arg :slug, :string
-      arg :offset, :integer
+      arg :slug, :string, default_value: "root"
+      arg :offset, :integer, default_value: 0
+      arg :limit, :integer, default_value: 20
+
       resolve &Resolver.Gallery.all/3
     end
   end
