@@ -1,27 +1,27 @@
 // @flow
 
 const Raven = (function(global, document, url) {
-  var calls = [];
-  var spy = {};
+  let calls = [];
+  let spy = {};
 
-  var methods = ["config", "install", "setUserContext", "captureException"];
-  for (var i = 0, method; (method = methods[i]); i += 1) {
+  let methods = ["config", "install", "setUserContext", "captureException"];
+  for (let i = 0, method; (method = methods[i]); i += 1) {
     spy[method] = (function(name) {
-      return function() {
-        calls.push([name, arguments]);
+      return function(...args) {
+        calls.push([name, ...args]);
         return this;
       };
     })(method);
   }
 
-  var define = Object.defineProperty;
+  const define = Object.defineProperty;
   define(global, "Raven", {
     get: function() {
       return spy;
     },
     set: function(Raven) {
       global.removeEventListener("error", captureUnhandledExceptions);
-      for (var i = 0, exception; (exception = unhandledExceptions[i]); i += 1) {
+      for (let i = 0, exception; (exception = unhandledExceptions[i]); i += 1) {
         calls.push(["captureException", exception]);
       }
 
@@ -32,15 +32,21 @@ const Raven = (function(global, document, url) {
         configurable: true
       });
 
-      for (var i = 0, call; (call = calls[i]); i += 1) {
-        Raven[call[0]].apply(Raven, call[1]);
+      for (let i = 0, call; (call = calls[i]); i += 1) {
+        // Raven[call[0]].apply(Raven, call[1]);
+        Raven[call[0]](call[1]);
       }
     },
     enumerable: true,
     configurable: true
   });
 
-  var unhandledExceptions = [];
+  let unhandledExceptions = [];
+
+  /**
+   * Captures unhandled exceptions
+   * @param {anything} event 
+   */
   function captureUnhandledExceptions(event) {
     unhandledExceptions.push([
       event.error || new Error(event.message),
@@ -57,13 +63,13 @@ const Raven = (function(global, document, url) {
   global.addEventListener("error", captureUnhandledExceptions);
 
   global.addEventListener("load", function() {
-    var script = document.createElement("script");
+    let script = document.createElement("script");
     script.type = "text/javascript";
     script.crossOrigin = "anonymous";
     script.async = true;
     script.src = url;
 
-    var firstScript = document.getElementsByTagName("script")[0];
+    const firstScript = document.getElementsByTagName("script")[0];
     if (!firstScript) return;
     if (!firstScript.parentNode) return;
     firstScript.parentNode.insertBefore(script, firstScript);

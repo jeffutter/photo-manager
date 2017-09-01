@@ -1,23 +1,17 @@
 // @flow
 import React, { Component } from "react";
 import Bricks from "bricks.js";
-import InfiniteScroll from "react-infinite-scroller";
 
 type Props = {
   children: Array<any>,
   className: string,
   element: string,
-  hasMore: boolean,
-  loadMore: () => void,
-  loader: any,
   pack: boolean,
   packed: string,
-  pageStart: number,
   position: boolean,
   sizes: Array<any>,
   style: any,
-  threshold: number,
-  useWindow: boolean
+  threshold: number
 };
 type State = {
   instance: any
@@ -93,33 +87,12 @@ export default class MasonryInfiniteScroller extends Component<Props, State> {
   };
 
   render() {
-    const {
-      children,
-      className,
-      element,
-      hasMore,
-      loadMore,
-      loader,
-      pageStart,
-      style,
-      threshold,
-      useWindow
-    } = this.props;
+    const { children, className, style } = this.props;
 
     return (
-      <InfiniteScroll
-        element={element}
-        hasMore={hasMore}
-        loadMore={loadMore}
-        loader={loader}
-        pageStart={pageStart}
-        threshold={threshold}
-        useWindow={useWindow}
-      >
-        <div ref={this.setContainerRef} className={className} style={style}>
-          {children}
-        </div>
-      </InfiniteScroll>
+      <div ref={this.setContainerRef} className={className} style={style}>
+        {children}
+      </div>
     );
   }
 }

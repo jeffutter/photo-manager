@@ -1,6 +1,7 @@
 var CompressionPlugin = require("compression-webpack-plugin");
 var BrotliPlugin = require("brotli-webpack-plugin");
 const preactCliFlow = require("preact-cli-plugin-flow");
+var LodashModuleReplacementPlugin = require("lodash-webpack-plugin");
 
 var compressExtensions = /\.(js|css|html|svg|ico)$/;
 
@@ -19,6 +20,9 @@ export default (config, env, helpers) => {
     loader.match(/babel-loader/)
   );
   babel.options.plugins.push("graphql-tag");
+  babel.options.plugins.push("lodash");
+
+  config.plugins.push(new LodashModuleReplacementPlugin());
 
   if (env.production) {
     config.plugins.push(

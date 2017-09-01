@@ -5,12 +5,23 @@ import style from "./style";
 import MasonryInfiniteScroller from "./infinite_scroll";
 
 type PropTypes = {
-  children: Array<React.Node>,
+  children: Array<React$Element<any>>,
   total: number,
   loading: boolean,
   loadNextPage: () => void
 };
-export default ({ children, total, loading, loadNextPage }: PropTypes) => {
+
+/**
+ * React component for Gallery Body 
+ * @param {object} props 
+ * @return {ReactElement}
+ */
+export default function GalleryBody({
+  children,
+  total,
+  loading,
+  loadNextPage
+}: PropTypes) {
   const loadMore = loading
     ? () => {}
     : _pg => {
@@ -62,4 +73,4 @@ export default ({ children, total, loading, loadNextPage }: PropTypes) => {
       {children}
     </MasonryInfiniteScroller>
   );
-};
+}

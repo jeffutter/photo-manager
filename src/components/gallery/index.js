@@ -2,55 +2,50 @@
 import { Component } from "react";
 import * as React from "react";
 import style from "./style";
-import { Link } from "react-router-dom";
 import "react-photoswipe/lib/photoswipe.css";
 import { PhotoSwipe } from "react-photoswipe";
 import BreadCrumbs from "./bread_crumbs";
 import GalleryBody from "./body";
+import Waypoint from "react-waypoint";
+import { chunk, debounce } from "lodash";
+import PropTypes from "prop-types";
+import Image from "./image";
+import GalleryThumb from "./gallery_thumb";
 
-type imageArgs = {
-  name: string,
-  thumbnail: string,
-  src: string,
-  index: number,
-  handleOpen: () => void
+const fetchBuffer = new Set();
+
+const loadRequestedImages = loadNextPage => {
+  const currentBuffer = Array.from(fetchBuffer);
+  fetchBuffer.clear();
+  if (currentBuffer.length <= 0) return;
+  let chunks = chunk(currentBuffer, 20);
+  chunks.forEach(chunk => {
+    loadNextPage(chunk);
+  });
 };
 
-const Image = ({ name, thumbnail, src, index, handleOpen }: imageArgs) => {
-  return (
-    <div class={style.item} onClick={handleOpen}>
-      <img src={thumbnail} class={style.thumbnail} width="300" height="225" />
-      <div class={style.item__details}>
-        {name}
-      </div>
-    </div>
-  );
-};
+const debouncedLoadRequestedImages = debounce(
+  debounce(loadRequestedImages, 1000, {
+    leading: true,
+    trailing: true
+  }),
+  500,
+  {
+    trailing: true
+  }
+);
 
-const Empty = () => {
-  return (
-    <div class={style.item}>
-      <img src="" class={style.thumbnail} width="300" height="225" />
-      <div class={style.item__details}>Loading...</div>
-    </div>
-  );
-};
+const fancyLoadNextPage = (loadNextPage, descendants) => {
+  const images = descendants.filter(item => item.__typename == "Image");
+  const thumbedImages = images.filter(item => "thumbnail" in item);
+  const thumbedImageIds = new Set(thumbedImages.map(image => image.id));
 
-const GalleryThumb = ({ name, slug }) => {
-  const link = "/gallery/" + slug;
-  return (
-    <Link to={link} class={style.item}>
-      <svg viewBox="0 0 8 8" class="icon" width="200px" class={style.icon}>
-        <path
-          d="M0 0v2h8v-1h-5v-1h-3zm0 3v4.5c0 .28.22.5.5.5h7c.28 0 .5-.22.5-.5v-4.5h-8z"
-          id="folder"
-        />
-      </svg>
-      <div class={style.item__details}>
-        {name}
-      </div>
-    </Link>
-  );
+  return item => {
+    if ("thumbnail" in item) return;
+    if (thumbedImageIds.has(item.id)) return;
+    fetchBuffer.add(item.id);
+    debouncedLoadRequestedImages(loadNextPage);
+  };
 };
 
 type Props = {
@@ -58,7 +53,7 @@ type Props = {
   path: Array<string>,
   descendants: Array<any>,
   slug: string,
-  total_descendants: number,
+  totalDescendants: number,
   loadNextPage: () => void,
   loading: boolean
 };
@@ -66,46 +61,96 @@ type State = {
   lightboxIsOpen: boolean,
   currentImage: number
 };
+
+type withWaypointProps = {
+  onEnter: () => {}
+};
+
+// eslint-disable-next-line react/display-name
+const withWaypoint = (WrappedComponent: React$Element<*>) => ({
+  onEnter,
+  ...props
+}: withWaypointProps): React$Element<*> => {
+  return (
+    <Waypoint
+      onEnter={onEnter}
+      bottomOffset="-400px"
+      topOffset="200px"
+      fireOnRapidScroll={false}
+    >
+      <WrappedComponent {...props} />
+    </Waypoint>
+  );
+};
+
+const WaypointGalleryThumb = withWaypoint(GalleryThumb);
+const WaypointImage = withWaypoint(Image);
+
+/**
+ * Component that houses a gallery
+ */
 export default class Gallery extends Component<Props, State> {
+  propTypes = {
+    name: PropTypes.string.isRequired,
+    path: PropTypes.arrayOf(PropTypes.string).isRequired,
+    slug: PropTypes.string.isRequired,
+    totalDescendants: PropTypes.number.isRequired,
+    descendants: PropTypes.array,
+    loadNextPage: PropTypes.func,
+    loading: PropTypes.bool
+  };
+
   state = {
     lightboxIsOpen: false,
     currentImage: 0
   };
 
-  openLightbox = (index: number, event: Event) => {
+  /**
+   * Opens the Lightbox
+   * @param {number} index - the index of the image to open
+   * @param {Event} event - a dom Event representing the click
+   */
+  openLightbox(index: number, event: Event) {
     event && event.preventDefault();
     this.setState({
       currentImage: index,
       lightboxIsOpen: true
     });
-  };
+  }
 
-  closeLightbox = () => {
+  /**
+   * Closes the Lightbox
+   */
+  closeLightbox() {
     this.setState({
       currentImage: 0,
       lightboxIsOpen: false
     });
-  };
+  }
 
+  /**
+   * Renders the component
+   * @return {ReactElement}
+   */
   render() {
     const {
       name = "",
       path = [],
       slug = "",
-      total_descendants = 0,
+      totalDescendants = 0,
       descendants = [],
       loadNextPage = () => {},
       loading = false
     }: Props = this.props;
 
     const sortedDescendants = descendants.slice().sort((a, b) => {
-      if ("thumbnail" in a && "thumbnail" in b) {
+      if (a.__typename == "Image" && b.__typename == "Image") {
         if (a.name < b.name) return -1;
         if (a.name > b.name) return 1;
         return 0;
       }
-      if ("thumbnail" in a) return -1;
-      if ("thumbnail" in b) return 1;
+      if (a.__typename == "Image") return -1;
+      if (b.__typename == "Image") return 1;
       if (a.name < b.name) return -1;
       if (a.name > b.name) return 1;
       return 0;
@@ -113,11 +158,22 @@ export default class Gallery extends Component<Props, State> {
 
     if (sortedDescendants.length <= 0) return;
 
+    const bufferedLoadNextPage = fancyLoadNextPage(loadNextPage, descendants);
+
     const renderedDescendants = sortedDescendants.map((item, idx) => {
-      if (!("thumbnail" in item)) return <GalleryThumb key={idx} {...item} />;
+      if (item.__typename == "Gallery") {
+        return (
+          <WaypointGalleryThumb
+            key={item.id}
+            onEnter={() => bufferedLoadNextPage(item)}
+            {...item}
+          />
+        );
+      }
       return (
-        <Image
-          key={idx}
+        <WaypointImage
+          key={item.id}
+          onEnter={() => bufferedLoadNextPage(item)}
           handleOpen={this.openLightbox.bind(this, idx)}
           {...item}
         />
@@ -127,7 +183,7 @@ export default class Gallery extends Component<Props, State> {
     if (!Array.isArray(renderedDescendants)) return;
 
     const images = descendants
-      ? descendants.filter(child => "thumbnail" in child)
+      ? descendants.filter(child => "large_url" in child)
       : [];
 
     const swipeImages = images.map((image, i) => {
@@ -148,11 +204,12 @@ export default class Gallery extends Component<Props, State> {
       <div>
         <BreadCrumbs slug={slug} path={path} name={name} />
         <GalleryBody
-          children={renderedDescendants}
           loading={loading}
           loadNextPage={loadNextPage}
-          total={total_descendants}
-        />
+          total={totalDescendants}
+        >
+          {renderedDescendants}
+        </GalleryBody>
         <PhotoSwipe
           isOpen={this.state.lightboxIsOpen}
           items={swipeImages}

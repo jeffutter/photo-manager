@@ -17,6 +17,7 @@ defmodule PhotoManagementApi.Web.Schema.Types do
   end
 
   object :image do
+    field :id, :string, resolve: fn %{slug: slug}, _, _ -> {:ok, slug} end;
     field :name, :string
     field :path, list_of(:string)
     field :slug, :string
@@ -31,12 +32,31 @@ defmodule PhotoManagementApi.Web.Schema.Types do
   end
 
   object :gallery do
+    field :id, :string, resolve: fn %{slug: slug}, _, _ -> {:ok, slug} end;
     field :name, :string
     field :path, list_of(:string)
     field :slug, :string
     field :total_descendants, :integer, resolve: fn %{total_children: tc}, _, _ -> {:ok, tc} end
     field :descendants, list_of(:descendants) do
-      resolve fn %{children: children}, _, _ -> {:ok, children} end
+      arg :slugs, list_of(:string)
+
+      resolve fn %{children: children}, args, _ ->
+        slugs = Map.get(args, :slugs)
+
+        case slugs do
+          [] ->
+            {:ok, Enum.slice(children, 0..20)}
+          slugs when is_list(slugs) ->
+            matching_children = children
+                                |> Enum.filter(fn child ->
+                                  Enum.member?(slugs, child.slug)
+                                end)
+            {:ok, matching_children}
+          _ ->
+            {:ok, children}
+        end
+
+      end
     end
   end
 

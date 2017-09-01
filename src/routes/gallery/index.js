@@ -1,43 +1,97 @@
 // @flow
 import React, { Component } from "react";
-import { graphql } from "react-apollo";
+import { graphql, compose } from "react-apollo";
 import style from "./style";
 
 import Gallery from "../../components/gallery";
 import Spinner from "../../components/full_page_spinner";
 
-const GalleryContainer = ({ loading, gallery, loadNextPage }) => {
-  if (loading && !gallery) return <Spinner />;
+type galleryContainerProps = {
+  queryData: { loading: boolean, gallery: any },
+  moreLoading: boolean,
+  moreGallery: any,
+  loadNextPage: () => any
+};
+
+const GalleryContainer = ({
+  queryData: { loading, gallery },
+  moreLoading,
+  moreGallery,
+  loadNextPage
+}: galleryContainerProps) => {
+  if ((loading || moreLoading) && !(gallery && moreGallery)) return <Spinner />;
+
+  let newDescendants = gallery.descendants.map(item => {
+    let foundIndex = moreGallery.descendants.findIndex(x => x.id == item.id);
+    if (foundIndex == -1) return item;
+    let foundItem = moreGallery.descendants[foundIndex];
+    return foundItem;
+  });
+  let newGallery = Object.assign({}, gallery, {
+    descendants: newDescendants
+  });
+
+  window.loadNextPage = loadNextPage;
 
   return (
     <div class={style.home}>
-      {gallery &&
-        <Gallery loading={loading} loadNextPage={loadNextPage} {...gallery} />}
+      {newGallery && (
+        <Gallery
+          loading={loading}
+          loadNextPage={loadNextPage}
+          {...newGallery}
+        />
+      )}
     </div>
   );
 };
 
+const queryOptions = ({ match: { params: { slug } } }) => {
+  const s = slug || "root";
+
+  return {
+    variables: {
+      slug: s
+    },
+    fetchPolicy: "cache-first"
+  };
+};
+
+const moreOptions = ({ match: { params: { slug } }, location: { search } }) => {
+  const s = slug || "root";
+
+  return {
+    variables: {
+      slug: s,
+      slugs: []
+    },
+    fetchPolicy: "cache-first"
+  };
+};
+
 const query = gql`
-  query gallery($slug: String!, $offset: Int!) {
-    gallery(slug: $slug, offset: $offset) {
+  query gallery($slug: String!) {
+    gallery(slug: $slug) {
+      id
       name
       path
       slug
       total_descendants
       descendants {
         ... on Gallery {
+          id
           name
           path
           slug
         }
         ... on Image {
+          id
           name
           path
           slug
           size
           width
           height
-          thumbnail
           small_url
           medium_url
           large_url
@@ -47,29 +101,46 @@ const query = gql`
   }
 `;
 
-export default graphql(query, {
-  options: ({ match: { params: { slug } }, location: { search } }) => {
-    const params = new URLSearchParams(search);
-    const offset = params.get("offset");
-    const s = slug || "root";
-    const of = offset && offset.length > 0 ? parseInt(offset) : 0;
+const more = gql`
+  query gallery($slug: String!, $slugs: [String]!) {
+    gallery(slug: $slug) {
+      id
+      name
+      path
+      slug
+      descendants(slugs: $slugs) {
+        ... on Gallery {
+          id
+          name
+          path
+          slug
+        }
+        ... on Image {
+          id
+          name
+          path
+          slug
+          thumbnail
+        }
+      }
+    }
+  }
+`;
 
+const withQuery = graphql(query, { name: "queryData", options: queryOptions });
+const withMore = graphql(more, {
+  name: "moreData",
+  options: moreOptions,
+  props: p => {
+    let { moreData: { variables, gallery, loading, fetchMore } } = p;
     return {
-      variables: {
-        slug: s,
-        offset: of
-      },
-      fetchPolicy: "cache-first"
-    };
-  },
-  props: ({ data: { gallery, loading, fetchMore } }) => {
-    return {
-      gallery,
-      loading,
-      loadNextPage() {
+      moreGallery: gallery,
+      moreLoading: loading,
+      loadNextPage: slugs => {
         return fetchMore({
           variables: {
-            offset: gallery.descendants.length
+            slug: variables.slug,
+            slugs: slugs || []
           },
           updateQuery: (previousResult, { fetchMoreResult }) => {
             if (!fetchMoreResult) {
@@ -89,4 +160,8 @@ export default graphql(query, {
       }
     };
   }
-})(GalleryContainer);
+});
+
+const withData = compose(withQuery, withMore);
+
+export default withData(GalleryContainer);
