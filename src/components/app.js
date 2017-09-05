@@ -1,24 +1,27 @@
 // @flow
 import React, { Component } from "react";
 import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
-import { ApolloProvider, withApollo } from "react-apollo";
+import { ApolloProvider } from "react-apollo";
 import client from "../lib/client";
 
 import Header from "./header";
 import Gallery from "../routes/gallery";
 
 import style from "./style";
-import { eraseCookie, loggedIn } from "../lib/cookies";
+import { loggedIn } from "../lib/cookies";
 
 import Login from "./login_form";
 import logout from "../lib/logout";
 
-const Logout = ({ client }) => {
+const Logout = () => {
   logout();
   return <Redirect to="/" />;
 };
 
-const App = ({ children }) => {
+type appProps = {
+  children: React$Element<*>
+};
+const App = ({ children }: appProps) => {
   return (
     <div id="app" class={style.app}>
       <Header />
@@ -27,15 +30,19 @@ const App = ({ children }) => {
   );
 };
 
-export default () => {
+/**
+ * The Main App Component
+ * @return {ReactElement}
+ */
+export default function Application() {
   let routes = [
-    <Route exact path="/login" component={Login} />,
-    <Route exact path="/logout" component={Logout} />
+    <Route key={1} exact path="/login" component={Login} />,
+    <Route key={2} exact path="/logout" component={Logout} />
   ];
 
   if (loggedIn()) {
     routes = routes.concat([
-      <App>
+      <App key={3}>
         <Route path="/gallery/:slug?" component={Gallery} />
         <Route
           exact
@@ -47,16 +54,14 @@ export default () => {
       </App>
     ]);
   } else {
-    routes.push(<Redirect from="/" to="/login" />);
+    routes.push(<Redirect key={3} from="/" to="/login" />);
     localStorage.setItem("loginFlash", "Your login has expired or is invalid.");
   }
   return (
     <ApolloProvider client={client}>
       <Router>
-        <div>
-          {routes}
-        </div>
+        <div>{routes}</div>
       </Router>
     </ApolloProvider>
   );
-};
+}

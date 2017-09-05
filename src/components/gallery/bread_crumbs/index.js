@@ -9,7 +9,12 @@ type PropTypes = {
   name: string
 };
 
-export default ({ path, slug, name }: PropTypes) => {
+/**
+ * Component for BreadCrumbs
+ * @param {object} params
+ * @return {ReactElement}
+ */
+export default function BreadCrumbs({ path, slug, name }: PropTypes) {
   if (slug == "root") {
     return (
       <div class={style.galleryHeader}>
@@ -53,4 +58,4 @@ export default ({ path, slug, name }: PropTypes) => {
       {links} {name}
     </div>
   );
-};
+}

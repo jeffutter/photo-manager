@@ -8,19 +8,29 @@ type State = {
   open: boolean
 };
 
+/**
+ * Header Component
+ */
 export default class Header extends Component<Props, State> {
   state = {
     open: false
   };
 
-  toggleNav = () => {
+  /**
+   * Toggles the Navigation
+   */
+  toggleNav() {
     this.setState(state => {
       return Object.assign({}, state, {
         open: !state.open
       });
     });
-  };
+  }
 
+  /**
+   * Renders the Header Component
+   * @return {ReactElement}
+   */
   render() {
     const headerClasses = [style.header];
     if (this.state.open) headerClasses.push(style.openNav);

@@ -1,7 +1,6 @@
 // @flow
 import { Component } from "react";
 import * as React from "react";
-import style from "./style";
 import "react-photoswipe/lib/photoswipe.css";
 import { PhotoSwipe } from "react-photoswipe";
 import BreadCrumbs from "./bread_crumbs";

@@ -45,7 +45,7 @@ const Raven = (function(global, document, url) {
 
   /**
    * Captures unhandled exceptions
-   * @param {anything} event 
+   * @param {anything} event
    */
   function captureUnhandledExceptions(event) {
     unhandledExceptions.push([

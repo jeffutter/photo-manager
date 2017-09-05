@@ -4,7 +4,7 @@ import * as React from "react";
 import style from "./style";
 import CircleLoader from "../../circle_loader";
 
-type imageArgs = {
+type Props = {
   name: string,
   thumbnail: string,
   src: string,
@@ -14,8 +14,8 @@ type imageArgs = {
 };
 
 /**
- * Component for a gallery image 
- * @param {object} props 
+ * Component for a gallery image
+ * @param {object} props
  * @return {ReactElement}
  */
 export default function Image({
@@ -25,7 +25,7 @@ export default function Image({
   index,
   handleOpen,
   innerRef
-}: imageArgs) {
+}: Props) {
   let image = thumbnail ? (
     <img src={thumbnail} class={style.thumbnail} width="300" height="225" />
   ) : (

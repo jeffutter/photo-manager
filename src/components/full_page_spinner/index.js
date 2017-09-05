@@ -2,7 +2,11 @@
 import React, { Component } from "react";
 import style from "./style";
 
-export default function() {
+/**
+ * Full Page Spinner Element
+ * @return {ReactElement}
+ */
+export default function FullPageSpinner() {
   return (
     <div class={style.container}>
       <div class={style.spinner}>

@@ -12,8 +12,8 @@ type PropTypes = {
 };
 
 /**
- * React component for Gallery Body 
- * @param {object} props 
+ * React component for Gallery Body
+ * @param {object} props
  * @return {ReactElement}
  */
 export default function GalleryBody({

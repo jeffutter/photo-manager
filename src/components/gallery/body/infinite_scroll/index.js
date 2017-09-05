@@ -1,6 +1,7 @@
 // @flow
 import React, { Component } from "react";
 import Bricks from "bricks.js";
+import PropTypes from "prop-types";
 
 type Props = {
   children: Array<any>,
@@ -16,8 +17,25 @@ type Props = {
 type State = {
   instance: any
 };
+
+/**
+ * MasonryInfiniteScroller Component
+ * @param {ReactElement} component
+ */
 export default class MasonryInfiniteScroller extends Component<Props, State> {
   masonryContainer: any;
+
+  propTypes = {
+    children: PropTypes.arrayOf(PropTypes.any).isRequired,
+    className: PropTypes.string,
+    element: PropTypes.string,
+    pack: PropTypes.bool,
+    packed: PropTypes.string,
+    position: PropTypes.bool,
+    sizes: PropTypes.arrayOf(PropTypes.any).isRequired,
+    style: PropTypes.any,
+    threshold: PropTypes.number
+  };
 
   static defaultProps = {
     className: "",
@@ -34,6 +52,9 @@ export default class MasonryInfiniteScroller extends Component<Props, State> {
     element: "div"
   };
 
+  /**
+   * Executes when the comonent has mounted
+   */
   componentDidMount() {
     const { packed, sizes, children, position } = this.props;
 
@@ -56,6 +77,11 @@ export default class MasonryInfiniteScroller extends Component<Props, State> {
     this.forcePack();
   }
 
+  /**
+   * Executes when the component has updated
+   * @param {object} prevProps
+   * @return {void}
+   */
   componentDidUpdate(prevProps: Props) {
     const { children } = this.props;
 
@@ -70,22 +96,39 @@ export default class MasonryInfiniteScroller extends Component<Props, State> {
     }
   }
 
+  /**
+   * Executes when the component is unmounted
+   */
   componentWillUnmount() {
     this.state.instance.resize(false);
   }
 
-  setContainerRef = (component: any) => {
+  /**
+   * Sets the container Ref
+   * @param {ReactComponent} component
+   */
+  setContainerRef(component: any) {
     this.masonryContainer = component;
-  };
+  }
 
-  forcePack = () => {
+  /**
+   * Forces Brick Packing
+   */
+  forcePack() {
     if (this.masonryContainer) this.state.instance.pack();
-  };
+  }
 
-  forceUpdate = () => {
+  /**
+   * Forces Brciks to update
+   */
+  forceUpdate() {
     if (this.masonryContainer) this.state.instance.update();
-  };
+  }
 
+  /**
+   * Renders the MasonryInfiniteScroller Component
+   * @return {ReactElement}
+   */
   render() {
     const { children, className, style } = this.props;
 

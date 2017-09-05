@@ -5,7 +5,11 @@ import { Redirect } from "react-router-dom";
 import style from "./style";
 import { loggedIn } from "../../lib/cookies";
 
-export default () => {
+/**
+ * Gallery Component
+ * @return {ReactElement}
+ */
+export default function LoginForm() {
   if (loggedIn()) return <Redirect to="/" />;
 
   let loginWarning;
@@ -36,4 +40,4 @@ export default () => {
       </a>
     </div>
   );
-};
+}

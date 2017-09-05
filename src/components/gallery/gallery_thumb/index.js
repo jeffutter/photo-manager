@@ -4,19 +4,20 @@ import * as React from "react";
 import { Link } from "react-router-dom";
 import style from "./style";
 
-type thumbArgs = {
+type Props = {
   name: string,
   slug: string,
   innerRef: () => void
 };
 
 /**
- * Returns a GalleryThumb Component 
+ * Returns a GalleryThumb Component
  * @param {object} params
  * @return {ReactElement}
  */
-export default function GalleryThumb({ name, slug, innerRef }: thumbArgs) {
+export default function GalleryThumb({ name, slug, innerRef }: Props) {
   const link = "/gallery/" + slug;
+
   return (
     <Link to={link} class={style.item} innerRef={innerRef}>
       <svg viewBox="0 0 8 8" width="200px" class={style.icon}>
