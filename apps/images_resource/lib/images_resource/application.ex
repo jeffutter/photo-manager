@@ -20,7 +20,7 @@ defmodule ImagesResource.Application do
     import Supervisor.Spec, warn: false
 
     children = [
-      worker(Cachex, [:my_cache, [limit: 500, default_ttl: 21600000]]),
+      worker(Cachex, [:my_cache, [limit: 1000, default_ttl: 21600000]]),
       worker(ImagesResource.Sizer.Queue, []),
       worker(ImagesResource.Sizer.Processor, []),
       worker(ImagesResource.Uploaders.Queue, []),
