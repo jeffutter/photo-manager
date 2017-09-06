@@ -6,7 +6,7 @@ import { PhotoSwipe } from "react-photoswipe";
 import BreadCrumbs from "./bread_crumbs";
 import GalleryBody from "./body";
 import Waypoint from "react-waypoint";
-import { chunk, debounce } from "lodash";
+import { chunk, debounce, sortBy } from "lodash";
 import PropTypes from "prop-types";
 import Image from "./image";
 import GalleryThumb from "./gallery_thumb";
@@ -142,33 +142,32 @@ export default class Gallery extends Component<Props, State> {
       loading = false
     }: Props = this.props;
 
-    const sortedDescendants = descendants.slice().sort((a, b) => {
-      if (a.__typename == "Image" && b.__typename == "Image") {
-        if (a.name < b.name) return -1;
-        if (a.name > b.name) return 1;
-        return 0;
-      }
-      if (a.__typename == "Image") return -1;
-      if (b.__typename == "Image") return 1;
-      if (a.name < b.name) return -1;
-      if (a.name > b.name) return 1;
-      return 0;
-    });
+    if (!Array.isArray(descendants) && descendants.length <= 0) return;
 
-    if (sortedDescendants.length <= 0) return;
+    const images = sortBy(
+      descendants.filter(item => item.__typename == "Image"),
+      [o => o.name]
+    );
+    const galleries = sortBy(
+      descendants.filter(item => item.__typename == "Gallery"),
+      [o => o.name]
+    );
+
+    const sortedDescendants = [...galleries, ...images];
 
     const bufferedLoadNextPage = fancyLoadNextPage(loadNextPage, descendants);
 
-    const renderedDescendants = sortedDescendants.map((item, idx) => {
-      if (item.__typename == "Gallery") {
-        return (
-          <WaypointGalleryThumb
-            key={item.id}
-            onEnter={() => bufferedLoadNextPage(item)}
-            {...item}
-          />
-        );
-      }
+    const renderedGalleries = galleries.map(item => {
+      return (
+        <WaypointGalleryThumb
+          key={item.id}
+          onEnter={() => bufferedLoadNextPage(item)}
+          {...item}
+        />
+      );
+    });
+
+    const renderedImages = images.map((item, idx) => {
       return (
         <WaypointImage
           key={item.id}
@@ -179,13 +178,9 @@ export default class Gallery extends Component<Props, State> {
       );
     });
 
-    if (!Array.isArray(renderedDescendants)) return;
+    const renderedDescendants = [...renderedGalleries, ...renderedImages];
 
-    const images = descendants
-      ? descendants.filter(child => "large_url" in child)
-      : [];
-
-    const swipeImages = images.map((image, i) => {
+    const swipeImages = images.map(image => {
       return {
         src: image.large_url,
         msrc: image.small_url,
@@ -212,7 +207,7 @@ export default class Gallery extends Component<Props, State> {
         <PhotoSwipe
           isOpen={this.state.lightboxIsOpen}
           items={swipeImages}
-          onClose={this.closeLightbox}
+          onClose={this.closeLightbox.bind(this)}
           options={swipeOptions}
         />
       </div>

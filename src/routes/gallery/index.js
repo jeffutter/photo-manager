@@ -25,7 +25,7 @@ const GalleryContainer = ({
     let foundIndex = moreGallery.descendants.findIndex(x => x.id == item.id);
     if (foundIndex == -1) return item;
     let foundItem = moreGallery.descendants[foundIndex];
-    return foundItem;
+    return Object.assign({}, item, foundItem);
   });
   let newGallery = Object.assign({}, gallery, {
     descendants: newDescendants

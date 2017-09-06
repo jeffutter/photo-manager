@@ -133,7 +133,11 @@ export default class MasonryInfiniteScroller extends Component<Props, State> {
     const { children, className, style } = this.props;
 
     return (
-      <div ref={this.setContainerRef} className={className} style={style}>
+      <div
+        ref={this.setContainerRef.bind(this)}
+        className={className}
+        style={style}
+      >
         {children}
       </div>
     );
