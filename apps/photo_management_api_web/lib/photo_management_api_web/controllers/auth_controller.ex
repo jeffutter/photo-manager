@@ -8,12 +8,12 @@ defmodule PhotoManagementApi.Web.AuthController do
   alias Ueberauth.Auth
   alias PhotoManagementApi.User
 
-  def callback(%Plug.Conn{assigns: %{ueberauth_failure: fails}} = conn, _params) do
+  def callback(conn = %Plug.Conn{assigns: %{ueberauth_failure: fails}}, _params) do
     Logger.error "Uberauth Failed: #{inspect fails}"
     conn
   end
 
-  def callback(%Plug.Conn{assigns: %{ueberauth_auth: auth}} = conn, _params) do
+  def callback(conn = %Plug.Conn{assigns: %{ueberauth_auth: auth}}, _params) do
     {:ok, user = %User{}} = find_or_create(auth)
     {:ok, jwt, full_claims} = Guardian.encode_and_sign(user, :api)
 
@@ -24,7 +24,7 @@ defmodule PhotoManagementApi.Web.AuthController do
     |> redirect(to: "/")
   end
 
-  def find_or_create(%Auth{} = auth) do
+  def find_or_create(auth = %Auth{}) do
     auth
     |> basic_info()
     |> User.find_or_create()
@@ -47,9 +47,9 @@ defmodule PhotoManagementApi.Web.AuthController do
       name = [auth.info.first_name, auth.info.last_name]
              |> Enum.filter(&(&1 != nil and &1 != ""))
 
-      cond do
-        length(name) == 0 -> auth.info.nickname
-        true -> Enum.join(name, " ")
+      case length(name) do
+        0 -> auth.info.nickname
+        _ -> Enum.join(name, " ")
       end
     end
   end

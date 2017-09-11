@@ -10,7 +10,7 @@ defmodule ImagesResource.Uploaders.Worker do
     end)
   end
 
-  defp process_sync( event = {:add, file = %File{name: name, path: path}}) do
+  defp process_sync(event = {:add, file = %File{name: name, path: path}}) do
     Logger.info "Storing: #{inspect file}"
 
     try do

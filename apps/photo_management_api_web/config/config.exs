@@ -40,7 +40,7 @@ config :guardian, Guardian,
   allowed_algos: ["HS512"], # optional
   verify_module: Guardian.JWT,  # optional
   issuer: "PhotoManagement",
-  ttl: { 30, :days },
+  ttl: {30, :days},
   allowed_drift: 2000,
   verify_issuer: true, # optional
   secret_key: {:system, "GUARDIAN_SECRET_KEY"},

@@ -271,40 +271,42 @@ defmodule ImagesResource.Storage.Tree do
   ]
   """
   def diff(source, dest), do: diff(:remove, source, dest) ++ diff(:add, source, dest)
-  def diff(:add, %Directory{children: source_children}, dest) do
-    Enum.flat_map(source_children, fn
-      source_child = %Directory{name: source_child_name} ->
-        case Directory.find_child(dest, source_child_name) do
-          {nil, _} ->
-            source_child
-            |> Directory.flat_children
-            |> Enum.map(fn child -> {:add, child} end)
-          {_, dest_child} ->
-            diff(:add, source_child, dest_child)
-        end
-      source_child = %File{name: source_child_name} ->
-        case Directory.find_child(dest, source_child_name) do
-          {nil, _} -> [{:add, source_child}]
-          {_, _dest_child} -> []
-        end
-    end)
+  def diff(:add, %Directory{children: source_children}, dest), do: Enum.flat_map(source_children, add(dest))
+  def diff(:remove, source, %Directory{children: dest_children}), do: Enum.flat_map(dest_children, remove(source)) 
+
+  defp add(dest), do: fn source_child -> add(source_child, dest) end
+  defp add(source_child = %Directory{name: source_child_name}, dest) do
+    case Directory.find_child(dest, source_child_name) do
+      {nil, _} ->
+        source_child
+        |> Directory.flat_children
+        |> Enum.map(fn child -> {:add, child} end)
+      {_, dest_child} ->
+        diff(:add, source_child, dest_child)
+    end
+  end 
+  defp add(source_child = %File{name: source_child_name}, dest) do
+    case Directory.find_child(dest, source_child_name) do
+      {nil, _} -> [{:add, source_child}]
+      {_, _dest_child} -> []
+    end
   end
-  def diff(:remove, source, %Directory{children: dest_children}) do
-    Enum.flat_map(dest_children, fn
-      dest_child = %Directory{name: dest_child_name} ->
-        case Directory.find_child(source, dest_child_name) do
-          {nil, _} ->
-            dest_child
-            |> Directory.flat_children
-            |> Enum.map(fn child -> {:remove, child} end)
-          {_, source_child} ->
-            diff(:remove, source_child, dest_child)
-        end
-      dest_child = %File{name: dest_child_name} ->
-        case Directory.find_child(source, dest_child_name) do
-          {nil, _} -> [{:remove, dest_child}]
-          {_, _dest_child} -> []
-        end
-    end)
+
+  defp remove(source), do: fn dest_child -> remove(dest_child, source) end
+  defp remove(dest_child = %Directory{name: dest_child_name}, source) do
+    case Directory.find_child(source, dest_child_name) do
+      {nil, _} ->
+        dest_child
+        |> Directory.flat_children
+        |> Enum.map(fn child -> {:remove, child} end)
+      {_, source_child} ->
+        diff(:remove, source_child, dest_child)
+    end
+  end
+  defp remove(dest_child = %File{name: dest_child_name}, source) do
+    case Directory.find_child(source, dest_child_name) do
+      {nil, _} -> [{:remove, dest_child}]
+      {_, _dest_child} -> []
+    end
   end
 end

@@ -20,9 +20,9 @@ defmodule ImagesResource.Storage.Directory do
   ...> |> ImagesResource.Storage.Tree.from_list("root")
   ...> |> ImagesResource.Storage.Directory.flat_children
   [
-    %ImagesResource.Storage.File{name: "baz.txt", path: ["foo", "bar"]},
-    %ImagesResource.Storage.File{name: "qux.txt", path: ["foo"]},
-    %ImagesResource.Storage.File{name: "foo.txt", path: []}
+    %ImagesResource.Storage.File{last_modified: nil, name: "baz.txt", path: ["foo", "bar"], size: nil, slug: "foo/bar/baz.txt"},
+    %ImagesResource.Storage.File{last_modified: nil, name: "qux.txt", path: ["foo"], size: nil, slug: "foo/qux.txt"},
+    %ImagesResource.Storage.File{last_modified: nil, name: "foo.txt", path: [], size: nil, slug: "foo.txt"}
   ]
   """
   def flat_children(%__MODULE__{children: children}) do

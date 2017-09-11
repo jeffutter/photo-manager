@@ -25,11 +25,9 @@ defmodule PhotoManagementApi.User do
     query = from u in __MODULE__,
             where: u.provider == ^user.provider,
             where: u.provider_id == ^user.provider_id
-    maybe_user = Repo.one(query)
-    if !maybe_user  do
-      Repo.insert(user)
-    else
-      {:ok, maybe_user}
+    case Repo.one(query) do
+      user = %__MODULE__{} -> {:ok, user}
+      _ -> Repo.insert(user)
     end
   end
 

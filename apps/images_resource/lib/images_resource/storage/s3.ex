@@ -22,7 +22,8 @@ defmodule ImagesResource.Storage.S3 do
   end
 
   def get(full_path, opts \\ []) do
-    Keyword.get(opts, :bucket, bucket())
+    opts
+    |> Keyword.get(:bucket, bucket())
     |> S3.get_object(full_path)
     |> ExAws.request
   end

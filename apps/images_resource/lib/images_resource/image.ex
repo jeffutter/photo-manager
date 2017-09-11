@@ -45,7 +45,7 @@ defmodule ImagesResource.Image do
       {:ok, output} ->
         Logger.debug "Cache Hit: #{inspect cache_key}"
         {:ok, output}
-      { :missing, nil } ->
+      {:missing, nil} ->
         Logger.info "Cache Miss: #{inspect cache_key}"
 
         with path            <- s3_path(file, version),
@@ -97,7 +97,7 @@ defmodule ImagesResource.Image do
       {:ok, output} ->
         Logger.debug "Cache Hit: #{inspect cache_key}"
         {:ok, output}
-      { :missing, nil } ->
+      {:missing, nil} ->
         Logger.info "Cache Miss: #{inspect cache_key}"
 
         try do
