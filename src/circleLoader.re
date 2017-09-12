@@ -1,26 +1,22 @@
-// @flow
-import * as React from "react";
-import style from "./style";
+let styles: Js.t 'a = [%bs.raw "require('./components/circle_loader/style.scss')"];
 
-/**
- * Circle Loader Component
- * @return {ReactElement}
- */
-export default function CircleLoader() {
-  return (
+let component = ReasonReact.statelessComponent "CircleLoader";
+
+let make _children => {
+  ...component,
+  render: fun _self =>
     <svg
       width="300px"
       height="225px"
       viewBox="0 0 44 44"
       xmlns="http://www.w3.org/2000/svg"
       stroke="#fff"
-      class={style.icon}
-    >
+      className=styles##icon>
       <g fill="none" fillRule="evenodd" strokeWidth="2">
         <circle cx="22" cy="22" r="1">
           <animate
             attributeName="r"
-            begin="0s"
+            _begin="0s"
             dur="1.8s"
             values="1; 20"
             calcMode="spline"
@@ -30,7 +26,7 @@ export default function CircleLoader() {
           />
           <animate
             attributeName="stroke-opacity"
-            begin="0s"
+            _begin="0s"
             dur="1.8s"
             values="1; 0"
             calcMode="spline"
@@ -42,7 +38,7 @@ export default function CircleLoader() {
         <circle cx="22" cy="22" r="1">
           <animate
             attributeName="r"
-            begin="-0.9s"
+            _begin="-0.9s"
             dur="1.8s"
             values="1; 20"
             calcMode="spline"
@@ -52,7 +48,7 @@ export default function CircleLoader() {
           />
           <animate
             attributeName="stroke-opacity"
-            begin="-0.9s"
+            _begin="-0.9s"
             dur="1.8s"
             values="1; 0"
             calcMode="spline"
@@ -63,5 +59,6 @@ export default function CircleLoader() {
         </circle>
       </g>
     </svg>
-  );
-}
+};
+
+let default = ReasonReact.wrapReasonForJs ::component (fun _ => make [||]);

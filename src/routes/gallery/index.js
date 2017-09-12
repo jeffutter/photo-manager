@@ -4,7 +4,7 @@ import { graphql, compose } from "react-apollo";
 import style from "./style";
 
 import Gallery from "../../components/gallery";
-import Spinner from "../../components/full_page_spinner";
+import { $$default as Spinner } from "../../fullPageSpinner.re";
 
 type galleryContainerProps = {
   queryData: { loading: boolean, gallery: any },
@@ -19,6 +19,7 @@ const GalleryContainer = ({
   moreGallery,
   loadNextPage
 }: galleryContainerProps) => {
+  // console.log(Spinner);
   if ((loading || moreLoading) && !(gallery && moreGallery)) return <Spinner />;
 
   let newDescendants = gallery.descendants.map(item => {

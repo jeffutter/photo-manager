@@ -3,13 +3,13 @@ import { Component } from "react";
 import * as React from "react";
 import "react-photoswipe/lib/photoswipe.css";
 import { PhotoSwipe } from "react-photoswipe";
-import BreadCrumbs from "./bread_crumbs";
+import { $$default as BreadCrumbs } from "../../BreadCrumbs.re";
 import GalleryBody from "./body";
 import Waypoint from "react-waypoint";
 import { chunk, debounce, sortBy } from "lodash";
 import PropTypes from "prop-types";
-import Image from "./image";
-import GalleryThumb from "./gallery_thumb";
+import { $$default as Image } from "../../galleryImage.re";
+import { $$default as GalleryThumb } from "../../galleryThumb.re";
 
 const fetchBuffer = new Set();
 

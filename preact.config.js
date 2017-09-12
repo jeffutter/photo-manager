@@ -6,6 +6,7 @@ var LodashModuleReplacementPlugin = require("lodash-webpack-plugin");
 var compressExtensions = /\.(js|css|html|svg|ico)$/;
 
 export default (config, env, helpers) => {
+  // console.log(config);
   preactCliFlow(config);
 
   if (config.devServer) {
@@ -21,6 +22,15 @@ export default (config, env, helpers) => {
   );
   babel.options.plugins.push("graphql-tag");
   babel.options.plugins.push("lodash");
+
+  // Bucklescript
+
+  config.resolve.extensions.push(".re");
+  config.resolve.extensions.push(".ml");
+  config.module.loaders.push({
+    test: /\.(re|ml)$/,
+    use: "bs-loader"
+  });
 
   config.plugins.push(new LodashModuleReplacementPlugin());
 
