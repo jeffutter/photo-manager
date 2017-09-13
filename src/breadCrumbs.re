@@ -13,9 +13,9 @@ let make path::(path: 'a) slug::(slug: string) name::(name: string) _children =>
     switch slug {
     | "root" =>
       <div className=styles##galleryHeader>
-        <Link activeClassName="active" _to="/gallery">
+        <NavLink activeClassName="active" _to="/gallery">
           (ReasonReact.stringToElement "Gallery")
-        </Link>
+        </NavLink>
       </div>
     | _ =>
       let splitSlug = slug |> Js.String.split "/" |> Js.Array.slice start::0 end_::(-1);
@@ -38,21 +38,21 @@ let make path::(path: 'a) slug::(slug: string) name::(name: string) _children =>
           (
             fun {name: n, path: p} idx =>
               <span key=(Js.Int.toString idx)>
-                <Link activeClassName="active" _to=p> (ReasonReact.stringToElement n) </Link>
+                <NavLink activeClassName="active" _to=p> (ReasonReact.stringToElement n) </NavLink>
                 (ReasonReact.stringToElement " / ")
               </span>
           )
           pathObjs;
-      let rootLink =
-        <Link activeClassName="active" _to="/gallery">
+      let rootNavLink =
+        <NavLink activeClassName="active" _to="/gallery">
           (ReasonReact.stringToElement "Gallery")
-        </Link>;
+        </NavLink>;
       ReasonReact.createDomElement
         "div"
         props::{"className": styles##galleryHeader}
         (
           Array.concat [
-            [|rootLink, ReasonReact.stringToElement " / "|],
+            [|rootNavLink, ReasonReact.stringToElement " / "|],
             links,
             [|ReasonReact.stringToElement name|]
           ]

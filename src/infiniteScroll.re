@@ -8,8 +8,7 @@ type state = {
 };
 
 type action =
-  | ChildrenUpdated
-  | InstanceCreated Brick.t;
+  | ChildrenUpdated;
 
 let component = ReasonReact.reducerComponent "InfiniteScroll";
 
@@ -31,62 +30,52 @@ let make
   initialState: fun () => {instance: None, childrenCount: 0, container: ref None},
   reducer: fun action =>
     switch action {
-    | InstanceCreated instance => (
-        fun state => {
-          Js.log "Container Created";
-          Brick.resize instance true;
-          if (count children > 0) {
-            Brick.pack instance
-          };
-          ReasonReact.Update {...state, instance: Some instance}
-        }
-      )
     | ChildrenUpdated => (
         fun state => {
-          Js.log "Children Updated";
           let currCount = count children;
           let prevCount = state.childrenCount;
           if (currCount != prevCount) {
-            Js.log "New Count";
             switch state.instance {
             | None => ()
             | Some i =>
               if pack {
-                Brick.pack i
+                Brick.pack i;
+                /* IDK I shouldn't have to do this */
+                let _ =
+                  Js.Global.setTimeout
+                    (
+                      fun () => {
+                        Brick.resize i true;
+                        Brick.pack i
+                      }
+                    )
+                    0;
+                ()
               } else {
                 Brick.update i
               }
             };
-            ReasonReact.Update {...state, childrenCount: count children}
+            ReasonReact.Update {...state, childrenCount: currCount}
           } else {
-            Js.log "Old Count";
             ReasonReact.NoUpdate
           }
         }
       )
     },
-  /* didMount: fun {reduce, state} => {
-       Js.log !state.container;
-       reduce (fun () => ChildrenUpdated) ();
-       ReasonReact.NoUpdate
-     }, */
-  didUpdate: fun {oldSelf, newSelf} => {
-    Js.log oldSelf;
-    Js.log newSelf;
-    switch (!oldSelf.state.container, !newSelf.state.container) {
-    | (None, Some container) =>
+  didMount: fun {reduce, state} =>
+    switch !state.container {
+    | Some c =>
       let instance =
-        Brick.brick {
-          "container": container,
-          "packed": packed,
-          "sizes": sizes,
-          "position": position
-        };
-      newSelf.reduce (fun () => InstanceCreated instance) ()
-    | _ => ()
-    };
-    newSelf.reduce (fun () => ChildrenUpdated) ()
-  },
+        Brick.brick {"container": c, "packed": packed, "sizes": sizes, "position": position};
+      Brick.resize instance true;
+      Brick.pack instance;
+      reduce (fun () => ChildrenUpdated) ();
+      ReasonReact.Update {...state, instance: Some instance}
+    | None =>
+      Js.Exn.raiseError "Bricks Container Missing";
+      ReasonReact.NoUpdate
+    },
+  didUpdate: fun {newSelf} => newSelf.reduce (fun () => ChildrenUpdated) (),
   willUnmount: fun {state} =>
     switch state.instance {
     | None => ()

@@ -1,5 +1,6 @@
 // @flow
-import React, { Component } from "react";
+import React from "react";
+import ReactDom from "react-dom";
 import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
 import { ApolloProvider } from "react-apollo";
 import client from "../lib/client";
@@ -23,7 +24,7 @@ type appProps = {
 };
 const App = ({ children }: appProps) => {
   return (
-    <div id="app" class={style.app}>
+    <div id="app" className={style.app}>
       <Header />
       {children}
     </div>

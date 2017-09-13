@@ -5,14 +5,14 @@ let component = ReasonReact.statelessComponent "GalleryImage";
 let make ::name ::thumbnail=? ::handleOpen ::innerRef _children => {
   ...component,
   render: fun _self =>
-    <div onClick=handleOpen ref=innerRef>
+    <div onClick=handleOpen ref=innerRef className=styles##item>
       (
         switch thumbnail {
         | None => <CircleLoader />
         | Some thumb => <img src=thumb className=styles##thumbnail width="300" height="225" />
         }
       )
-      <div className=styles##item__details> name </div>
+      <div className=styles##item_details> name </div>
     </div>
 };
 

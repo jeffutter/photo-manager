@@ -35,7 +35,7 @@ const GalleryContainer = ({
   window.loadNextPage = loadNextPage;
 
   return (
-    <div class={style.home}>
+    <div className={style.home}>
       {newGallery && (
         <Gallery
           loading={loading}

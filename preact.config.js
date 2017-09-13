@@ -2,11 +2,36 @@ var CompressionPlugin = require("compression-webpack-plugin");
 var BrotliPlugin = require("brotli-webpack-plugin");
 const preactCliFlow = require("preact-cli-plugin-flow");
 var LodashModuleReplacementPlugin = require("lodash-webpack-plugin");
+import { resolve } from "path";
+import util from "util";
 
 var compressExtensions = /\.(js|css|html|svg|ico)$/;
 
 export default (config, env, helpers) => {
-  // console.log(config);
+  config.module.loaders = config.module.loaders.filter(
+    loader =>
+      !(
+        loader &&
+        loader.loader &&
+        typeof loader.loader == "string" &&
+        loader.loader.match(/async/)
+      )
+  );
+  // Remove preact aliases
+  let alias = config.resolve.alias;
+  let filteredAlias = Object.keys(alias)
+    .filter(key => !(key.match(/preact/) || alias[key].match(/preact/)))
+    .reduce((obj, key) => {
+      obj[key] = alias[key];
+      return obj;
+    }, {});
+
+  filteredAlias["preact-cli-entrypoint"] = alias["preact-cli-entrypoint"];
+  // filteredAlias["preact-cli/async-component"] =
+  alias["preact-cli/async-component"];
+  //console.log(alias, filteredAlias);
+  config.resolve.alias = filteredAlias;
+
   preactCliFlow(config);
 
   if (config.devServer) {
@@ -20,8 +45,26 @@ export default (config, env, helpers) => {
   let babel = config.module.loaders.find(({ loader }) =>
     loader.match(/babel-loader/)
   );
+
+  // Remove Pragma for Preact
+  babel.options.plugins = babel.options.plugins.filter(
+    plugin => !(Array.isArray(plugin) && plugin[0].match(/pragma/))
+  );
+
+  // Use defaults for jsx plugin
+  babel.options.plugins = babel.options.plugins.filter(
+    plugin =>
+      !(
+        Array.isArray(plugin) &&
+        plugin[0].match(/babel-plugin-transform-react-jsx/)
+      )
+  );
+  babel.options.plugins.push("transform-react-jsx");
+
   babel.options.plugins.push("graphql-tag");
   babel.options.plugins.push("lodash");
+
+  config.entry.bundle[0] = resolve(env.cwd, env.src || "src", "index.js");
 
   // Bucklescript
 
@@ -33,6 +76,8 @@ export default (config, env, helpers) => {
   });
 
   config.plugins.push(new LodashModuleReplacementPlugin());
+
+  // console.log(util.inspect(config, false, null));
 
   if (env.production) {
     config.plugins.push(

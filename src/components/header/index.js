@@ -1,7 +1,7 @@
 // @flow
 import React, { Component } from "react";
 import style from "./style";
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 type Props = {};
 type State = {
@@ -38,11 +38,11 @@ export default class Header extends Component<Props, State> {
     if (this.state.open) mobileToggleClasses.push(style.openNavMobileToggle);
 
     return (
-      <header class={headerClasses.join(" ")}>
-        <a class={style.logo} href="#">
+      <header className={headerClasses.join(" ")}>
+        <a className={style.logo} href="#">
           Photo Gallery
         </a>
-        <div class={mobileToggleClasses.join(" ")} onClick={this.toggleNav}>
+        <div className={mobileToggleClasses.join(" ")} onClick={this.toggleNav}>
           <span />
           <span />
           <span />
@@ -50,31 +50,31 @@ export default class Header extends Component<Props, State> {
         <nav>
           <ul>
             <li>
-              <Link
+              <NavLink
                 activeClassName={style.active}
                 to="/"
                 onClick={this.toggleNav}
               >
                 Home
-              </Link>
+              </NavLink>
             </li>
             <li>
-              <Link
+              <NavLink
                 activeClassName={style.active}
                 to="/gallery"
                 onClick={this.toggleNav}
               >
                 Gallery
-              </Link>
+              </NavLink>
             </li>
             <li>
-              <Link
+              <NavLink
                 activeClassName={style.active}
                 to="/logout"
                 onClick={this.toggleNav}
               >
                 Logout
-              </Link>
+              </NavLink>
             </li>
           </ul>
         </nav>

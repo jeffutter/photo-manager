@@ -1,4 +1,4 @@
-external link : ReasonReact.reactClass = "Link" [@@bs.module "react-router-dom"];
+external navLink : ReasonReact.reactClass = "NavLink" [@@bs.module "react-router-dom"];
 
 let make
     _to::(_to: string)
@@ -12,7 +12,7 @@ let make
     | None => Js.null
     };
   ReasonReact.wrapJsForReason
-    reactClass::link
+    reactClass::navLink
     props::{"to": _to, "innerRef": ref, "className": className, "activeClassName": activeClassName}
     children
 };
