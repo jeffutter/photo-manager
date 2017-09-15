@@ -59,8 +59,3 @@ let make path::(path: 'a) slug::(slug: string) name::(name: string) _children =>
         )
     }
 };
-
-let default =
-  ReasonReact.wrapReasonForJs
-    ::component
-    (fun jsParams => make path::jsParams##path slug::jsParams##slug name::jsParams##name [||]);

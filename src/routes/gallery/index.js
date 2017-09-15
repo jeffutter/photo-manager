@@ -3,7 +3,7 @@ import React, { Component } from "react";
 import { graphql, compose } from "react-apollo";
 import style from "./style";
 
-import Gallery from "../../components/gallery";
+import { $$default as Gallery } from "../../gallery.re";
 import { $$default as Spinner } from "../../fullPageSpinner.re";
 
 type galleryContainerProps = {

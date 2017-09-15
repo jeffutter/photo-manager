@@ -24,7 +24,6 @@ let make
         {"mq": "768px", "columns": 2, "gutter": 20},
         {"mq": "1024px", "columns": 3, "gutter": 20}
       |]
-    /* ::style={||} */
     children => {
   ...component,
   initialState: fun () => {instance: None, childrenCount: 0, container: ref None},
@@ -85,18 +84,3 @@ let make
     ReasonReact.createDomElement
       "div" props::{"className": className, "ref": self.handle setContainerRef} children
 };
-
-let default =
-  ReasonReact.wrapReasonForJs
-    ::component
-    (
-      fun jsProps =>
-        make
-          className::?(Js.Nullable.to_opt jsProps##className)
-          pack::?(Js.Nullable.to_opt jsProps##pack)
-          packed::?(Js.Nullable.to_opt jsProps##packed)
-          position::?(Js.Nullable.to_opt jsProps##position)
-          sizes::?(Js.Nullable.to_opt jsProps##sizes)
-          /* style::?(Js.Nullable.to_opt jsProps##style) */
-          jsProps##children
-    );

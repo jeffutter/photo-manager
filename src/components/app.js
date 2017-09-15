@@ -5,7 +5,7 @@ import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
 import { ApolloProvider } from "react-apollo";
 import client from "../lib/client";
 
-import Header from "./header";
+import { $$default as Header } from "../header.re";
 import Gallery from "../routes/gallery";
 
 import style from "./style";
