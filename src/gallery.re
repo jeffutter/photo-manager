@@ -1,9 +1,6 @@
-external sortBy : Js.Array.t 'a => ('b => bool) => Js.Array.t 'a = "" [@@bs.module "lodash"];
-
-external debounce : ('a => unit) => int => 'b => 't => unit = "" [@@bs.module "lodash"];
-
-external chunk : Js.Array.t 'a => int => Js.Array.t (Js.Array.t 'a) = "" [@@bs.module "lodash"];
-
+/* external sortBy : Js.Array.t 'a => ('b => bool) => Js.Array.t 'a = "sortBy" [@@bs.module "lodash"]; */
+/* external chunk : Js.Array.t 'a => int => Js.Array.t (Js.Array.t 'a) =
+   "chunk" [@@bs.module "lodash"]; */
 type image =
   Js.t {
     .
@@ -24,7 +21,7 @@ type state = {
 };
 
 type action =
-  | OpenLightbox image
+  | OpenLightbox int
   | CloseLightbox;
 
 let component = ReasonReact.reducerComponent "Gallery";
@@ -37,15 +34,20 @@ let loadRequestedImages (loadNextPage: Js.Array.t string => unit) :unit => {
   switch (Js.Array.length currentBuffer) {
   | c when c <= 0 => ()
   | _ =>
-    let chunks = chunk currentBuffer 20;
+    let chunks = Utils.chunk 20 currentBuffer;
     Js.Array.forEach (fun chunk => loadNextPage chunk) chunks;
     ()
   }
 };
 
+/* let debouncedLoadRequestedImages =
+   debounce
+     (debounce loadRequestedImages 1000 {"leading": true, "trailing": true}) 500 {"trailing": true}; */
 let debouncedLoadRequestedImages =
-  debounce
-    (debounce loadRequestedImages 1000 {"leading": true, "trailing": true}) 500 {"trailing": true};
+  Utils.debounce
+    waitMs::500
+    trailing::true
+    (Utils.debounce waitMs::1000 leading::true trailing::true loadRequestedImages);
 
 let fancyLoadNextPage
     (loadNextPage: Js.Array.t string => unit)
@@ -64,39 +66,16 @@ let fancyLoadNextPage
       images;
   let thumbedImageIds = Js.Array.map (fun item => item##id) thumbedImages;
   fun item =>
-    switch (Js.Nullable.to_opt item##thumbnail, Js.Array.includes item##id thumbedImageIds) {
-    | (None, false) =>
+    switch (
+      item##__typename,
+      Js.Nullable.to_opt item##thumbnail,
+      Js.Array.includes item##id thumbedImageIds
+    ) {
+    | ("Image", None, false) =>
       ignore (Js.Array.push item##id fetchBuffer);
       debouncedLoadRequestedImages loadNextPage
     | _ => ()
     }
-};
-
-module WaypointGalleryThumb = {
-  let component = ReasonReact.statelessComponent "WaypointGalleryThumb";
-  let make ::onEnter name::(name: string) slug::(slug: string) _children => {
-    ...component,
-    render: fun _ =>
-      <Waypoint onEnter bottomOffset="-400px" topOffset="200px" fireOnRapidScroll=false>
-        <GalleryThumb name slug />
-      </Waypoint>
-  };
-};
-
-module WaypointImage = {
-  let component = ReasonReact.statelessComponent "WaypointImage";
-  let make
-      ::onEnter
-      name::(name: string)
-      thumbnail::(thumbnail: option string)
-      ::handleOpen
-      _children => {
-    ...component,
-    render: fun _ =>
-      <Waypoint onEnter bottomOffset="-400px" topOffset="200px" fireOnRapidScroll=false>
-        <GalleryImage name thumbnail=?thumbnail handleOpen />
-      </Waypoint>
-  };
 };
 
 let make
@@ -108,20 +87,20 @@ let make
     _children => {
   ...component,
   initialState: fun () => {lightboxIsOpen: false, currentImage: 0},
-  reducer: fun action state =>
+  reducer: fun action _state =>
     switch action {
-    | OpenLightbox _index => ReasonReact.NoUpdate
-    | CloseLightbox => ReasonReact.NoUpdate
+    | OpenLightbox index => ReasonReact.Update {lightboxIsOpen: true, currentImage: index}
+    | CloseLightbox => ReasonReact.Update {lightboxIsOpen: false, currentImage: 0}
     },
   render: fun self => {
     let images =
-      sortBy
-        (Js.Array.filter (fun item => item##__typename == "Image") descendants)
-        (fun item => item##name);
+      Utils.sortBy
+        (fun item => item##name)
+        (Js.Array.filter (fun item => item##__typename == "Image") descendants);
     let galleries =
-      sortBy
-        (Js.Array.filter (fun item => item##__typename == "Gallery") descendants)
-        (fun item => item##name);
+      Utils.sortBy
+        (fun item => item##name)
+        (Js.Array.filter (fun item => item##__typename == "Gallery") descendants);
     let bBufferedLoadNextPage = fancyLoadNextPage loadNextPage descendants;
     let bufferedLoadNextPage item _event _self => bBufferedLoadNextPage item;
     let renderedGalleries =
@@ -137,13 +116,13 @@ let make
         )
         galleries;
     let renderedImages =
-      Js.Array.map
+      Js.Array.mapi
         (
-          fun item =>
+          fun item index =>
             <WaypointImage
               key=item##id
               onEnter=(self.handle (bufferedLoadNextPage item))
-              handleOpen=(self.reduce (fun _event => OpenLightbox item))
+              handleOpen=(self.reduce (fun _event => OpenLightbox index))
               thumbnail=(Js.Nullable.to_opt item##thumbnail)
               name=item##name
             />

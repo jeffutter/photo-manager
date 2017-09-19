@@ -1,0 +1,7 @@
+external debounce : ('a -> 'b [@bs]) -> ?waitMs:int -> ?options:'options Js.t -> unit -> ('a -> 'b [@bs]) = "" [@@module "lodash"]
+
+let debounce ?waitMs ?options f a =
+  let f = fun [@bs] a -> f a in
+  let f = debounce f ?waitMs ?options () in
+  
+  f a [@bs]

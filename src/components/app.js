@@ -13,6 +13,7 @@ import { loggedIn } from "../lib/cookies";
 
 import Login from "./login_form";
 import logout from "../lib/logout";
+import "react-photoswipe/lib/photoswipe.css";
 
 const Logout = () => {
   logout();

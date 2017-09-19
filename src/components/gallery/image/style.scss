@@ -6,7 +6,7 @@
 .item {
   width: 300px;
   max-width: 300px;
-  position: relative;
+  position: inherit; // hack for react-waypoint
   box-sizing: border-box;
   color: #fff;
   color: #fff;

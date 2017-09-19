@@ -1,4 +1,4 @@
-external waypoint : ReasonReact.reactClass = "Waypoint" [@@bs.module "react-waypoint"];
+external waypoint : ReasonReact.reactClass = "react-waypoint" [@@bs.module];
 
 let make
     onEnter::(onEnter: 'a => unit)
