@@ -1,6 +1,3 @@
-/* external sortBy : Js.Array.t 'a => ('b => bool) => Js.Array.t 'a = "sortBy" [@@bs.module "lodash"]; */
-/* external chunk : Js.Array.t 'a => int => Js.Array.t (Js.Array.t 'a) =
-   "chunk" [@@bs.module "lodash"]; */
 type image =
   Js.t {
     .
@@ -40,9 +37,6 @@ let loadRequestedImages (loadNextPage: Js.Array.t string => unit) :unit => {
   }
 };
 
-/* let debouncedLoadRequestedImages =
-   debounce
-     (debounce loadRequestedImages 1000 {"leading": true, "trailing": true}) 500 {"trailing": true}; */
 let debouncedLoadRequestedImages =
   Utils.debounce
     waitMs::500
