@@ -19,7 +19,6 @@ const GalleryContainer = ({
   moreGallery,
   loadNextPage
 }: galleryContainerProps) => {
-  // console.log(Spinner);
   if ((loading || moreLoading) && !(gallery && moreGallery)) return <Spinner />;
 
   let newDescendants = gallery.descendants.map(item => {

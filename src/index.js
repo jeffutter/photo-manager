@@ -2,7 +2,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import "./style";
-import App from "./components/app";
+import { $$default as App } from "./app.re";
 import fetch from "isomorphic-fetch";
 import Raven from "./lib/raven";
 
