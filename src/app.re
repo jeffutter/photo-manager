@@ -38,23 +38,16 @@ let routerBody () => {
   let createLoginForm _ => <LoginForm />;
   let createLogout _ => <Logout />;
   let createGalleryRedirect _ => <GalleryRedirect />;
-  let createGallery jsProps => {
-    Js.log jsProps;
-    <GalleryRoute _match=jsProps##_match location=jsProps##location history=jsProps##history />
-  };
+  let createGallery jsProps =>
+    <GalleryRoute _match=jsProps##_match location=jsProps##location history=jsProps##history />;
   let routes = [|
     <Route key="1" exact=true path="/login" component=createLoginForm />,
     <Route key="2" exact=true path="/logout" component=createLogout />
   |];
   if (loggedIn ()) {
-    ignore (
-      Js.Array.push
-        <AppWithHeader key="3">
-          <Route path="/gallery/:slug?" component=createGallery />
-          <Route exact=true path="/" component=createGalleryRedirect />
-        </AppWithHeader>
-        routes
-    )
+    ignore (Js.Array.push <Header /> routes);
+    ignore (Js.Array.push <Route path="/gallery/:slug?" component=createGallery /> routes);
+    ignore (Js.Array.push <Route exact=true path="/" component=createGalleryRedirect /> routes)
   } else {
     let redir = <Redirect key="3" from="/" _to="/login" />;
     ignore (Js.Array.push redir routes);

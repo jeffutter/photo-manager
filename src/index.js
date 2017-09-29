@@ -5,6 +5,7 @@ import "./style";
 import { $$default as App } from "./app.re";
 import fetch from "isomorphic-fetch";
 import Raven from "./lib/raven";
+import "react-photoswipe/lib/photoswipe.css";
 
 fetch("/config")
   .then(function(response) {
