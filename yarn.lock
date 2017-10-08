@@ -2561,8 +2561,8 @@ eslint-config-prettier@^2.4.0:
     get-stdin "^5.0.1"
 
 eslint-plugin-flowtype@^2.35.1:
-  version "2.37.0"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-flowtype/-/eslint-plugin-flowtype-2.37.0.tgz#2b09694deea6efdd8354eccd328db134b2d8b6d5"
+  version "2.39.1"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-flowtype/-/eslint-plugin-flowtype-2.39.1.tgz#b5624622a0388bcd969f4351131232dcb9649cd5"
   dependencies:
     lodash "^4.15.0"
 
@@ -6101,8 +6101,8 @@ react-router@^4.2.0:
     warning "^3.0.0"
 
 react-waypoint@^7.1.0:
-  version "7.3.0"
-  resolved "https://registry.yarnpkg.com/react-waypoint/-/react-waypoint-7.3.0.tgz#a3d4f5aa4320c8640b843cb56db2d9c5c26fcb9c"
+  version "7.3.1"
+  resolved "https://registry.yarnpkg.com/react-waypoint/-/react-waypoint-7.3.1.tgz#abb165d9b6c9590f8d82ceafbe61c2c887262a37"
   dependencies:
     consolidated-events "^1.1.0"
     prop-types "^15.0.0"
