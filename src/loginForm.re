@@ -1,5 +1,3 @@
-external loggedIn : unit => bool = "" [@@bs.module "./lib/cookies"];
-
 let styles: Js.t 'a = [%bs.raw "require('./components/login_form/style.scss')"];
 
 let component = ReasonReact.statelessComponent "LoginForm";
@@ -7,7 +5,7 @@ let component = ReasonReact.statelessComponent "LoginForm";
 let make _children => {
   ...component,
   render: fun _self =>
-    loggedIn () ?
+    Cookies.loggedIn () ?
       <Redirect _to="/" /> :
       {
         let loginWarning =

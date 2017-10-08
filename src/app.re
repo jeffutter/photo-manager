@@ -1,7 +1,3 @@
-external logout : unit => unit = "default" [@@bs.module "./lib/logout.js"];
-
-external loggedIn : unit => bool = "" [@@bs.module "./lib/cookies.js"];
-
 external client : 'a = "default" [@@bs.module "./lib/client.js"];
 
 let styles: Js.t 'a = [%bs.raw "require('./components/style.scss')"];
@@ -11,7 +7,7 @@ module Logout = {
   let make _children => {
     ...component,
     render: fun _self => {
-      logout ();
+      Cookies.logOut ();
       <Redirect _to="/" />
     }
   };
@@ -44,7 +40,7 @@ let routerBody () => {
     <Route key="1" exact=true path="/login" component=createLoginForm />,
     <Route key="2" exact=true path="/logout" component=createLogout />
   |];
-  if (loggedIn ()) {
+  if (Cookies.loggedIn ()) {
     ignore (Js.Array.push <Header /> routes);
     ignore (Js.Array.push <Route path="/gallery/:slug?" component=createGallery /> routes);
     ignore (Js.Array.push <Route exact=true path="/" component=createGalleryRedirect /> routes)

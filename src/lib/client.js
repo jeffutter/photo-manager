@@ -2,8 +2,8 @@
 import { ApolloClient, IntrospectionFragmentMatcher } from "react-apollo";
 import { createApolloFetch } from "apollo-fetch";
 import { print } from "graphql/language/printer";
-import { readCookie } from "../lib/cookies";
-import logout from "./logout";
+import { readCookie } from "../cookies.re";
+import { logout } from "../cookies.re";
 
 const myFragmentMatcher = new IntrospectionFragmentMatcher({
   introspectionQueryResultData: {
