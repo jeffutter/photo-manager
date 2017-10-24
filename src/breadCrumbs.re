@@ -1,4 +1,4 @@
-let styles: Js.t 'a = [%bs.raw "require('./components/gallery/bread_crumbs/style.scss')"];
+open Glamor;
 
 let component = ReasonReact.statelessComponent "BreadCrumbs";
 
@@ -7,15 +7,30 @@ type linkData = {
   path: string
 };
 
+let cls =
+  css [
+    margin "1rem 0",
+    fontSize "2em",
+    Selector
+      "& a"
+      [
+        textDecoration "none",
+        borderBottom "1px solid #ccc",
+        Selector "&:active, &:visited" [color "inherit"]
+      ]
+  ];
+
+let activeCls = css [color "inherit"];
+
 let make path::(path: 'a) slug::(slug: string) name::(name: string) _children => {
   ...component,
   render: fun _self =>
     switch slug {
     | "root" =>
-      <div className=styles##galleryHeader>
-        <NavLink activeClassName="active" _to="/gallery">
+      <div className=cls>
+        <ReactRouterDom.NavLink activeClassName=activeCls _to="/gallery">
           (ReasonReact.stringToElement "Gallery")
-        </NavLink>
+        </ReactRouterDom.NavLink>
       </div>
     | _ =>
       let splitSlug = slug |> Js.String.split "/" |> Js.Array.slice start::0 end_::(-1);
@@ -38,18 +53,20 @@ let make path::(path: 'a) slug::(slug: string) name::(name: string) _children =>
           (
             fun {name: n, path: p} idx =>
               <span key=(Js.Int.toString idx)>
-                <NavLink activeClassName="active" _to=p> (ReasonReact.stringToElement n) </NavLink>
+                <ReactRouterDom.NavLink activeClassName=activeCls _to=p>
+                  (ReasonReact.stringToElement n)
+                </ReactRouterDom.NavLink>
                 (ReasonReact.stringToElement " / ")
               </span>
           )
           pathObjs;
       let rootNavLink =
-        <NavLink activeClassName="active" _to="/gallery">
+        <ReactRouterDom.NavLink activeClassName=activeCls _to="/gallery">
           (ReasonReact.stringToElement "Gallery")
-        </NavLink>;
+        </ReactRouterDom.NavLink>;
       ReasonReact.createDomElement
         "div"
-        props::{"className": styles##galleryHeader}
+        props::{"className": cls}
         (
           Array.concat [
             [|rootNavLink, ReasonReact.stringToElement " / "|],

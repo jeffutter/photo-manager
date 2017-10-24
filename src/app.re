@@ -1,6 +1,16 @@
+open Glamor;
+
 external client : 'a = "default" [@@bs.module "./lib/client.js"];
 
-let styles: Js.t 'a = [%bs.raw "require('./components/style.scss')"];
+let cls =
+  css [
+    transition ".4s all ease",
+    transformStyle "preserve-3d",
+    backfaceVisibility "hidden",
+    position "absolute",
+    width "100%",
+    height "100%"
+  ];
 
 module Logout = {
   let component = ReasonReact.statelessComponent "Logout";
@@ -8,26 +18,17 @@ module Logout = {
     ...component,
     render: fun _self => {
       Cookies.logOut ();
-      <Redirect _to="/" />
-    }
-  };
-};
-
-module AppWithHeader = {
-  let component = ReasonReact.statelessComponent "AppWithHeader";
-  let make children => {
-    ...component,
-    render: fun _self => {
-      let header = ReasonReact.element (Header.make [||]);
-      ignore (Js.Array.unshift header children);
-      ReasonReact.createDomElement "div" props::{"className": styles##app} children
+      <ReactRouterDom.Redirect _to="/" />
     }
   };
 };
 
 module GalleryRedirect = {
   let component = ReasonReact.statelessComponent "GalleryRedirect";
-  let make _children => {...component, render: fun _self => <Redirect _to="/gallery" />};
+  let make _children => {
+    ...component,
+    render: fun _self => <ReactRouterDom.Redirect _to="/gallery" />
+  };
 };
 
 let routerBody () => {
@@ -37,15 +38,20 @@ let routerBody () => {
   let createGallery jsProps =>
     <GalleryRoute _match=jsProps##_match location=jsProps##location history=jsProps##history />;
   let routes = [|
-    <Route key="1" exact=true path="/login" component=createLoginForm />,
-    <Route key="2" exact=true path="/logout" component=createLogout />
+    <ReactRouterDom.Route key="1" exact=true path="/login" component=createLoginForm />,
+    <ReactRouterDom.Route key="2" exact=true path="/logout" component=createLogout />
   |];
   if (Cookies.loggedIn ()) {
     ignore (Js.Array.push <Header /> routes);
-    ignore (Js.Array.push <Route path="/gallery/:slug?" component=createGallery /> routes);
-    ignore (Js.Array.push <Route exact=true path="/" component=createGalleryRedirect /> routes)
+    ignore (
+      Js.Array.push <ReactRouterDom.Route path="/gallery/:slug?" component=createGallery /> routes
+    );
+    ignore (
+      Js.Array.push
+        <ReactRouterDom.Route exact=true path="/" component=createGalleryRedirect /> routes
+    )
   } else {
-    let redir = <Redirect key="3" from="/" _to="/login" />;
+    let redir = <ReactRouterDom.Redirect key="3" from="/" _to="/login" />;
     ignore (Js.Array.push redir routes);
     Dom.Storage.setItem
       "loginFlash" "Your login has expired or is invalid." Dom.Storage.localStorage
@@ -63,12 +69,11 @@ let make _children => {
         ::client
         [|
           ReasonReact.element (
-            BrowserRouter.make [|
-              ReasonReact.createDomElement "div" props::(Js.Obj.empty ()) (routerBody ())
+            ReactRouterDom.BrowserRouter.make [|
+              ReasonReact.createDomElement
+                "div" props::{"id": "app", "className": cls} (routerBody ())
             |]
           )
         |]
     )
 };
-
-let default = ReasonReact.wrapReasonForJs ::component (fun _ => make [||]);

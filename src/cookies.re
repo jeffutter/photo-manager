@@ -2,7 +2,7 @@ type document;
 
 external document : document = "document" [@@bs.val];
 
-external getCookie : document => string = "document.cookie" [@@bs.val];
+external getCookie : document => string = "cookie" [@@bs.get];
 
 external setCookie : document => string => unit = "cookie" [@@bs.set];
 

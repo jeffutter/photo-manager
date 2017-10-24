@@ -20,7 +20,8 @@ const myFragmentMatcher = new IntrospectionFragmentMatcher({
 });
 
 const apolloFetch = createApolloFetch({
-  uri: "/graphiql"
+  // uri: "/graphiql"
+  uri: "http://gallery.sadclown.net/graphiql"
 });
 
 apolloFetch.use(({ request, options }, next) => {

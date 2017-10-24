@@ -1,14 +1,18 @@
 {
-  "name": "hello",
-  "sources": {
-    "dir": "src"
-  },
-  "subdirs" : true,
-  "bsc-flags": ["-bs-super-errors"],
+  "name": "reason-scripts",
+  "sources": [
+    "src"
+  ],
   "bs-dependencies": [
-    "reason-react"
+    "reason-react",
+    "bs-glamor",
+    "bs-jest"
   ],
   "reason": {
     "react-jsx": 2
-  }
+  },
+  "subdirs" : true,
+  "bsc-flags": [
+    "-bs-super-errors"
+  ]
 }

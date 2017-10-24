@@ -1,4 +1,4 @@
-let styles: Js.t 'a = [%bs.raw "require('./components/circle_loader/style.scss')"];
+open Glamor;
 
 let component = ReasonReact.statelessComponent "CircleLoader";
 
@@ -11,7 +11,7 @@ let make _children => {
       viewBox="0 0 44 44"
       xmlns="http://www.w3.org/2000/svg"
       stroke="#fff"
-      className=styles##icon>
+      className=(css [margin "0 auto", display "block"])>
       <g fill="none" fillRule="evenodd" strokeWidth="2">
         <circle cx="22" cy="22" r="1">
           <animate

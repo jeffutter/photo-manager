@@ -1,4 +1,117 @@
-let styles: Js.t 'a = [%bs.raw "require('./components/header/style.scss')"];
+open Glamor;
+
+let headerCls =
+  css [
+    position "fixed",
+    top "0",
+    left "0",
+    minHeight "62px",
+    maxHeight "62px",
+    zIndex "999",
+    width "100%",
+    background "#579591",
+    overflow "hidden",
+    transition "all 0.3s",
+    fontFamily "\"Montserrat\", sans-serif",
+    backgroundColor "rgba(255, 255, 255, 0.95)",
+    borderBottom "1px solid gainsboro"
+  ];
+
+let mobileToggleCls =
+  css [
+    display "none",
+    cursor "pointer",
+    fontSize "20px",
+    position "absolute",
+    right "22px",
+    top "0",
+    width "30px",
+    transition "all 200ms ease-in",
+    zIndex "1000",
+    Selector
+      "&:span"
+      [
+        width "30px",
+        height "4px",
+        marginBottom "6px",
+        borderRadius "1000px",
+        background "#8f8f8f",
+        display "block"
+      ],
+    Selector "@media only screen and (max-width: 766px)" [display "block", top "18px"]
+  ];
+
+let openNavCls =
+  css [maxHeight "440px !important", Selector ".mobileToggle" [transform "rotate(-90deg)"]];
+
+let logoCls =
+  css [
+    fontSize "25px",
+    color "#8f8f8f",
+    textTransform "uppercase",
+    display "inline-block",
+    margin "18px 0 18px 10px",
+    lineHeight "1",
+    textDecoration "none",
+    width "auto",
+    Selector "@media only screen and (max-width 766px)" [cssFloat "none"]
+  ];
+
+let navCls =
+  css [
+    cssFloat "right",
+    width "60%",
+    height "100%",
+    marginRight "10px",
+    Selector "@media only screen and (max-width 766px)" [width "100%", margin "0"],
+    Selector
+      "& ul"
+      [
+        height "100%",
+        listStyle "none",
+        overflow "hidden",
+        textAlign "right",
+        cssFloat "right",
+        padding "0",
+        margin "0",
+        Selector
+          "@media only screen and (max-width 766px)"
+          [
+            paddingTop "10px",
+            marginBottom "22px",
+            cssFloat "left",
+            textAlign "center",
+            width "100%"
+          ],
+        Selector
+          "& li"
+          [
+            height "100%",
+            display "inline-block",
+            position "relative",
+            marginLeft "35px",
+            lineHeight "1.5",
+            Selector
+              "@media only screen and (max-width 766px)"
+              [width "100%", padding "7px 0", margin "0"]
+          ],
+        Selector
+          "& a"
+          [
+            display "block",
+            verticalAlign "middle",
+            color "#888888",
+            textTransform "uppercase",
+            fontSize "16px",
+            textDecoration "none",
+            padding "20px 20px",
+            Selector "&:hover, &:active" [color "#fff", background "rgba(0, 0, 0, 0.2)"],
+            Selector "&.active" [color "#fff", background "rgba(0, 0, 0, 0.3)"]
+          ]
+      ]
+  ];
+
+let activeCls = css [color "#f8f8f", background "rgba(0, 0, 0, 0.3)"];
 
 type state = {_open: bool};
 
@@ -15,14 +128,15 @@ let make _children => {
     | ToggleNav => ReasonReact.Update {_open: not state._open}
     },
   render: fun self => {
-    let headerClasses = [|styles##header|];
-    let mobileToggleClasses = [|styles##mobileToggle|];
+    let headerClasses = [|headerCls|];
+    let mobileToggleClasses = [|mobileToggleCls|];
     if self.state._open {
-      ignore (Js.Array.push styles##openNav headerClasses);
-      ignore (Js.Array.push styles##openNavMobileToggle mobileToggleClasses)
+      ignore
+        (Js.Array.push openNavCls headerClasses)
+        /* ignore (Js.Array.push styles##openNavMobileToggle mobileToggleClasses) */
     };
     <header className=(Js.Array.joinWith " " headerClasses)>
-      <a className=styles##logo href="#"> (ReasonReact.stringToElement "Photo Gallery") </a>
+      <a className=logoCls href="#"> (ReasonReact.stringToElement "Photo Gallery") </a>
       <div
         className=(Js.Array.joinWith " " mobileToggleClasses)
         onClick=(self.reduce (fun _event => ToggleNav))>
@@ -30,31 +144,29 @@ let make _children => {
         <span />
         <span />
       </div>
-      <nav>
+      <nav className=navCls>
         <ul>
           <li>
-            <NavLink
-              activeClassName=styles##active
-              _to="/"
-              onClick=(self.reduce (fun _event => ToggleNav))>
+            <ReactRouterDom.NavLink
+              activeClassName=activeCls _to="/" onClick=(self.reduce (fun _event => ToggleNav))>
               (ReasonReact.stringToElement "Home")
-            </NavLink>
+            </ReactRouterDom.NavLink>
           </li>
           <li>
-            <NavLink
-              activeClassName=styles##active
+            <ReactRouterDom.NavLink
+              activeClassName=activeCls
               _to="/gallery"
               onClick=(self.reduce (fun _event => ToggleNav))>
               (ReasonReact.stringToElement "Gallery")
-            </NavLink>
+            </ReactRouterDom.NavLink>
           </li>
           <li>
-            <NavLink
-              activeClassName=styles##active
+            <ReactRouterDom.NavLink
+              activeClassName=activeCls
               _to="/logout"
               onClick=(self.reduce (fun _envent => ToggleNav))>
               (ReasonReact.stringToElement "Logout")
-            </NavLink>
+            </ReactRouterDom.NavLink>
           </li>
         </ul>
       </nav>

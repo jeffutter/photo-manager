@@ -1,9 +1,11 @@
+open Glamor;
+
 external count : array ReasonReact.reactElement => int =
   "" [@@bs.scope "Children"] [@@bs.module "react"];
 
-let styles: Js.t 'a = [%bs.raw "require('./components/gallery/body/style.scss')"];
-
 let component = ReasonReact.statelessComponent "GalleryBody";
+
+let cls = css [margin "0 auto 40px auto"];
 
 let make children => {
   ...component,
@@ -12,7 +14,7 @@ let make children => {
     let baseGutter = 32;
     ReasonReact.element (
       InfiniteScroll.make
-        className::styles##gallery
+        className::cls
         pack::true
         sizes::[|
           {"mq": "0px", "columns": 1, "gutter": baseGutter},
