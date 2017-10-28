@@ -1,6 +1,6 @@
 open Glamor;
 
-let component = ReasonReact.statelessComponent "BreadCrumbs";
+let component = ReasonReact.statelessComponent("BreadCrumbs");
 
 type linkData = {
   name: string,
@@ -8,71 +8,69 @@ type linkData = {
 };
 
 let cls =
-  css [
-    margin "1rem 0",
-    fontSize "2em",
-    Selector
-      "& a"
+  css([
+    margin("1rem 0"),
+    fontSize("2em"),
+    Selector(
+      "& a",
       [
-        textDecoration "none",
-        borderBottom "1px solid #ccc",
-        Selector "&:active, &:visited" [color "inherit"]
+        textDecoration("none"),
+        borderBottom("1px solid #ccc"),
+        Selector("&:active, &:visited", [color("inherit")])
       ]
-  ];
+    )
+  ]);
 
-let activeCls = css [color "inherit"];
+let activeCls = css([color("inherit")]);
 
-let make path::(path: 'a) slug::(slug: string) name::(name: string) _children => {
+let make = (~path: 'a, ~slug: string, ~name: string, _children) => {
   ...component,
-  render: fun _self =>
+  render: (_self) =>
     switch slug {
     | "root" =>
       <div className=cls>
         <ReactRouterDom.NavLink activeClassName=activeCls _to="/gallery">
-          (ReasonReact.stringToElement "Gallery")
+          (ReasonReact.stringToElement("Gallery"))
         </ReactRouterDom.NavLink>
       </div>
     | _ =>
-      let splitSlug = slug |> Js.String.split "/" |> Js.Array.slice start::0 end_::(-1);
+      let splitSlug = slug |> Js.String.split("/") |> Js.Array.slice(~start=0, ~end_=(-1));
       let pathObjs =
-        Js.Array.reducei
-          (
-            fun acc section idx => {
-              let s = Js.Array.slice start::0 end_::idx splitSlug;
-              let n = path.(idx);
-              let p = Js.Array.joinWith "/" s;
-              ignore (Js.Array.push section s);
-              ignore (Js.Array.push {name: n, path: "/gallery/" ^ p} acc);
-              acc
-            }
-          )
-          [||]
-          splitSlug;
+        Js.Array.reducei(
+          (acc, section, idx) => {
+            let s = Js.Array.slice(~start=0, ~end_=idx, splitSlug);
+            let n = path[idx];
+            let p = Js.Array.joinWith("/", s);
+            ignore(Js.Array.push(section, s));
+            ignore(Js.Array.push({name: n, path: "/gallery/" ++ p}, acc));
+            acc
+          },
+          [||],
+          splitSlug
+        );
       let links =
-        Js.Array.mapi
-          (
-            fun {name: n, path: p} idx =>
-              <span key=(Js.Int.toString idx)>
-                <ReactRouterDom.NavLink activeClassName=activeCls _to=p>
-                  (ReasonReact.stringToElement n)
-                </ReactRouterDom.NavLink>
-                (ReasonReact.stringToElement " / ")
-              </span>
-          )
-          pathObjs;
+        Js.Array.mapi(
+          ({name: n, path: p}, idx) =>
+            <span key=(Js.Int.toString(idx))>
+              <ReactRouterDom.NavLink activeClassName=activeCls _to=p>
+                (ReasonReact.stringToElement(n))
+              </ReactRouterDom.NavLink>
+              (ReasonReact.stringToElement(" / "))
+            </span>,
+          pathObjs
+        );
       let rootNavLink =
         <ReactRouterDom.NavLink activeClassName=activeCls _to="/gallery">
-          (ReasonReact.stringToElement "Gallery")
+          (ReasonReact.stringToElement("Gallery"))
         </ReactRouterDom.NavLink>;
-      ReasonReact.createDomElement
-        "div"
-        props::{"className": cls}
-        (
-          Array.concat [
-            [|rootNavLink, ReasonReact.stringToElement " / "|],
-            links,
-            [|ReasonReact.stringToElement name|]
-          ]
-        )
+      ReasonReact.createDomElement(
+        "div",
+        ~props={"className": cls},
+        Array.concat([
+          [|rootNavLink, ReasonReact.stringToElement(" / ")|],
+          links,
+          [|ReasonReact.stringToElement(name)|]
+        ])
+      )
     }
 };

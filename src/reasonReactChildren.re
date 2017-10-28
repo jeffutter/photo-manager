@@ -1,2 +1,3 @@
-external count : array ReasonReact.reactElement => int =
-  "" [@@bs.scope "Children"] [@@bs.module "react"];
+[@bs.scope "Children"] [@bs.module "react"]
+external count : array(ReasonReact.reactElement) => int =
+  "";

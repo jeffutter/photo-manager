@@ -1,17 +1,17 @@
 open Glamor;
 
-let component = ReasonReact.statelessComponent "CircleLoader";
+let component = ReasonReact.statelessComponent("CircleLoader");
 
-let make _children => {
+let make = (_children) => {
   ...component,
-  render: fun _self =>
+  render: (_self) =>
     <svg
       width="300px"
       height="225px"
       viewBox="0 0 44 44"
       xmlns="http://www.w3.org/2000/svg"
       stroke="#fff"
-      className=(css [margin "0 auto", display "block"])>
+      className=(css([margin("0 auto"), display("block")]))>
       <g fill="none" fillRule="evenodd" strokeWidth="2">
         <circle cx="22" cy="22" r="1">
           <animate
@@ -61,4 +61,4 @@ let make _children => {
     </svg>
 };
 
-let default = ReasonReact.wrapReasonForJs ::component (fun _ => make [||]);
+let default = ReasonReact.wrapReasonForJs(~component, (_) => make([||]));

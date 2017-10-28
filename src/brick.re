@@ -1,9 +1,9 @@
 type t;
 
-external resize : t => bool => unit = "" [@@bs.send];
+[@bs.send] external resize : (t, bool) => unit = "";
 
-external pack : t => unit = "" [@@bs.send];
+[@bs.send] external pack : t => unit = "";
 
-external update : t => unit = "" [@@bs.send];
+[@bs.send] external update : t => unit = "";
 
-external brick : Js.t 'a => t = "default" [@@bs.module "bricks.js"];
+[@bs.module "bricks.js"] external brick : Js.t('a) => t = "default";

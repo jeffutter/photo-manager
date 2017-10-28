@@ -14,5 +14,6 @@
   "subdirs" : true,
   "bsc-flags": [
     "-bs-super-errors"
-  ]
+  ],
+  "refmt": 3
 }
