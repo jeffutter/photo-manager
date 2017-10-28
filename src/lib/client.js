@@ -8,7 +8,7 @@ import { createHttpLink } from "apollo-link-http";
 import { setContext } from "apollo-link-context";
 import { onError } from "apollo-link-error";
 import { readCookie } from "../cookies.re";
-import { logout } from "../cookies.re";
+import { logOut } from "../cookies.re";
 
 const myFragmentMatcher = new IntrospectionFragmentMatcher({
   introspectionQueryResultData: {
@@ -29,8 +29,7 @@ const cache = new InMemoryCache({
 });
 
 const httpLink = createHttpLink({
-  // uri: "/graphiql"
-  uri: "http://gallery.sadclown.net/graphiql"
+  uri: "/graphiql"
 });
 
 const middlewareLink = setContext(() => {
@@ -45,8 +44,8 @@ const middlewareLink = setContext(() => {
 const beforeLink = middlewareLink.concat(httpLink);
 
 const errorLink = onError(({ networkError, graphQLErrors }) => {
-  if (networkError.statusCode === 401) {
-    logout();
+  if (networkError && networkError.statusCode === 401) {
+    logOut();
   }
 });
 

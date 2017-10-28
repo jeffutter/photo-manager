@@ -22,11 +22,11 @@ type action =
 
 let component = ReasonReact.reducerComponent("Gallery");
 
-let fetchBuffer = [||];
+let fetchBuffer = ref([||]);
 
 let loadRequestedImages = (loadNextPage: Js.Array.t(string) => unit) : unit => {
-  let currentBuffer = Js.Array.copy(fetchBuffer);
-  ignore(Js.Array.slice(~start=0, ~end_=Js.Array.length(fetchBuffer), fetchBuffer));
+  let currentBuffer = fetchBuffer^;
+  fetchBuffer := [||];
   switch (Js.Array.length(currentBuffer)) {
   | c when c <= 0 => ()
   | _ =>
@@ -64,7 +64,7 @@ let fancyLoadNextPage =
       Js.Array.includes(item##id, thumbedImageIds)
     ) {
     | ("Image", None, false) =>
-      ignore(Js.Array.push(item##id, fetchBuffer));
+      ignore(Js.Array.push(item##id, fetchBuffer^));
       debouncedLoadRequestedImages(loadNextPage)
     | _ => ()
     }

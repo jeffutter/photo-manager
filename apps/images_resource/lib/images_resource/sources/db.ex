@@ -1,18 +1,16 @@
-defmodule ImagesResource.Sources.S3 do
+defmodule ImagesResource.Sources.DB do
   require Logger
   use GenServer
 
   alias ImagesResource.{Gallery}
-  alias ImagesResource.Storage.S3
+  alias ImagesResource.Storage.DB
 
-  @type t :: %{bucket_name: String.t, tree: Gallery.t, name: atom(), path: String.t | nil, strip_prefix: list(String.t), sync_target: atom()}
-  defstruct bucket_name: "", tree: nil, name: nil, path: nil, strip_prefix: [], sync_target: nil
+  @type t :: %{tree: Gallery.t, name: atom(), sync_target: atom()}
+  defstruct tree: nil, name: nil, sync_target: nil
 
-  def start_link(bucket_name, name, opts \\ []) do
-    strip_prefix = Keyword.get(opts, :strip_prefix)
-    path = Keyword.get(opts, :path)
+  def start_link(name, opts \\ []) do
     sync_target = Keyword.get(opts, :sync_target)
-    GenServer.start_link(__MODULE__, %__MODULE__{bucket_name: bucket_name, name: name, path: path, strip_prefix: strip_prefix, sync_target: sync_target}, name: name)
+    GenServer.start_link(__MODULE__, %__MODULE__{name: name, sync_target: sync_target}, name: name)
   end
 
   def init(state) do
@@ -53,15 +51,15 @@ defmodule ImagesResource.Sources.S3 do
     end
   end
 
-  defp refresh(state = %__MODULE__{bucket_name: bucket_name, name: name, path: path, strip_prefix: strip_prefix, sync_target: sync_target}) do
-    Logger.info "Refreshing #{inspect bucket_name} for #{inspect name} with, path: #{inspect path} and stripping: #{inspect strip_prefix}"
+  defp refresh(state = %__MODULE__{name: name, sync_target: sync_target}) do
+    Logger.info "Refreshing DB for #{inspect name}."
 
-    case S3.ls_tree(path, bucket: bucket_name, strip_prefix: strip_prefix) do
+    case DB.ls_tree(nil) do
       {:ok, tree} ->
         state = %__MODULE__{state | tree: tree}
 
         GenServer.cast(sync_target, {:updated, name, tree})
-        Logger.info "Refresh complete for #{inspect bucket_name} for #{inspect name}"
+        Logger.info "Refresh complete for DB for #{inspect name}"
 
         {:ok, state}
       {:error, e} -> {:error, e}

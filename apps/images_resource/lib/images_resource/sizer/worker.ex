@@ -5,6 +5,8 @@ defmodule ImagesResource.Sizer.Worker do
   alias ImagesResource.Sizer.Queue
 
   def start_link({file, version}) do
+    Logger.info "Sizing: #{inspect file}"
+
     Task.start_link(fn ->
       case Image.size(file, version) do
         {:ok, _size} -> :ok

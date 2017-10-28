@@ -38,6 +38,16 @@ defmodule ImagesResource.Storage.File do
     }
   end
 
+  def from_ecto(%PhotoManagementApi.Image{name: name, path: path, slug: slug, size: size, last_modified: last_modified}, opts \\ []) do
+    %__MODULE__{
+      name: name,
+      path: path,
+      slug: slug,
+      size: size,
+      last_modified: last_modified,
+    }
+  end
+
   def cache_key(%__MODULE__{name: name, path: path, last_modified: last_modified}) do
     path = case path do
              [] -> ""

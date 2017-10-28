@@ -39,6 +39,7 @@ defmodule ImagesResource.Mixfile do
   defp deps do
     [
       {:config, in_umbrella: true},
+      {:photo_management_api, in_umbrella: true},
       {:sentry, github: "getsentry/sentry-elixir"},
       arc_gcs: "~> 0.0.4",
       gen_stage: "~> 0.12.1",
