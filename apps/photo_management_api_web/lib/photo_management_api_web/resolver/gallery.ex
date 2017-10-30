@@ -3,7 +3,7 @@ defmodule PhotoManagementApi.Web.Resolver.Gallery do
   alias ImagesResource.Gallery
   alias ImagesResource.Storage.Directory
 
-  def all(parent, args, info) do
+  def all(_parent, args, _info) do
     slug = Map.get(args, :slug)
 
     find_by_slug(slug)

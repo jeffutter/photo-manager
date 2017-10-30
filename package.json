@@ -1,49 +1,50 @@
 {
-  "name": "photo-management-ui",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "eslint src && preact test",
-    "start": "if-env NODE_ENV=production && yarn run -s serve || yarn run -s dev",
-    "build": "preact build --dest=apps/photo_management_api_web/priv/static/ --no-prerender",
-    "serve": "preact build --dest=apps/photo_management_api_web/priv/static/ --no-prerender && preact serve --dest=apps/photo_management_api_web/priv/static/",
-    "dev": "preact watch"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "babel-plugin-graphql-tag": "^1.1.0",
-    "babel-plugin-lodash": "^3.2.11",
-    "brotli-webpack-plugin": "^0.4.0",
-    "compression-webpack-plugin": "^1.0.0",
-    "eslint": "^4.3.0",
-    "eslint-config-google": "^0.9.1",
-    "eslint-config-prettier": "^2.4.0",
-    "eslint-plugin-flowtype": "^2.35.1",
-    "eslint-plugin-prettier": "^2.2.0",
-    "eslint-plugin-react": "^7.3.0",
-    "flow-bin": "^0.54.0",
-    "if-env": "^1.0.0",
-    "lodash-webpack-plugin": "^0.11.4",
-    "node-sass": "^4.5.3",
-    "preact-cli": "^1.4.1",
-    "preact-cli-plugin-flow": "^0.2.0",
-    "prettier": "^1.6.1",
-    "prop-types": "^15.5.10",
-    "sass-loader": "^6.0.6"
+  "name": "photo-manager-ui",
+  "version": "0.1.0",
+  "private": true,
+  "proxy": {
+    "/auth": {
+      "target": "http://localhost:4000"
+    },
+    "/config": {
+      "target": "http://localhost:4000"
+    },
+    "/graphql": {
+      "target": "http://localhost:4000"
+    },
+    "/graphiql": {
+      "target": "http://localhost:4000"
+    }
   },
   "dependencies": {
-    "apollo-fetch": "^0.6.0",
+    "apollo-cache-inmemory": "^1.0.0",
+    "apollo-client": "^2.0.1",
+    "apollo-link": "^1.0.0",
+    "apollo-link-context": "^1.0.0",
+    "apollo-link-error": "^1.0.0",
+    "apollo-link-http": "^1.0.0",
     "bricks.js": "^1.8.0",
+    "bs-glamor": "SentiaAnalytics/bs-glamor#global_merge_keyframes",
+    "graphql": "^0.11.7",
+    "graphql-tag": "^2.5.0",
     "isomorphic-fetch": "^2.2.1",
-    "lodash": "^4.17.4",
-    "preact": "^8.2.1",
-    "preact-compat": "^3.16.0",
-    "react-apollo": "^1.4.11",
+    "react": "^16.0.0",
+    "react-apollo": "^2.0.0",
+    "react-dom": "^16.0.0",
     "react-photoswipe": "^1.3.0",
-    "react-router-dom": "^4.1.2",
-    "react-waypoint": "^7.1.0"
+    "react-router-dom": "^4.2.2",
+    "react-waypoint": "^7.3.1",
+    "reason-scripts": "0.6.11"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build && rm -rf apps/photo_management_api_web/priv/static/* && cp -Rp build/* apps/photo_management_api_web/priv/static",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject",
+    "prepare": "npm link bs-platform"
+  },
+  "devDependencies": {
+    "bs-jest": "^0.2.0",
+    "reason-react": "^0.2.4"
   }
 }

@@ -27,7 +27,7 @@ defmodule ImagesResource.Uploaders.Image do
     {:convert, "-strip -resize 1920x1080\> -interlace none -quality 85 -format jpg", :jpg}
   end
 
-  def filename(version, {%{file_name: name}, _path}) do
+  def filename(_version, {%{file_name: name}, _path}) do
 
     # Hack for GCS client, it was giving me names like larg_larg_file.jpg
     name = case String.split(name, "_") do
@@ -35,21 +35,15 @@ defmodule ImagesResource.Uploaders.Image do
              _ -> name
            end
 
-    file_name = Path.basename(name, Path.extname(name))
-    if version == :original do
-      file_name
-    else
-      "#{version}_#{file_name}"
-    end
+    Path.basename(name, Path.extname(name))
   end
 
-  def storage_dir(:original, {_file, path}) do
-    Path.join(["original"] ++ Path.split(storage_dir(nil, {nil, path})))
-  end
   def storage_dir(_version, {_file, nil}),   do: ""
   def storage_dir(_version, {_file, ""}),    do: ""
   def storage_dir(_version, {_file, []}),    do: ""
-  def storage_dir(_version, {_file, path}),  do: Path.join(path)
+  def storage_dir(version, {_file, path}) do
+    Path.join(["#{version}"] ++ path)
+  end
 
   def s3_object_headers(_version, {file, _scope}) do
     [content_type: MIME.from_path(file.file_name)]

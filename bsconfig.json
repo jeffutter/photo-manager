@@ -1,0 +1,19 @@
+{
+  "name": "reason-scripts",
+  "sources": [
+    "src"
+  ],
+  "bs-dependencies": [
+    "reason-react",
+    "bs-glamor",
+    "bs-jest"
+  ],
+  "reason": {
+    "react-jsx": 2
+  },
+  "subdirs" : true,
+  "bsc-flags": [
+    "-bs-super-errors"
+  ],
+  "refmt": 3
+}

@@ -1,10 +1,13 @@
 defmodule PhotoManagementApi.Web.Schema.Types do
+  require Logger
+
   use Absinthe.Schema.Notation
 
   alias PhotoManagementApi.Web.Resolver
 
   alias ImagesResource.Storage.{File, Directory}
   alias ImagesResource.Image
+  alias PhotoManagementApi.Image, as: DBImage
 
   union :descendants do
     description "A child of a directory"
@@ -21,11 +24,11 @@ defmodule PhotoManagementApi.Web.Schema.Types do
     field :name, :string
     field :path, list_of(:string)
     field :slug, :string
-    field :last_modified, :string, resolve: &Resolver.Image.last_modified/3
-    field :size, :string, resolve: &Resolver.Image.size/3
-    field :width, :integer, resolve: file_dimension(:width)
-    field :height, :integer, resolve: file_dimension(:height)
-    field :thumbnail, :string, resolve: &Resolver.Image.thumbnail/3
+    field :last_modified, :string, resolve: from_db(:last_modified)
+    field :size, :string, resolve: from_db(:size)
+    field :width, :integer, resolve: from_db(:width)
+    field :height, :integer, resolve: from_db(:height)
+    field :thumbnail, :integer, resolve: from_db(:base64)
     field :small_url, :string, resolve: &Resolver.Image.small_url/3
     field :medium_url, :string, resolve: &Resolver.Image.medium_url/3
     field :large_url, :string, resolve: &Resolver.Image.large_url/3
@@ -55,24 +58,33 @@ defmodule PhotoManagementApi.Web.Schema.Types do
           _ ->
             {:ok, children}
         end
-
       end
     end
   end
 
-  defp file_dimension(dimension) do
+  defp from_db(field) do
     fn file = %File{}, _, _ ->
-      batch({__MODULE__, :size_by_file}, file, fn batch_results ->
-        dimension = batch_results
-                    |> Map.get(file)
-                    |> Map.get(dimension)
-
-        {:ok, dimension}
+      batch({__MODULE__, :images_from_db}, file, fn batch_results ->
+        with image when not is_nil(image) <- Map.get(batch_results, file),
+             value <- Map.get(image, field) do
+          {:ok, value}
+        else
+          _ ->
+            Logger.error "Data missing from DB. Field: #{field} for #{file.slug}" 
+            {:error, "Data missing from DB. Field: #{field} for #{file.slug}"} 
+        end
       end)
     end
   end
 
-  def size_by_file(_, files) do
-    Image.sizes(files, :original)
+  def images_from_db(_, files) do
+    files
+    |> Enum.map(fn file -> Map.get(file, :slug) end)
+    |> DBImage.get_all_by_slugs
+    |> Enum.map(fn image ->
+      file = Enum.find(files, fn f -> f.slug == image.slug end)
+      {file, image}
+    end)
+    |> Enum.into(%{})
   end
 end

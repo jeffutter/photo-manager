@@ -1,21 +1,22 @@
-FROM node:8-alpine as ui
+FROM node:8-stretch as ui
 RUN mkdir -p /src
 WORKDIR /src
+
+RUN apt-get update && apt-get install -y brotli
 
 ADD package.json /src
 ADD yarn.lock /src
 
-RUN yarn install \
-    && rm -rf node_modules/iltorb/ # seems to crash on alpine, falls back to brotli.js
+RUN yarn install
 
-ADD preact.config.js /src
+ADD bsconfig.json /src/bsconfig.json
 ADD src/ /src/src
+ADD public/ /src/public
 
 RUN mkdir -p apps/photo_management_api_web/priv/static/
-# Shouldn't be needed, something odd happening with yarn
-RUN cd node_modules/.bin \
-    && ln -s ../preact-cli/lib/index.js preact
 RUN yarn run build
+RUN cd apps/photo_management_api_web/priv/static \
+    && find . -type f -name \*.json -o -name \*.js -o -name \*.css -o -name \*.map | xargs -I {} sh -c 'gzip -kf9 {} && brotli --quality 9 --input {} --output {}.br'
 
 FROM elixir:1.5-alpine as build
 RUN mkdir -p /src

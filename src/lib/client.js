@@ -1,9 +1,14 @@
 // @flow
-import { ApolloClient, IntrospectionFragmentMatcher } from "react-apollo";
-import { createApolloFetch } from "apollo-fetch";
-import { print } from "graphql/language/printer";
-import { readCookie } from "../lib/cookies";
-import logout from "./logout";
+import { ApolloClient } from "apollo-client";
+import {
+  InMemoryCache,
+  IntrospectionFragmentMatcher
+} from "apollo-cache-inmemory";
+import { createHttpLink } from "apollo-link-http";
+import { setContext } from "apollo-link-context";
+import { onError } from "apollo-link-error";
+import { readCookie } from "../cookies.re";
+import { logOut } from "../cookies.re";
 
 const myFragmentMatcher = new IntrospectionFragmentMatcher({
   introspectionQueryResultData: {
@@ -19,34 +24,36 @@ const myFragmentMatcher = new IntrospectionFragmentMatcher({
   }
 });
 
-const apolloFetch = createApolloFetch({
+const cache = new InMemoryCache({
+  fragmentMatcher: myFragmentMatcher
+});
+
+const httpLink = createHttpLink({
   uri: "/graphiql"
 });
 
-apolloFetch.use(({ request, options }, next) => {
-  if (!options.headers) {
-    options.headers = {}; // Create the headers object if needed.
-  }
+const middlewareLink = setContext(() => {
   const token = readCookie("access_token");
-  options.headers.authorization = token ? `Bearer ${token}` : null;
-
-  next();
+  return {
+    headers: {
+      authorization: token ? `Bearer ${token}` : null
+    }
+  };
 });
 
-apolloFetch.useAfter(({ response }, next) => {
-  if (response.status === 401) {
-    logout();
+const beforeLink = middlewareLink.concat(httpLink);
+
+const errorLink = onError(({ networkError, graphQLErrors }) => {
+  if (networkError && networkError.statusCode === 401) {
+    logOut();
   }
-  next();
 });
 
-const networkInterface = {
-  query: req => apolloFetch({ ...req, query: print(req.query) })
-};
+const link = errorLink.concat(beforeLink);
 
 const client = new ApolloClient({
-  networkInterface: networkInterface,
-  fragmentMatcher: myFragmentMatcher
+  link: link,
+  cache: cache
 });
 
 export default client;

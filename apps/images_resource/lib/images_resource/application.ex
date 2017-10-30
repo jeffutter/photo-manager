@@ -25,9 +25,14 @@ defmodule ImagesResource.Application do
       worker(ImagesResource.Sizer.Processor, []),
       worker(ImagesResource.Uploaders.Queue, []),
       worker(ImagesResource.Uploaders.Processor, []),
-      worker(ImagesResource.Sync, [[source: ImageSource, dest: ImageDest]]),
-      worker(ImagesResource.Sources.S3, [Config.get(:images_resource, :dest_bucket), ImageDest], id: ImageDest),
-      worker(ImagesResource.Sources.S3, [Config.get(:images_resource, :source_bucket), ImageSource], id: ImageSource)
+      worker(ImagesResource.DBQueue.Queue, []),
+      worker(ImagesResource.DBQueue.Processor, []),
+      worker(ImagesResource.Sync, [[source: ImageSource, dest: ImageDest, name: Sync1]], id: Sync1),
+      worker(ImagesResource.SyncDB, [[source: FullDest,    dest: DBDest, name: Sync2]], id: Sync2),
+      worker(ImagesResource.Sources.S3, [Config.get(:images_resource, :dest_bucket),   ImageDest, [path: "original", strip_prefix: ["original"], sync_target: Sync1]], id: ImageDest),
+      worker(ImagesResource.Sources.S3, [Config.get(:images_resource, :source_bucket), ImageSource, [sync_target: Sync1]], id: ImageSource),
+      worker(ImagesResource.Sources.DB, [DBDest, [sync_target: Sync2]], id: DBDest),
+      worker(ImagesResource.Sources.S3, [Config.get(:images_resource, :dest_bucket),  FullDest, [path: "thumb", strip_prefix: ["thumb"], sync_target: Sync2]], id: FullDest)
     ]
 
     opts = [strategy: :one_for_one, name: ImagesResource.Supervisor]
