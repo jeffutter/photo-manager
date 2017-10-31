@@ -6,7 +6,6 @@ defmodule PhotoManagementApi.Web.Schema.Types do
   alias PhotoManagementApi.Web.Resolver
 
   alias ImagesResource.Storage.{File, Directory}
-  alias ImagesResource.Image
   alias PhotoManagementApi.Image, as: DBImage
 
   union :descendants do

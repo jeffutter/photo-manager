@@ -49,7 +49,7 @@ defmodule ImagesResource.SyncDB do
     end
   end
 
-  def remove(file = %File{name: name, path: path, slug: slug}, version) do
+  def remove(%File{name: name, path: path, slug: slug}, version) do
     query = from i in PhotoManagementApi.Image,
             where: i.name == ^name,
             where: i.path == ^path,

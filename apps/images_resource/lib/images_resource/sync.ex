@@ -2,9 +2,8 @@ defmodule ImagesResource.Sync do
   require Logger
   use GenServer
 
-  alias ImagesResource.Storage.{Directory, File, Tree}
+  alias ImagesResource.Storage.{Directory, Tree}
   alias ImagesResource.Uploaders.Queue, as: ImageQueue
-  alias ImagesResource.Sizer.Queue, as: SizeQueue
 
   @type t :: %{source: atom(), dest: atom(), source_tree: Directory.t, dest_tree: Directory.t}
   defstruct source: nil, dest: nil, source_tree: nil, dest_tree: nil

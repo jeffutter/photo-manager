@@ -38,7 +38,7 @@ defmodule ImagesResource.Storage.File do
     }
   end
 
-  def from_ecto(%PhotoManagementApi.Image{name: name, path: path, slug: slug, size: size, last_modified: last_modified}, opts \\ []) do
+  def from_ecto(%PhotoManagementApi.Image{name: name, path: path, slug: slug, size: size, last_modified: last_modified}, _opts \\ []) do
     %__MODULE__{
       name: name,
       path: path,

@@ -23,8 +23,6 @@ defmodule ImagesResource.Application do
     import Supervisor.Spec, warn: false
 
     children = [
-      worker(ImagesResource.Sizer.Queue, []),
-      worker(ImagesResource.Sizer.Processor, []),
       worker(ImagesResource.Uploaders.Queue, []),
       worker(ImagesResource.Uploaders.Processor, []),
       worker(ImagesResource.DBQueue.Queue, []),
