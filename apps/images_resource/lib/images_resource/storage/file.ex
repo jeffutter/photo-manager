@@ -48,14 +48,6 @@ defmodule ImagesResource.Storage.File do
     }
   end
 
-  def cache_key(%__MODULE__{name: name, path: path, last_modified: last_modified}) do
-    path = case path do
-             [] -> ""
-             arry -> Path.join(arry)
-           end
-    {name, path, last_modified}
-  end
-
   defp strip_prefix([], _), do: []
   defp strip_prefix([h|t], [i|u]) when h == i, do: strip_prefix(t, u)
   defp strip_prefix(path, _), do: path

@@ -49,7 +49,6 @@ defmodule ImagesResource.Mixfile do
       hackney: "~> 1.6",
       poison: "~> 3.1",
       sweet_xml: "~> 0.6",
-      cachex: "~> 2.1",
       flow: "~> 0.11",
     ]
   end
