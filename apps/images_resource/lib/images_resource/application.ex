@@ -17,6 +17,9 @@ defmodule ImagesResource.Application do
         )
     end
 
+    source_bucket = Config.get(:images_resource, :source_bucket)
+    dest_bucket = Config.get(:images_resource, :dest_bucket)
+
     import Supervisor.Spec, warn: false
 
     children = [
@@ -28,10 +31,10 @@ defmodule ImagesResource.Application do
       worker(ImagesResource.DBQueue.Processor, []),
       worker(ImagesResource.Sync, [[source: ImageSource, dest: ImageDest, name: Sync1]], id: Sync1),
       worker(ImagesResource.SyncDB, [[source: FullDest,    dest: DBDest, name: Sync2]], id: Sync2),
-      worker(ImagesResource.Sources.S3, [Config.get(:images_resource, :dest_bucket),   ImageDest, [path: "original", strip_prefix: ["original"], sync_target: Sync1]], id: ImageDest),
-      worker(ImagesResource.Sources.S3, [Config.get(:images_resource, :source_bucket), ImageSource, [sync_target: Sync1]], id: ImageSource),
-      worker(ImagesResource.Sources.DB, [DBDest, [sync_target: Sync2]], id: DBDest),
-      worker(ImagesResource.Sources.S3, [Config.get(:images_resource, :dest_bucket),  FullDest, [path: "thumb", strip_prefix: ["thumb"], sync_target: Sync2]], id: FullDest)
+      worker(ImagesResource.Sources.S3, [ImageDest, [bucket_name: dest_bucket, path: "original", strip_prefix: ["original"], sync_targets: [Sync1]]], id: ImageDest),
+      worker(ImagesResource.Sources.S3, [ImageSource, [bucket_name: source_bucket, sync_targets: [Sync1]]], id: ImageSource),
+      worker(ImagesResource.Sources.DB, [DBDest, [sync_targets: [Sync2]]], id: DBDest),
+      worker(ImagesResource.Sources.S3, [FullDest, [bucket_name: dest_bucket, path: "thumb", strip_prefix: ["thumb"], sync_targets: [Sync2]]], id: FullDest)
     ]
 
     opts = [strategy: :one_for_one, name: ImagesResource.Supervisor]
