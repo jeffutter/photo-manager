@@ -8,7 +8,7 @@ defmodule ImagesResource.Gallery do
 
   def find_by_slug(slug) do
     ImageSource
-    |> S3.tree
+    |> S3.tree()
     |> Tree.find_by_slug(slug)
   end
 end

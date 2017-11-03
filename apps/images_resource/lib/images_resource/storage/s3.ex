@@ -5,19 +5,22 @@ defmodule ImagesResource.Storage.S3 do
   def ls_tree(path \\ nil, opts \\ []) do
     bucket = Keyword.get(opts, :bucket, bucket())
     strip_prefix = Keyword.get(opts, :strip_prefix, [])
+
     try do
-      tree = bucket
-             |> S3.list_objects(prefix: path)
-             |> ExAws.stream!
-             |> Enum.to_list
-             |> Enum.filter(fn %{size: size} -> size != "0" end)
-             |> Enum.map(&File.from_aws_obj(&1, strip_prefix: strip_prefix))
-             |> Tree.from_list("root")
+      tree =
+        bucket
+        |> S3.list_objects(prefix: path)
+        |> ExAws.stream!()
+        |> Enum.to_list()
+        |> Enum.filter(fn %{size: size} -> size != "0" end)
+        |> Enum.map(&File.from_aws_obj(&1, strip_prefix: strip_prefix))
+        |> Tree.from_list("root")
+
       {:ok, tree}
     rescue
       e in ExAws.Error ->
         raise e
-        {:error, "Unable to list bucket: #{bucket}, path: #{path} - #{inspect e}"}
+        {:error, "Unable to list bucket: #{bucket}, path: #{path} - #{inspect(e)}"}
     end
   end
 
@@ -25,7 +28,7 @@ defmodule ImagesResource.Storage.S3 do
     opts
     |> Keyword.get(:bucket, bucket())
     |> S3.get_object(full_path)
-    |> ExAws.request
+    |> ExAws.request()
   end
 
   def get_data(full_path, opts \\ []) do

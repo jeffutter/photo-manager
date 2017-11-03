@@ -19,8 +19,9 @@ defmodule ImagesResource.DBQueue.Queue do
     case :queue.out(queue) do
       {{:value, file_version}, queue} ->
         dispatch_file_versions(queue, demand - 1, [file_version | file_versions])
+
       {:empty, queue} ->
-        Logger.debug "DB Queue Empty"
+        Logger.debug("DB Queue Empty")
         {:noreply, Enum.reverse(file_versions), {queue, demand}}
     end
   end

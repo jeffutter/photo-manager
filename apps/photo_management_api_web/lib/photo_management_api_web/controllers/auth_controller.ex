@@ -3,13 +3,13 @@ defmodule PhotoManagementApi.Web.AuthController do
 
   use PhotoManagementApi.Web, :controller
 
-  plug Ueberauth
+  plug(Ueberauth)
 
   alias Ueberauth.Auth
   alias PhotoManagementApi.User
 
   def callback(conn = %Plug.Conn{assigns: %{ueberauth_failure: fails}}, _params) do
-    Logger.error "Uberauth Failed: #{inspect fails}"
+    Logger.error("Uberauth Failed: #{inspect(fails)}")
     conn
   end
 
@@ -44,8 +44,9 @@ defmodule PhotoManagementApi.Web.AuthController do
     if auth.info.name do
       auth.info.name
     else
-      name = [auth.info.first_name, auth.info.last_name]
-             |> Enum.filter(&(&1 != nil and &1 != ""))
+      name =
+        [auth.info.first_name, auth.info.last_name]
+        |> Enum.filter(&(&1 != nil and &1 != ""))
 
       case length(name) do
         0 -> auth.info.nickname

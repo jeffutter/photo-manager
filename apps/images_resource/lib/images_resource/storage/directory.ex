@@ -1,7 +1,12 @@
 defmodule ImagesResource.Storage.Directory do
   alias ImagesResource.Utils
 
-  @type t :: %{name: String.t, children: list(Directory.t | File.t), path: list(String.t), slug: String.t}
+  @type t :: %{
+          name: String.t(),
+          children: list(Directory.t() | File.t()),
+          path: list(String.t()),
+          slug: String.t()
+        }
   defstruct name: "", children: [], path: [], slug: ""
 
   def new(name, path \\ []) do
@@ -40,10 +45,11 @@ defmodule ImagesResource.Storage.Directory do
   end
 
   def find_child_dir(%__MODULE__{children: children}, name) do
-    index = Enum.find_index(children, fn
-              %__MODULE__{name: child_name} -> child_name == name
-              _ -> false
-            end)
+    index =
+      Enum.find_index(children, fn
+        %__MODULE__{name: child_name} -> child_name == name
+        _ -> false
+      end)
 
     if index do
       {index, Enum.at(children, index)}

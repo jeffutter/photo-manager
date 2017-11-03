@@ -25,13 +25,13 @@ defmodule PhotoManagementApi.Web.ChannelCase do
     end
   end
 
-
   setup tags do
     :ok = Ecto.Adapters.SQL.Sandbox.checkout(PhotoManagementApi.Repo)
+
     unless tags[:async] do
       Ecto.Adapters.SQL.Sandbox.mode(PhotoManagementApi.Repo, {:shared, self()})
     end
+
     :ok
   end
-
 end

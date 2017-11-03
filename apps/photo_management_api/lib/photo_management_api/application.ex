@@ -12,8 +12,12 @@ defmodule PhotoManagementApi.Application do
   def start(_type, _args) do
     import Supervisor.Spec, warn: false
 
-    Supervisor.start_link([
-      supervisor(PhotoManagementApi.Repo, []),
-    ], strategy: :one_for_one, name: PhotoManagementApi.Supervisor)
+    Supervisor.start_link(
+      [
+        supervisor(PhotoManagementApi.Repo, [])
+      ],
+      strategy: :one_for_one,
+      name: PhotoManagementApi.Supervisor
+    )
   end
 end

@@ -1,21 +1,31 @@
 defmodule ImagesResource.Storage.File do
   alias ImagesResource.Utils
 
-  @type t :: %{name: String.t, size: integer, last_modified: DateTime.t, path: list(String.t), slug: String.t}
+  @type t :: %{
+          name: String.t(),
+          size: integer,
+          last_modified: DateTime.t(),
+          path: list(String.t()),
+          slug: String.t()
+        }
   defstruct name: "", size: nil, last_modified: nil, path: [], slug: ""
 
   def full_path(%__MODULE__{name: name, path: path}) do
-    path ++ [name]
-    |> Path.join
+    (path ++ [name])
+    |> Path.join()
   end
 
   def split_path(path) when is_binary(path) do
     case Path.dirname(path) do
-      "." -> []
-      "/" -> []
+      "." ->
+        []
+
+      "/" ->
+        []
+
       dirname ->
         dirname
-        |> Path.split
+        |> Path.split()
         |> Enum.filter(fn path_part -> path_part != "/" end)
     end
   end
@@ -23,9 +33,10 @@ defmodule ImagesResource.Storage.File do
   def from_aws_obj(%{key: key, last_modified: last_modified, size: size}, opts \\ []) do
     strip_prefix = Keyword.get(opts, :strip_prefix, [])
 
-    path = key
-           |> split_path
-           |> strip_prefix(strip_prefix)
+    path =
+      key
+      |> split_path
+      |> strip_prefix(strip_prefix)
 
     name = Path.basename(key)
 
@@ -34,21 +45,30 @@ defmodule ImagesResource.Storage.File do
       path: path,
       slug: Utils.slug(path, name),
       size: size,
-      last_modified: last_modified,
+      last_modified: last_modified
     }
   end
 
-  def from_ecto(%PhotoManagementApi.Image{name: name, path: path, slug: slug, size: size, last_modified: last_modified}, _opts \\ []) do
+  def from_ecto(
+        %PhotoManagementApi.Image{
+          name: name,
+          path: path,
+          slug: slug,
+          size: size,
+          last_modified: last_modified
+        },
+        _opts \\ []
+      ) do
     %__MODULE__{
       name: name,
       path: path,
       slug: slug,
       size: size,
-      last_modified: last_modified,
+      last_modified: last_modified
     }
   end
 
   defp strip_prefix([], _), do: []
-  defp strip_prefix([h|t], [i|u]) when h == i, do: strip_prefix(t, u)
+  defp strip_prefix([h | t], [i | u]) when h == i, do: strip_prefix(t, u)
   defp strip_prefix(path, _), do: path
 end

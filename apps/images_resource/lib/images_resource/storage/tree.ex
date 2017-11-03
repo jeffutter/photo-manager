@@ -47,12 +47,16 @@ defmodule ImagesResource.Storage.Tree do
       }
   """
   def from_list(file_list, root_name) when is_binary(root_name) do
-    root = root_name
-           |> Directory.new
-           |> make_directories(file_list)
+    root =
+      root_name
+      |> Directory.new()
+      |> make_directories(file_list)
+
     from_list(file_list, root)
   end
+
   def from_list([], tree), do: tree
+
   def from_list([file = %File{} | t], tree) do
     from_list(t, insert_in(tree, file))
   end
@@ -83,6 +87,7 @@ defmodule ImagesResource.Storage.Tree do
       }
   """
   def find_in(result, []), do: result
+
   def find_in(tree, [h | t]) do
     case Directory.find_child(tree, h) do
       {nil, nil} -> nil
@@ -182,19 +187,24 @@ defmodule ImagesResource.Storage.Tree do
 
   """
   def insert_in(tree, file = %File{path: path}), do: insert_in(tree, path, file)
-  def insert_in(tree, path, value) when is_binary(path), do: insert_in(tree, directory_parts(path), value)
+
+  def insert_in(tree, path, value) when is_binary(path),
+    do: insert_in(tree, directory_parts(path), value)
+
   def insert_in(tree = %Directory{name: path_name, children: children, path: path}, [], value) do
     {index, _child} = Directory.find_child(tree, value.name)
 
-    value = case path_name do
-              "root" -> Map.put(value, :path, [])
-              _ -> Map.put(value, :path, path ++ [path_name])
-            end
+    value =
+      case path_name do
+        "root" -> Map.put(value, :path, [])
+        _ -> Map.put(value, :path, path ++ [path_name])
+      end
 
-    value = case path_name do
-              "root" -> Map.put(value, :slug, Utils.slug(value.name))
-              _ -> Map.put(value, :slug, Utils.slug(path ++ [path_name], value.name))
-            end
+    value =
+      case path_name do
+        "root" -> Map.put(value, :slug, Utils.slug(value.name))
+        _ -> Map.put(value, :slug, Utils.slug(path ++ [path_name], value.name))
+      end
 
     if index do
       new_children = List.update_at(children, index, fn _ -> value end)
@@ -203,6 +213,7 @@ defmodule ImagesResource.Storage.Tree do
       %Directory{tree | children: children ++ [value]}
     end
   end
+
   def insert_in(tree = %Directory{children: children}, [h | t], value) do
     {index, _child} = Directory.find_child_dir(tree, h)
 
@@ -210,7 +221,7 @@ defmodule ImagesResource.Storage.Tree do
       new_children = List.update_at(children, index, fn child -> insert_in(child, t, value) end)
       %Directory{tree | children: new_children}
     else
-      raise "Directory #{h} not found in tree! #{inspect tree}"
+      raise "Directory #{h} not found in tree! #{inspect(tree)}"
     end
   end
 
@@ -219,19 +230,23 @@ defmodule ImagesResource.Storage.Tree do
     |> Enum.map(fn file -> file.path end)
     |> Enum.filter(fn path -> path != [] end)
     |> Enum.map(&Path.join/1)
-    |> Enum.uniq
-    |> Enum.sort
+    |> Enum.uniq()
+    |> Enum.sort()
     |> Enum.map(&Path.split/1)
     |> Enum.reduce(tree, fn path, tree ->
-      make_directories(path, [], tree)
-    end)
+         make_directories(path, [], tree)
+       end)
   end
+
   defp make_directories([], _, tree), do: tree
+
   defp make_directories([h | t], path, tree = %Directory{children: children}) do
     {index, _child} = Directory.find_child_dir(tree, h)
 
     if index do
-      new_children = List.update_at(children, index, fn child -> make_directories(t, path ++ [h], child) end)
+      new_children =
+        List.update_at(children, index, fn child -> make_directories(t, path ++ [h], child) end)
+
       %Directory{tree | children: new_children}
     else
       new_dir = Directory.new(h, path)
@@ -271,20 +286,27 @@ defmodule ImagesResource.Storage.Tree do
   ]
   """
   def diff(source, dest), do: diff(:remove, source, dest) ++ diff(:add, source, dest)
-  def diff(:add, %Directory{children: source_children}, dest), do: Enum.flat_map(source_children, add(dest))
-  def diff(:remove, source, %Directory{children: dest_children}), do: Enum.flat_map(dest_children, remove(source)) 
+
+  def diff(:add, %Directory{children: source_children}, dest),
+    do: Enum.flat_map(source_children, add(dest))
+
+  def diff(:remove, source, %Directory{children: dest_children}),
+    do: Enum.flat_map(dest_children, remove(source))
 
   defp add(dest), do: fn source_child -> add(source_child, dest) end
+
   defp add(source_child = %Directory{name: source_child_name}, dest) do
     case Directory.find_child(dest, source_child_name) do
       {nil, _} ->
         source_child
-        |> Directory.flat_children
+        |> Directory.flat_children()
         |> Enum.map(fn child -> {:add, child} end)
+
       {_, dest_child} ->
         diff(:add, source_child, dest_child)
     end
-  end 
+  end
+
   defp add(source_child = %File{name: source_child_name}, dest) do
     case Directory.find_child(dest, source_child_name) do
       {nil, _} -> [{:add, source_child}]
@@ -293,16 +315,19 @@ defmodule ImagesResource.Storage.Tree do
   end
 
   defp remove(source), do: fn dest_child -> remove(dest_child, source) end
+
   defp remove(dest_child = %Directory{name: dest_child_name}, source) do
     case Directory.find_child(source, dest_child_name) do
       {nil, _} ->
         dest_child
-        |> Directory.flat_children
+        |> Directory.flat_children()
         |> Enum.map(fn child -> {:remove, child} end)
+
       {_, source_child} ->
         diff(:remove, source_child, dest_child)
     end
   end
+
   defp remove(dest_child = %File{name: dest_child_name}, source) do
     case Directory.find_child(source, dest_child_name) do
       {nil, _} -> [{:remove, dest_child}]

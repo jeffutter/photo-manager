@@ -32,20 +32,24 @@ defmodule Config do
           nil -> default
           val -> val
         end
+
       {:system, env_var, preconfigured_default} ->
         case System.get_env(env_var) do
           nil -> preconfigured_default
           val -> val
         end
+
       nil ->
         default
+
       val ->
         val
     end
   end
 
   @spec get_sub_key(atom, atom, atom, term | nil) :: term
-  def get_sub_key(app, key, sub_key, default \\ nil) when is_atom(app) and is_atom(key) and is_atom(sub_key) do
+  def get_sub_key(app, key, sub_key, default \\ nil)
+      when is_atom(app) and is_atom(key) and is_atom(sub_key) do
     case Application.get_env(app, key) do
       list when is_list(list) ->
         case Keyword.get(list, sub_key) do
@@ -54,14 +58,17 @@ defmodule Config do
               nil -> default
               val -> val
             end
+
           {:system, env_var, preconfigured_default} ->
             case System.get_env(env_var) do
               nil -> preconfigured_default
               val -> val
             end
         end
+
       nil ->
         default
+
       val ->
         val
     end
@@ -75,8 +82,12 @@ defmodule Config do
   @spec get_integer(atom(), atom(), integer()) :: integer
   def get_integer(app, key, default \\ nil) do
     case get(app, key, nil) do
-      nil -> default
-      n when is_integer(n) -> n
+      nil ->
+        default
+
+      n when is_integer(n) ->
+        n
+
       n ->
         case Integer.parse(n) do
           {i, _} -> i

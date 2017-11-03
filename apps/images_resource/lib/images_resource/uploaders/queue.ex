@@ -19,8 +19,9 @@ defmodule ImagesResource.Uploaders.Queue do
     case :queue.out(queue) do
       {{:value, event}, queue} ->
         dispatch_events(queue, demand - 1, [event | events])
+
       {:empty, queue} ->
-        Logger.debug "Image Uploader Queue Empty"
+        Logger.debug("Image Uploader Queue Empty")
         {:noreply, Enum.reverse(events), {queue, demand}}
     end
   end

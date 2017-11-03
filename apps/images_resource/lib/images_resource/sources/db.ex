@@ -5,7 +5,7 @@ defmodule ImagesResource.Sources.DB do
   alias ImagesResource.Storage.DB
 
   def refresh(state = %__MODULE__{name: name, sync_targets: sync_targets}) do
-    Logger.info "Refreshing DB for #{inspect name}."
+    Logger.info("Refreshing DB for #{inspect(name)}.")
 
     case DB.ls_tree(nil) do
       {:ok, tree} ->
@@ -14,10 +14,13 @@ defmodule ImagesResource.Sources.DB do
         Enum.each(sync_targets, fn sync_target ->
           GenServer.cast(sync_target, {:updated, name, tree})
         end)
-        Logger.info "Refresh complete for DB for #{inspect name}"
+
+        Logger.info("Refresh complete for DB for #{inspect(name)}")
 
         {:ok, state}
-      {:error, e} -> {:error, e}
+
+      {:error, e} ->
+        {:error, e}
     end
   end
 end

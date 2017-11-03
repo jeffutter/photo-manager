@@ -6,11 +6,14 @@ defmodule PhotoManagementApi.Web.Application do
 
     Application.put_env(:ueberauth, Ueberauth.Strategy.Facebook.OAuth, [
       {:client_id, Config.get_sub_key(:ueberauth, Ueberauth.Strategy.Facebook.OAuth, :client_id)},
-      {:client_secret, Config.get_sub_key(:ueberauth, Ueberauth.Strategy.Facebook.OAuth, :client_secret)}
+      {
+        :client_secret,
+        Config.get_sub_key(:ueberauth, Ueberauth.Strategy.Facebook.OAuth, :client_secret)
+      }
     ])
 
     children = [
-      supervisor(PhotoManagementApi.Web.Endpoint, []),
+      supervisor(PhotoManagementApi.Web.Endpoint, [])
     ]
 
     opts = [strategy: :one_for_one, name: PhotoManagementApi.Web.Supervisor]

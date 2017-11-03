@@ -8,7 +8,8 @@ defmodule PhotoManagementApi.Web.SessionView do
         token: jwt,
         email: user.email
       },
-      message: "You are successfully logged in! Add this token to authorization header to make authorized requests."
+      message:
+        "You are successfully logged in! Add this token to authorization header to make authorized requests."
     }
   end
 end

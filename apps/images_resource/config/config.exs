@@ -18,6 +18,6 @@ config :ex_aws,
 
 config :sentry,
   enable_source_code_context: true,
-  root_source_code_path: File.cwd!,
+  root_source_code_path: File.cwd!(),
   included_environments: [:prod],
-  environment_name: Mix.env
+  environment_name: Mix.env()

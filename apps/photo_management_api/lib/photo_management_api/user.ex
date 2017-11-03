@@ -7,24 +7,28 @@ defmodule PhotoManagementApi.User do
   import Ecto.Query, only: [from: 2]
   import EctoEnum, except: [cast: 3]
 
-  defenum ProviderEnum, facebook: 0
+  defenum(ProviderEnum, facebook: 0)
 
   schema "users" do
-    field :email, :string
-    field :name, :string
-    field :password, :string, virtual: true
-    field :password_hash, :string
-    field :is_admin, :boolean
-    field :avatar, :string
-    field :provider, ProviderEnum 
-    field :provider_id, :string
+    field(:email, :string)
+    field(:name, :string)
+    field(:password, :string, virtual: true)
+    field(:password_hash, :string)
+    field(:is_admin, :boolean)
+    field(:avatar, :string)
+    field(:provider, ProviderEnum)
+    field(:provider_id, :string)
     timestamps()
   end
 
   def find_or_create(user) do
-    query = from u in __MODULE__,
-            where: u.provider == ^user.provider,
-            where: u.provider_id == ^user.provider_id
+    query =
+      from(
+        u in __MODULE__,
+        where: u.provider == ^user.provider,
+        where: u.provider_id == ^user.provider_id
+      )
+
     case Repo.one(query) do
       user = %__MODULE__{} -> {:ok, user}
       _ -> Repo.insert(user)
@@ -49,6 +53,7 @@ defmodule PhotoManagementApi.User do
     case Repo.get_by(__MODULE__, email: email) do
       nil ->
         {:error, :not_found}
+
       user ->
         if Comeonin.Bcrypt.checkpw(password, user.password_hash) do
           {:ok, user}
@@ -64,7 +69,12 @@ defmodule PhotoManagementApi.User do
     |> validate_format(:email, ~r/@/)
     |> unique_constraint(:email)
     |> validate_length(:password, min: 8)
-    |> validate_format(:password, ~r/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).*/, [message: "Must include at least one lowercase letter, one uppercase letter, and one digit"])
+    |> validate_format(
+         :password,
+         ~r/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).*/,
+         message:
+           "Must include at least one lowercase letter, one uppercase letter, and one digit"
+       )
     |> generate_password_hash
   end
 
@@ -72,6 +82,7 @@ defmodule PhotoManagementApi.User do
     case changeset do
       %Changeset{valid?: true, changes: %{password: password}} ->
         put_change(changeset, :password_hash, Comeonin.Bcrypt.hashpwsalt(password))
+
       _ ->
         changeset
     end
