@@ -1,59 +1,8 @@
 // @flow
-import React from "react";
 import { graphql, compose } from "react-apollo";
-import { css } from "glamor";
 import gql from "graphql-tag";
 
-import { $$default as Gallery } from "../../gallery.re";
-import { $$default as Spinner } from "../../fullPageSpinner.re";
-
-let cls = css({
-  padding: "56px 8px 8px 8px",
-  position: "absolute",
-  width: "100%",
-  height: "100%",
-  boxSizing: "border-box"
-});
-
-type galleryContainerProps = {
-  queryData: { loading: boolean, gallery: any },
-  moreLoading: boolean,
-  moreGallery: any,
-  loadNextPage: () => any
-};
-
-const GalleryContainer = ({
-  queryData: { loading, gallery },
-  moreLoading,
-  moreGallery,
-  loadNextPage
-}: galleryContainerProps) => {
-  if (loading || moreLoading || !(gallery && moreGallery)) return <Spinner />;
-
-  let newDescendants = gallery.descendants.map(item => {
-    let foundIndex = moreGallery.descendants.findIndex(x => x.id === item.id);
-    if (foundIndex === -1) return item;
-    let foundItem = moreGallery.descendants[foundIndex];
-    return Object.assign({}, item, foundItem);
-  });
-  let newGallery = Object.assign({}, gallery, {
-    descendants: newDescendants
-  });
-
-  window.loadNextPage = loadNextPage;
-
-  return (
-    <div {...cls}>
-      {newGallery && (
-        <Gallery
-          loading={loading}
-          loadNextPage={loadNextPage}
-          {...newGallery}
-        />
-      )}
-    </div>
-  );
-};
+import { $$default as GalleryContainer } from "../../galleryContainer.re";
 
 const queryOptions = ({ match: { params: { slug } } }) => {
   const s = slug || "root";
