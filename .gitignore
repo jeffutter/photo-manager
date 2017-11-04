@@ -12,7 +12,7 @@ priv/data/mnesia
 !/postgres/data/.gitkeep
 
 /apps/photo_management_api_web/priv/static/
-/apps/photo_management_api_web/priv/static/.gitkeep
+!/apps/photo_management_api_web/priv/static/.gitkeep
 /*.log
 .envrc
 kubernetes/secrets.yml
