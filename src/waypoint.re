@@ -2,7 +2,7 @@
 
 let make =
     (
-      ~onEnter: 'a => unit,
+      ~onEnter: option(('a => unit))=?,
       ~bottomOffset: string,
       ~topOffset: string,
       ~fireOnRapidScroll: bool,
@@ -11,7 +11,7 @@ let make =
   ReasonReact.wrapJsForReason(
     ~reactClass=waypoint,
     ~props={
-      "onEnter": onEnter,
+      "onEnter": Js.Null_undefined.from_opt(onEnter),
       "bottomOffset": bottomOffset,
       "topOffset": topOffset,
       "fireOnRapidScroll": Js.Boolean.to_js_boolean(fireOnRapidScroll)

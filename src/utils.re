@@ -1,28 +1,3 @@
-let debounce = (~waitMs: int, ~trailing: bool=true, ~leading: bool=false, func) => {
-  let noop = () => ();
-  let timeout = ref(Js.Global.setTimeout(noop, waitMs));
-  let callCount = ref(0);
-  (event) => {
-    if (leading) {
-      if (callCount^ == 0) {
-        func(event);
-        callCount := callCount^ + 1
-      }
-    };
-    Js.Global.clearTimeout(timeout^);
-    timeout :=
-      Js.Global.setTimeout(
-        (_) => {
-          if (trailing || leading && callCount^ == 0) {
-            func(event)
-          };
-          callCount := 0
-        },
-        waitMs
-      )
-  }
-};
-
 let sortBy = (func, array) => {
   let copy = Js.Array.copy(array);
   Js.Array.sortInPlaceWith(
@@ -39,19 +14,19 @@ let sortBy = (func, array) => {
   )
 };
 
-let chunk = (size, array) =>
-  Js.Array.reduce(
+let chunkList = (size, list) =>
+  List.fold_left(
     (acc, item) => {
-      let lastChunk = acc[Js.Array.length(acc) - 1];
-      switch (Js.Array.length(lastChunk)) {
-      | length when length < size =>
-        ignore(Js.Array.push(item, lastChunk));
-        acc
-      | _ =>
-        ignore(Js.Array.push([|item|], acc));
-        acc
+      let (lastChunk, rest) =
+        switch acc {
+        | [] => ([], [])
+        | [lastChunk, ...rest] => (lastChunk, rest)
+        };
+      switch (List.length(lastChunk)) {
+      | length when length < size => [[item, ...lastChunk], ...rest]
+      | _ => [[item], ...acc]
       }
     },
-    [|[||]|],
-    array
+    [],
+    list
   );
