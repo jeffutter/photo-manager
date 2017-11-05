@@ -11,7 +11,7 @@ defmodule ImagesResource.Uploaders.Worker do
   end
 
   defp process_sync(event = {:add, file = %File{name: name, path: path}}) do
-    Logger.info("Storing: #{inspect(file)}")
+    Logger.info("S3 Storing: #{inspect(file)}")
 
     try do
       with source_bucket <- Config.get(:images_resource, :source_bucket),
@@ -31,7 +31,8 @@ defmodule ImagesResource.Uploaders.Worker do
             Queue.add(event)
 
           _ ->
-            raise e
+            stacktrace = System.stacktrace()
+            reraise e, stacktrace
         end
     end
   end

@@ -27,8 +27,12 @@ defmodule ImagesResource.DBQueue.Queue do
   end
 
   def handle_cast({:push, file, version}, {queue, pending_demand}) do
-    updated_queue = :queue.in({file, version}, queue)
-    dispatch_file_versions(updated_queue, pending_demand, [])
+    if :queue.member({file, version}, queue) do
+      dispatch_file_versions(queue, pending_demand, [])
+    else
+      updated_queue = :queue.in({file, version}, queue)
+      dispatch_file_versions(updated_queue, pending_demand, [])
+    end
   end
 
   def add(file, version) do

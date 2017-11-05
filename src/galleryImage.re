@@ -15,21 +15,7 @@ let cls =
     transition("transform 0.3s ease-in-out"),
     cursor("pointer"),
     counterIncrement("item-counter"),
-    Selector(
-      "&:after",
-      [
-        content("''"),
-        position("absolute"),
-        top("0"),
-        left("0"),
-        width("100%"),
-        height("100%"),
-        backgroundColor("black"),
-        opacity("0.2"),
-        transition("opacity 0.3s ease-in-out")
-      ]
-    ),
-    Selector("&:hover", [transform("scale(1.05)"), Selector("&:after", [opacity("0")])]),
+    Selector("&:hover", [transform("scale(1.05)")]),
     Selector("&--medium", [gridRowEnd("span 2")]),
     Selector("&--large", [gridRowEnd("span 3")]),
     Selector(

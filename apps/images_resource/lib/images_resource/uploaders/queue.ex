@@ -27,8 +27,12 @@ defmodule ImagesResource.Uploaders.Queue do
   end
 
   def handle_cast({:push, event}, {queue, pending_demand}) do
-    updated_queue = :queue.in(event, queue)
-    dispatch_events(updated_queue, pending_demand, [])
+    if :queue.member(event, queue) do
+      dispatch_events(queue, pending_demand, [])
+    else
+      updated_queue = :queue.in(event, queue)
+      dispatch_events(updated_queue, pending_demand, [])
+    end
   end
 
   def add(event) do
