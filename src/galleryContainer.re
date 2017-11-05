@@ -1,5 +1,7 @@
 open Glamor;
 
+[@bs.val] external assign3 : (Js.t({..}), Js.t({..}), Js.t({..})) => Js.t({..}) = "Object.assign";
+
 type descendants = {. "name": string, "id": string};
 
 type gallery = {
@@ -46,17 +48,13 @@ let make =
             | index when index >= 0 =>
               let descendants = moreGallery##descendants;
               let foundDescendant = descendants[index];
-              let empty = Js.Obj.empty();
-              let old = Js.Obj.assign(empty, descendant);
-              Js.Obj.assign(old, foundDescendant)
+              assign3(Js.Obj.empty(), descendant, foundDescendant)
             | _ => descendant
             }
           },
           gallery##descendants
         );
-      let empty = Js.Obj.empty();
-      let old = Js.Obj.assign(empty, gallery);
-      let newGallery = Js.Obj.assign(old, {"descendants": newDescendants});
+      let newGallery = assign3(Js.Obj.empty(), gallery, {"descendants": newDescendants});
       <div className=cls>
         <Gallery
           loadNextPage
