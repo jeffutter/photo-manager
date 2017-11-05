@@ -21,7 +21,7 @@ type state = {
 type action =
   | OpenLightbox(int)
   | CloseLightbox
-  | AddImage(Js.Array.t(image), string)
+  | AddImage(string)
   | LoadImages;
 
 let component = ReasonReact.reducerComponent("Gallery");
@@ -47,35 +47,21 @@ let make =
     | OpenLightbox(index) =>
       ReasonReact.Update({...state, lightboxIsOpen: true, currentImage: index})
     | CloseLightbox => ReasonReact.Update({...state, lightboxIsOpen: false, currentImage: 0})
-    | AddImage(images, slug) =>
-      let thumbedImages =
-        Js.Array.filter(
-          (item) =>
-            switch (Js.Nullable.to_opt(item##thumbnail)) {
-            | Some(_) => true
-            | None => false
-            },
-          images
-        );
-      let thumbedImageSlugs = Js.Array.map((item) => item##slug, thumbedImages);
-      switch (Js.Array.includes(slug, thumbedImageSlugs)) {
-      | false =>
-        let new_state = {...state, pendingImages: [slug, ...state.pendingImages]};
-        ReasonReact.UpdateWithSideEffects(
-          new_state,
-          (
-            (self) =>
-              switch state.loadingTimeout^ {
-              | Some(_) => ()
-              | None =>
-                state.loadingTimeout :=
-                  Some(Js.Global.setTimeout(self.reduce((_) => LoadImages), 200));
-                ()
-              }
-          )
+    | AddImage(slug) =>
+      let new_state = {...state, pendingImages: [slug, ...state.pendingImages]};
+      ReasonReact.UpdateWithSideEffects(
+        new_state,
+        (
+          (self) =>
+            switch state.loadingTimeout^ {
+            | Some(_) => ()
+            | None =>
+              state.loadingTimeout :=
+                Some(Js.Global.setTimeout(self.reduce((_) => LoadImages), 200));
+              ()
+            }
         )
-      | _ => ReasonReact.NoUpdate
-      }
+      )
     | LoadImages =>
       let chunks = Utils.chunkList(20, state.pendingImages);
       let newState = {...state, pendingImages: [], loadingTimeout: ref(None)};
@@ -100,12 +86,28 @@ let make =
         (item) => <WaypointGalleryThumb key=item##id name=item##name slug=item##slug />,
         galleries
       );
+    let thumbedImageSlugs =
+      images
+      |> Js.Array.filter(
+           (item) =>
+             switch (Js.Nullable.to_opt(item##thumbnail)) {
+             | Some(_) => true
+             | None => false
+             }
+         )
+      |> Js.Array.map((item) => item##slug);
     let renderedImages =
       Js.Array.mapi(
         (item, index) =>
           <WaypointImage
             key=item##id
-            onEnter=(self.reduce((_event) => AddImage(images, item##id)))
+            onEnter=(
+              () =>
+                switch (Js.Array.includes(item##slug, thumbedImageSlugs)) {
+                | false => self.reduce((_event) => AddImage(item##slug), ())
+                | _ => ()
+                }
+            )
             handleOpen=(self.reduce((_event) => OpenLightbox(index)))
             thumbnail=(Js.Nullable.to_opt(item##thumbnail))
             name=item##name
@@ -144,17 +146,3 @@ let make =
     )
   }
 };
-
-let default =
-  ReasonReact.wrapReasonForJs(
-    ~component,
-    (jsProps) =>
-      make(
-        ~name=jsProps##name,
-        ~path=jsProps##path,
-        ~slug=jsProps##slug,
-        ~descendants=jsProps##descendants,
-        ~loadNextPage=jsProps##loadNextPage,
-        [||]
-      )
-  );
