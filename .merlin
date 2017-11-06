@@ -1,16 +1,16 @@
 ####{BSB GENERATED: NO EDIT
 FLG -ppx '/usr/local/lib/node_modules/bs-platform/bin/reactjs_jsx_ppx_2.exe'
 FLG -ppx /usr/local/lib/node_modules/bs-platform/bin/bsppx.exe
-S /Users/jutter/src/photo-manager/node_modules/bs-platform/lib/ocaml
-B /Users/jutter/src/photo-manager/node_modules/bs-platform/lib/ocaml
+S /Users/jeffutter/Projects/photo-management/node_modules/bs-platform/lib/ocaml
+B /Users/jeffutter/Projects/photo-management/node_modules/bs-platform/lib/ocaml
 FLG -nostdlib -no-alias-deps -color always
 FLG -w -30-40+6+7+27+32..39+44+45+101
-S /Users/jutter/src/photo-manager/node_modules/reason-react/lib/ocaml
-B /Users/jutter/src/photo-manager/node_modules/reason-react/lib/ocaml
-S /Users/jutter/src/photo-manager/node_modules/bs-glamor/lib/ocaml
-B /Users/jutter/src/photo-manager/node_modules/bs-glamor/lib/ocaml
-S /Users/jutter/src/photo-manager/node_modules/bs-jest/lib/ocaml
-B /Users/jutter/src/photo-manager/node_modules/bs-jest/lib/ocaml
+S /Users/jeffutter/Projects/photo-management/node_modules/reason-react/lib/ocaml
+B /Users/jeffutter/Projects/photo-management/node_modules/reason-react/lib/ocaml
+S /Users/jeffutter/Projects/photo-management/node_modules/bs-glamor/lib/ocaml
+B /Users/jeffutter/Projects/photo-management/node_modules/bs-glamor/lib/ocaml
+S /Users/jeffutter/Projects/photo-management/node_modules/bs-jest/lib/ocaml
+B /Users/jeffutter/Projects/photo-management/node_modules/bs-jest/lib/ocaml
 S src
 B lib/bs/src
 ####BSB GENERATED: NO EDIT}

@@ -1,0 +1,20 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: photo-manager
+  annotations:
+    kubernetes.io/tls-acme: "true"
+    kubernetes.io/ingress.class: "nginx"
+spec:
+  tls:
+  - hosts:
+    - gallery.sadclown.net
+    secretName: photo-manager-tls
+  rules:
+  - host: gallery.sadclown.net
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: photo-manager
+          servicePort: 80
