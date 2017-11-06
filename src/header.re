@@ -26,10 +26,11 @@ let mobileToggleCls =
     right("22px"),
     top("0"),
     width("30px"),
-    transition("all 200ms ease-in"),
+    transform("rotate(0deg)"),
+    transition(".5s ease-in-out"),
     zIndex("1000"),
     Selector(
-      "&:span",
+      "& span",
       [
         width("30px"),
         height("4px"),
@@ -117,7 +118,9 @@ let navCls =
     )
   ]);
 
-let activeCls = css([color("#f8f8f"), background("rgba(0, 0, 0, 0.3)")]);
+let activeCls = css([]);
+
+let openNavMobileToggle = css([transform("rotate(90deg)")]);
 
 type state = {_open: bool};
 
@@ -137,9 +140,8 @@ let make = (_children) => {
     let headerClasses = [|headerCls|];
     let mobileToggleClasses = [|mobileToggleCls|];
     if (self.state._open) {
-      ignore
-        (Js.Array.push(openNavCls, headerClasses))
-        /* ignore (Js.Array.push styles##openNavMobileToggle mobileToggleClasses) */
+      ignore(Js.Array.push(openNavCls, headerClasses));
+      ignore(Js.Array.push(openNavMobileToggle, mobileToggleClasses))
     };
     <header className=(Js.Array.joinWith(" ", headerClasses))>
       <a className=logoCls href="#"> (ReasonReact.stringToElement("Photo Gallery")) </a>
