@@ -61,6 +61,9 @@ defmodule PhotoManagementApi.Web.Endpoint do
     signing_salt: "G8rEUovD"
   )
 
+  plug PhotoManagementApi.Web.Plug.Exporter
+  plug PhotoManagementApi.Web.Endpoint.PipelineInstrumenter
+
   plug(PhotoManagementApi.Web.Router)
 
   @doc """

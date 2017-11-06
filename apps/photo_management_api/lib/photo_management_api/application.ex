@@ -12,6 +12,8 @@ defmodule PhotoManagementApi.Application do
   def start(_type, _args) do
     import Supervisor.Spec, warn: false
 
+    PhotoManagementApi.RepoInstrumenter.setup()
+
     Supervisor.start_link(
       [
         supervisor(PhotoManagementApi.Repo, [])

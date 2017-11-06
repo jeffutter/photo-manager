@@ -36,6 +36,8 @@ defmodule PhotoManagementApi.Web.Mixfile do
     [
       {:ueberauth, "~> 0.4"},
       {:ueberauth_facebook, "~> 0.6"},
+      {:prometheus_plugs, "~> 1.1.4"},
+      {:prometheus_phoenix, "~> 1.2.0"},
       {:phoenix, "~> 1.3.0", override: true},
       {:phoenix_pubsub, "~> 1.0"},
       {:phoenix_ecto, "~> 3.2"},

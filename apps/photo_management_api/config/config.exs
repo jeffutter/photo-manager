@@ -4,7 +4,8 @@ config :photo_management_api, ecto_repos: [PhotoManagementApi.Repo]
 
 config :photo_management_api, PhotoManagementApi.Repo,
   adapter: Ecto.Adapters.Postgres,
-  pool_size: 15
+  pool_size: 15,
+  loggers: [PhotoManagementApi.RepoInstrumenter]
 
 config :sentry,
   enable_source_code_context: true,
