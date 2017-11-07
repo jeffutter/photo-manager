@@ -17,6 +17,16 @@ defmodule PhotoManagementApi.Web.Endpoint do
     from: :photo_management_api_web,
     gzip: true,
     brotli: true,
+    cache_control_for_etags: "no-cache",
+    only: ["service-worker.js"]
+  )
+
+  plug(
+    Plug.Static,
+    at: "/",
+    from: :photo_management_api_web,
+    gzip: true,
+    brotli: true,
     cache_control_for_etags: "public, max-age=31536000"
   )
 
