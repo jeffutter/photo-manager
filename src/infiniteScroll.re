@@ -30,48 +30,49 @@ let make =
     ) => {
   ...component,
   initialState: () => {instance: None, childrenCount: 0, container: ref(None)},
-  reducer: (action) =>
+  reducer: (action, state) =>
     switch action {
-    | ChildrenUpdated => (
-        (state) => {
-          let currCount = count(children);
-          let prevCount = state.childrenCount;
-          if (currCount != prevCount) {
-            switch state.instance {
-            | None => ()
-            | Some(i) =>
-              if (pack) {
-                Brick.pack(i);
-                /* IDK I shouldn't have to do this */
-                let _ =
-                  Js.Global.setTimeout(
-                    () => {
-                      Brick.resize(i, true);
-                      Brick.pack(i)
-                    },
-                    0
-                  );
-                ()
-              } else {
-                Brick.update(i)
+    | ChildrenUpdated =>
+      let currCount = count(children);
+      let prevCount = state.childrenCount;
+      if (currCount != prevCount) {
+        let newState = {...state, childrenCount: currCount};
+        ReasonReact.UpdateWithSideEffects(
+          newState,
+          (
+            (_self) =>
+              switch state.instance {
+              | None => ()
+              | Some(i) =>
+                if (pack) {
+                  Brick.pack(i);
+                  ()
+                } else {
+                  Brick.update(i)
+                }
               }
-            };
-            ReasonReact.Update({...state, childrenCount: currCount})
-          } else {
-            ReasonReact.NoUpdate
-          }
-        }
-      )
+          )
+        )
+      } else {
+        ReasonReact.NoUpdate
+      }
     },
-  didMount: ({reduce, state}) =>
+  didMount: ({reduce: _reduce, state}) =>
     switch state.container^ {
     | Some(c) =>
       let instance =
         Brick.brick({"container": c, "packed": packed, "sizes": sizes, "position": position});
-      Brick.resize(instance, true);
-      Brick.pack(instance);
-      reduce(() => ChildrenUpdated, ());
-      ReasonReact.Update({...state, instance: Some(instance)})
+      let newState = {...state, instance: Some(instance)};
+      ReasonReact.UpdateWithSideEffects(
+        newState,
+        (
+          (self) => {
+            Brick.resize(instance, true);
+            Brick.pack(instance);
+            self.reduce(() => ChildrenUpdated, ())
+          }
+        )
+      )
     | None =>
       Js.Exn.raiseError("Bricks Container Missing");
       ReasonReact.NoUpdate
