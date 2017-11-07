@@ -29,6 +29,7 @@ defmodule PhotoManagementApi.Web.Schema.Types do
     field(:width, :integer, resolve: from_db(:width))
     field(:height, :integer, resolve: from_db(:height))
     field(:thumbnail, :integer, resolve: from_db(:base64))
+    field(:rating, :integer, resolve: from_db({:rating, :rating}))
     field(:small_url, :string, resolve: &Resolver.Image.small_url/3)
     field(:medium_url, :string, resolve: &Resolver.Image.medium_url/3)
     field(:large_url, :string, resolve: &Resolver.Image.large_url/3)
@@ -68,24 +69,37 @@ defmodule PhotoManagementApi.Web.Schema.Types do
   end
 
   defp from_db(field) do
-    fn file = %File{}, _, _ ->
-      batch({__MODULE__, :images_from_db}, file, fn batch_results ->
-        with image when not is_nil(image) <- Map.get(batch_results, file),
-             value <- Map.get(image, field) do
-          {:ok, value}
-        else
-          _ ->
-            Logger.error("Data missing from DB. Field: #{field} for #{file.slug}")
-            {:error, "Data missing from DB. Field: #{field} for #{file.slug}"}
+    fn file = %File{}, _, %{context: %{current_user: %PhotoManagementApi.User{id: user_id}}} ->
+      batch({__MODULE__, :images_from_db, user_id}, file, fn batch_results ->
+        case field do
+          {relation_name, field_name} ->
+            with image when not is_nil(image) <- Map.get(batch_results, file),
+                relation <- Map.get(image, relation_name, %{}) || %{},
+                value <- Map.get(relation, field_name) do
+              {:ok, value}
+            else
+              _ ->
+                Logger.error("Data missing from DB. Field: #{field_name} in #{relation_name} for #{file.slug}")
+                {:error, "Data missing from DB. Field: #{field_name} in #{relation_name} for #{file.slug}"}
+            end
+          field ->
+            with image when not is_nil(image) <- Map.get(batch_results, file),
+                value <- Map.get(image, field) do
+              {:ok, value}
+            else
+              _ ->
+                Logger.error("Data missing from DB. Field: #{field} for #{file.slug}")
+                {:error, "Data missing from DB. Field: #{field} for #{file.slug}"}
+            end
         end
       end)
     end
   end
 
-  def images_from_db(_, files) do
+  def images_from_db(user_id, files) do
     files
     |> Enum.map(fn file -> Map.get(file, :slug) end)
-    |> DBImage.get_all_by_slugs()
+    |> DBImage.get_all_by_slugs(user_id)
     |> Enum.map(fn image ->
          file = Enum.find(files, fn f -> f.slug == image.slug end)
          {file, image}

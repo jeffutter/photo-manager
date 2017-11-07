@@ -3,6 +3,7 @@ defmodule PhotoManagementApi.User do
 
   alias Ecto.Changeset
   alias PhotoManagementApi.Repo
+  alias Comeonin.Bcrypt
 
   import Ecto.Query, only: [from: 2]
   import EctoEnum, except: [cast: 3]
@@ -18,7 +19,10 @@ defmodule PhotoManagementApi.User do
     field(:avatar, :string)
     field(:provider, ProviderEnum)
     field(:provider_id, :string)
+
     timestamps()
+
+    has_many :ratings, PhotoManagementApi.Rating
   end
 
   def find_or_create(user) do
@@ -55,7 +59,7 @@ defmodule PhotoManagementApi.User do
         {:error, :not_found}
 
       user ->
-        if Comeonin.Bcrypt.checkpw(password, user.password_hash) do
+        if Bcrypt.checkpw(password, user.password_hash) do
           {:ok, user}
         else
           {:error, :unauthorized}
@@ -81,7 +85,7 @@ defmodule PhotoManagementApi.User do
   defp generate_password_hash(changeset) do
     case changeset do
       %Changeset{valid?: true, changes: %{password: password}} ->
-        put_change(changeset, :password_hash, Comeonin.Bcrypt.hashpwsalt(password))
+        put_change(changeset, :password_hash, Bcrypt.hashpwsalt(password))
 
       _ ->
         changeset

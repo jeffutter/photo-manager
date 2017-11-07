@@ -27,7 +27,7 @@ const moreOptions = ({ match: { params: { slug } }, location: { search } }) => {
   };
 };
 
-const query = gql`
+export const query = gql`
   query gallery($slug: String!) {
     gallery(slug: $slug) {
       id
@@ -50,6 +50,7 @@ const query = gql`
           size
           width
           height
+          rating
           small_url
           medium_url
           large_url
@@ -81,6 +82,18 @@ const more = gql`
           thumbnail
         }
       }
+    }
+  }
+`;
+
+export const rateImage = gql`
+  mutation rateImage($slug: String!, $rating: Int!) {
+    rateImage(slug: $slug, rating: $rating) {
+      id
+      name
+      path
+      slug
+      rating
     }
   }
 `;
@@ -120,6 +133,27 @@ const withMore = graphql(more, {
   }
 });
 
-const withData = compose(withQuery, withMore);
+const withRateImage = graphql(rateImage, {
+  props: ({ ownProps, mutate }) => ({
+    submitRating: ({ slug, rating }) => {
+      const oldImage = ownProps.queryData.gallery.descendants.find(
+        image => image.slug === slug
+      );
+      mutate({
+        variables: { slug: slug, rating: rating },
+        optimisticResponse: {
+          __typename: "Mutation",
+          rateImage: Object.assign({}, oldImage, {
+            __typename: "Image",
+            // Note that we can access the props of the container at `ownProps` if we
+            // need that information to compute the optimistic response
+            slug: slug,
+            rating: rating
+          })
+        }
+      });
+    }
+  })
+});
 
-export default withData(GalleryContainer);
+export default compose(withQuery, withMore, withRateImage)(GalleryContainer);

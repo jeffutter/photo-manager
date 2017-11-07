@@ -19,6 +19,8 @@ defmodule PhotoManagementApi.Image do
     field(:version, VersionEnum)
 
     timestamps()
+
+    has_one :rating, PhotoManagementApi.Rating, foreign_key: :slug, references: :slug
   end
 
   def changeset(struct, params \\ %{}) do
@@ -38,17 +40,21 @@ defmodule PhotoManagementApi.Image do
     |> validate_changeset
   end
 
-  def get_all_by_slugs([]) do
-    query = from(i in __MODULE__, limit: 20)
+  def get_all_by_slugs([], user_id) do
+    query = from i in __MODULE__, limit: 20,
+            left_join: r in PhotoManagementApi.Rating, on: i.slug == r.slug and r.user_id == ^user_id
 
     query
+    |> preload(:rating)
     |> Repo.all()
   end
 
-  def get_all_by_slugs(slugs) do
-    query = from(i in __MODULE__, where: i.slug in ^slugs)
+  def get_all_by_slugs(slugs, user_id) do
+    query = from i in __MODULE__, where: i.slug in ^slugs,
+            left_join: r in PhotoManagementApi.Rating, on: i.slug == r.slug and r.user_id == ^user_id
 
     query
+    |> preload(:rating)
     |> Repo.all()
   end
 

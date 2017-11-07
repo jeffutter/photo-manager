@@ -14,5 +14,11 @@ defmodule PhotoManagementApi.Web.Schema do
   end
 
   mutation do
+    field :rate_image, type: :image do
+      arg :slug, non_null(:string)
+      arg :rating, non_null(:integer)
+
+      resolve(&Resolver.Image.rate_image/2)
+    end
   end
 end

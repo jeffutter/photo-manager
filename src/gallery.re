@@ -8,7 +8,8 @@ type image = {
   "large_url": string,
   "small_url": string,
   "width": string,
-  "height": string
+  "height": string,
+  "rating": Js.Nullable.t(int)
 };
 
 type state = {
@@ -26,6 +27,28 @@ type action =
 
 let component = ReasonReact.reducerComponent("Gallery");
 
+let rec splitDescendants =
+        (descendants, (thumbedImages: list(image), images: list(image), galleries: list('a))) =>
+  switch descendants {
+  | [] => (List.rev(thumbedImages), List.rev(images), List.rev(galleries))
+  | [descendant, ...rest] =>
+    switch descendant##__typename {
+    | "Image" =>
+      switch (Js.Nullable.to_opt(descendant##thumbnail)) {
+      | Some(_) =>
+        splitDescendants(
+          rest,
+          ([descendant, ...thumbedImages], [descendant, ...images], galleries)
+        )
+      | None => splitDescendants(rest, (thumbedImages, [descendant, ...images], galleries))
+      }
+    | "Gallery" => splitDescendants(rest, (thumbedImages, images, [descendant, ...galleries]))
+    | type_ =>
+      Js.log("Unknown Type: " ++ type_);
+      (thumbedImages, images, galleries)
+    }
+  };
+
 let make =
     (
       ~name="",
@@ -33,6 +56,7 @@ let make =
       ~slug="",
       ~descendants=[||],
       ~loadNextPage: Js.Array.t(string) => unit,
+      ~submitRating,
       _children
     ) => {
   ...component,
@@ -71,52 +95,38 @@ let make =
       )
     },
   render: (self) => {
-    let images =
-      Utils.sortBy(
-        (item) => item##name,
-        Js.Array.filter((item) => item##__typename == "Image", descendants)
-      );
-    let galleries =
-      Utils.sortBy(
-        (item) => item##name,
-        Js.Array.filter((item) => item##__typename == "Gallery", descendants)
-      );
+    let (thumbedImages, images, galleries) =
+      splitDescendants(Array.to_list(descendants), ([], [], []));
     let renderedGalleries =
-      Js.Array.map(
+      List.map(
         (item) => <WaypointGalleryThumb key=item##id name=item##name slug=item##slug />,
         galleries
       );
-    let thumbedImageSlugs =
-      images
-      |> Js.Array.filter(
-           (item) =>
-             switch (Js.Nullable.to_opt(item##thumbnail)) {
-             | Some(_) => true
-             | None => false
-             }
-         )
-      |> Js.Array.map((item) => item##slug);
+    let thumbedImageSlugs = List.map((image) => image##slug, thumbedImages);
     let renderedImages =
-      Js.Array.mapi(
-        (item, index) =>
+      List.mapi(
+        (index, image) =>
           <WaypointImage
-            key=item##id
+            key=image##id
+            slug=image##slug
             onEnter=(
               () =>
-                switch (Js.Array.includes(item##slug, thumbedImageSlugs)) {
-                | false => self.reduce((_event) => AddImage(item##slug), ())
+                switch (List.exists((imageSlug) => image##slug == imageSlug, thumbedImageSlugs)) {
+                | false => self.reduce((_event) => AddImage(image##slug), ())
                 | _ => ()
                 }
             )
             handleOpen=(self.reduce((_event) => OpenLightbox(index)))
-            thumbnail=(Js.Nullable.to_opt(item##thumbnail))
-            name=item##name
+            thumbnail=(Js.Nullable.to_opt(image##thumbnail))
+            name=image##name
+            rating=(Js.Nullable.to_opt(image##rating))
+            submitRating
           />,
         images
       );
-    let renderedDescendants = Js.Array.concat(renderedGalleries, renderedImages);
+    let renderedDescendants = List.concat([renderedGalleries, renderedImages]);
     let swipeImages =
-      Js.Array.map(
+      List.map(
         (image: image) => {
           "src": image##large_url,
           "msrc": image##small_url,
@@ -127,22 +137,15 @@ let make =
         images
       );
     let swipeOptions = {"index": self.state.currentImage};
-    ReasonReact.createDomElement(
-      "div",
-      ~props={"className": "gallery"},
-      [|
-        ReasonReact.element(BreadCrumbs.make(~slug, ~path, ~name, [||])),
-        ReasonReact.element(GalleryBody.make(renderedDescendants)),
-        ReasonReact.element(
-          PhotoSwipe.make(
-            ~isOpen=self.state.lightboxIsOpen,
-            ~items=swipeImages,
-            ~onClose=self.reduce((_event) => CloseLightbox),
-            ~options=swipeOptions,
-            [||]
-          )
-        )
-      |]
-    )
+    <div className="gallery">
+      <BreadCrumbs slug path name />
+      (ReasonReact.element(GalleryBody.make(Array.of_list(renderedDescendants))))
+      <PhotoSwipe
+        isOpen=self.state.lightboxIsOpen
+        items=(Array.of_list(swipeImages))
+        onClose=(self.reduce((_event) => CloseLightbox))
+        options=swipeOptions
+      />
+    </div>
   }
 };

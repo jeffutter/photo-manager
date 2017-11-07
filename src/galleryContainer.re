@@ -30,6 +30,7 @@ let make =
       ~moreLoading: bool=false,
       ~moreGallery: gallery,
       ~loadNextPage: Js.Array.t(string) => unit,
+      ~submitRating,
       _children
     ) => {
   ...component,
@@ -58,6 +59,7 @@ let make =
       <div className=cls>
         <Gallery
           loadNextPage
+          submitRating
           name=newGallery##name
           path=newGallery##path
           slug=newGallery##slug
@@ -77,6 +79,7 @@ let default =
         ~gallery=jsProps##queryData##gallery,
         ~moreLoading=Js.to_bool(jsProps##moreLoading),
         ~moreGallery=jsProps##moreGallery,
+        ~submitRating=jsProps##submitRating,
         ~loadNextPage=jsProps##loadNextPage,
         [||]
       )

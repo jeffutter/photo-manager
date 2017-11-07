@@ -7,6 +7,8 @@ defmodule PhotoManagementApi.Web.Context do
   @behaviour Plug
   import Plug.Conn
 
+  alias Guardian.Plug
+
   def init(opts), do: opts
 
   def call(conn, _) do
@@ -27,7 +29,7 @@ defmodule PhotoManagementApi.Web.Context do
   end
 
   def build_context(conn) do
-    case Guardian.Plug.current_resource(conn) do
+    case Plug.current_resource(conn) do
       nil ->
         {:error, 401, "invalid authorization token"}
 

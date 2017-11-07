@@ -42,16 +42,47 @@ let detailsCls =
     )
   ]);
 
+let rec stars = (filled, total, index, handleClick, acc) =>
+  filled > 0 ?
+    stars(
+      filled - 1,
+      total - 1,
+      index + 1,
+      handleClick,
+      [<Star filled=true index handleClick />, ...acc]
+    ) :
+    total > 0 ?
+      stars(
+        filled,
+        total - 1,
+        index + 1,
+        handleClick,
+        [<Star filled=false index handleClick />, ...acc]
+      ) :
+      List.rev(acc);
+
 let make =
     (
       ~name: string,
+      ~slug: string,
       ~thumbnail: option(string)=?,
+      ~rating: option(int)=?,
       ~handleOpen,
+      ~submitRating,
       ~innerRef: option((Js.null(Dom.element) => unit))=?,
       _children
     ) => {
   ...component,
-  render: (_self) =>
+  render: (_self) => {
+    let handleClick = (i, event) => {
+      ReactEventRe.Mouse.stopPropagation(event);
+      submitRating({"slug": slug, "rating": i})
+    };
+    let r =
+      switch rating {
+      | Some(i) => stars(i, 5, 1, handleClick, [])
+      | None => stars(0, 5, 1, handleClick, [])
+      };
     <div onClick=handleOpen ref=?innerRef className=cls>
       (
         switch thumbnail {
@@ -65,6 +96,10 @@ let make =
         | None => <CircleLoader />
         }
       )
-      <div className=detailsCls> (ReasonReact.stringToElement(name)) </div>
+      <div className=detailsCls>
+        <div> (ReasonReact.stringToElement(name)) </div>
+        (ReasonReact.createDomElement("div", ~props=Js.Obj.empty(), Array.of_list(r)))
+      </div>
     </div>
+  }
 };

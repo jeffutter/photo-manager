@@ -29,6 +29,7 @@ const cache = new InMemoryCache({
 });
 
 const httpLink = createHttpLink({
+  // uri: "http://gallery.sadclown.net/graphiql"
   uri: "/graphiql"
 });
 
@@ -57,3 +58,4 @@ const client = new ApolloClient({
 });
 
 export default client;
+export const mutate = client.mutate;
