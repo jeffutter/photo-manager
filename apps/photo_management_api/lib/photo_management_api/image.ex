@@ -20,7 +20,7 @@ defmodule PhotoManagementApi.Image do
 
     timestamps()
 
-    has_one :rating, PhotoManagementApi.Rating, foreign_key: :slug, references: :slug
+    has_one(:rating, PhotoManagementApi.Rating, foreign_key: :slug, references: :slug)
   end
 
   def changeset(struct, params \\ %{}) do
@@ -41,8 +41,13 @@ defmodule PhotoManagementApi.Image do
   end
 
   def get_all_by_slugs([], user_id) do
-    query = from i in __MODULE__, limit: 20,
-            left_join: r in PhotoManagementApi.Rating, on: i.slug == r.slug and r.user_id == ^user_id
+    query =
+      from(
+        i in __MODULE__,
+        limit: 20,
+        left_join: r in PhotoManagementApi.Rating,
+        on: i.slug == r.slug and r.user_id == ^user_id
+      )
 
     query
     |> preload(:rating)
@@ -50,8 +55,13 @@ defmodule PhotoManagementApi.Image do
   end
 
   def get_all_by_slugs(slugs, user_id) do
-    query = from i in __MODULE__, where: i.slug in ^slugs,
-            left_join: r in PhotoManagementApi.Rating, on: i.slug == r.slug and r.user_id == ^user_id
+    query =
+      from(
+        i in __MODULE__,
+        where: i.slug in ^slugs,
+        left_join: r in PhotoManagementApi.Rating,
+        on: i.slug == r.slug and r.user_id == ^user_id
+      )
 
     query
     |> preload(:rating)

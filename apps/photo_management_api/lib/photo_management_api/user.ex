@@ -22,7 +22,7 @@ defmodule PhotoManagementApi.User do
 
     timestamps()
 
-    has_many :ratings, PhotoManagementApi.Rating
+    has_many(:ratings, PhotoManagementApi.Rating)
   end
 
   def find_or_create(user) do
@@ -76,8 +76,7 @@ defmodule PhotoManagementApi.User do
     |> validate_format(
          :password,
          ~r/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).*/,
-         message:
-           "Must include at least one lowercase letter, one uppercase letter, and one digit"
+         message: "Must include at least one lowercase letter, one uppercase letter, and one digit"
        )
     |> generate_password_hash
   end

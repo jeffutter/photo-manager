@@ -37,7 +37,7 @@ defmodule PhotoManagementApi.Mixfile do
       {:bcrypt_elixir, "~> 1.0"},
       {:postgrex, "~> 0.13"},
       {:prometheus_ecto, "~> 1.0.1"},
-      {:ecto_enum, "~> 1.0"},
+      {:ecto_enum, github: "gjaldon/ecto_enum"},
       {:ecto, "~> 2.1"},
       {:sentry, github: "getsentry/sentry-elixir"}
     ]

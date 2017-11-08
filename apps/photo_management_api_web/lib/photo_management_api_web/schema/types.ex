@@ -74,17 +74,24 @@ defmodule PhotoManagementApi.Web.Schema.Types do
         case field do
           {relation_name, field_name} ->
             with image when not is_nil(image) <- Map.get(batch_results, file),
-                relation <- Map.get(image, relation_name, %{}) || %{},
-                value <- Map.get(relation, field_name) do
+                 relation <- Map.get(image, relation_name, %{}) || %{},
+                 value <- Map.get(relation, field_name) do
               {:ok, value}
             else
               _ ->
-                Logger.error("Data missing from DB. Field: #{field_name} in #{relation_name} for #{file.slug}")
-                {:error, "Data missing from DB. Field: #{field_name} in #{relation_name} for #{file.slug}"}
+                Logger.error(
+                  "Data missing from DB. Field: #{field_name} in #{relation_name} for #{file.slug}"
+                )
+
+                {
+                  :error,
+                  "Data missing from DB. Field: #{field_name} in #{relation_name} for #{file.slug}"
+                }
             end
+
           field ->
             with image when not is_nil(image) <- Map.get(batch_results, file),
-                value <- Map.get(image, field) do
+                 value <- Map.get(image, field) do
               {:ok, value}
             else
               _ ->

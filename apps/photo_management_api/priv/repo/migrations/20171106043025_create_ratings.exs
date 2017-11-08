@@ -10,8 +10,6 @@ defmodule PhotoManagementApi.Repo.Migrations.CreateRatings do
       timestamps()
     end
 
-    create(
-      unique_index(:ratings, [:user_id, :slug], name: :ratings_user_id_slug)
-    )
+    create(unique_index(:ratings, [:user_id, :slug], name: :ratings_user_id_slug))
   end
 end
