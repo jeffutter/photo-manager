@@ -56,7 +56,7 @@ let logoCls =
     lineHeight("1"),
     textDecoration("none"),
     width("auto"),
-    Selector("@media only screen and (max-width 766px)", [cssFloat("none")])
+    Selector("@media only screen and (max-width: 766px)", [cssFloat("none")])
   ]);
 
 let navCls =
@@ -65,7 +65,7 @@ let navCls =
     width("60%"),
     height("100%"),
     marginRight("10px"),
-    Selector("@media only screen and (max-width 766px)", [width("100%"), margin("0")]),
+    Selector("@media only screen and (max-width: 766px)", [width("100%"), margin("0")]),
     Selector(
       "& ul",
       [
@@ -77,7 +77,7 @@ let navCls =
         padding("0"),
         margin("0"),
         Selector(
-          "@media only screen and (max-width 766px)",
+          "@media only screen and (max-width: 766px)",
           [
             paddingTop("10px"),
             marginBottom("22px"),
@@ -95,7 +95,7 @@ let navCls =
             marginLeft("35px"),
             lineHeight("1.5"),
             Selector(
-              "@media only screen and (max-width 766px)",
+              "@media only screen and (max-width: 766px)",
               [width("100%"), padding("7px 0"), margin("0")]
             )
           ]

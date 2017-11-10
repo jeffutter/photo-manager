@@ -3,29 +3,33 @@ open Glamor;
 let component = ReasonReact.statelessComponent("GalleryImage");
 
 let cls =
-  css([
-    width("300px"),
-    maxWidth("300px"),
-    position("inherit"), /* hack for react-waypoint */
-    boxSizing("border-box"),
-    color("#fff"),
-    backgroundSize("cover"),
-    backgroundPosition("center"),
-    boxShadow("-2px 2px 10px 0 rgba(68,68,68,.4)"),
-    transition("transform 0.3s ease-in-out"),
-    cursor("pointer"),
-    counterIncrement("item-counter"),
-    Selector("&:hover", [transform("scale(1.05)")]),
-    Selector("&--medium", [gridRowEnd("span 2")]),
-    Selector("&--large", [gridRowEnd("span 3")]),
-    Selector(
-      "&--full",
-      [
-        gridColumnEnd("auto"),
-        Selector("@media screen and (min-width 768px)", [gridColumn("1/-1"), gridRowEnd("span 2")])
-      ]
-    )
-  ]);
+  css
+    ([
+      width("300px"),
+      maxWidth("300px"),
+      position("inherit"), /* hack for react-waypoint */
+      boxSizing("border-box"),
+      color("#fff"),
+      backgroundSize("cover"),
+      backgroundPosition("center"),
+      boxShadow("-2px 2px 10px 0 rgba(68,68,68,.4)"),
+      transition("transform 0.3s ease-in-out"),
+      cursor("pointer"),
+      counterIncrement("item-counter"),
+      Selector(
+        "@media screen and (min-width: 768px)",
+        [Selector(":hover", [transform("scale(1.05)")])]
+      )
+    ]);
+    /* Selector("&--medium", [gridRowEnd("span 2")]),
+       Selector("&--large", [gridRowEnd("span 3")]),
+       Selector(
+         "&--full",
+         [
+           gridColumnEnd("auto"),
+           Selector("@media screen and (min-width: 768px)", [gridColumn("1/-1"), gridRowEnd("span 2")])
+         ]
+       ) */
 
 let detailsCls =
   css([

@@ -1,9 +1,13 @@
+open Glamor;
+
 type retainedProps = {
   name: string,
   slug: string,
   thumbnail: option(string),
   rating: option(int)
 };
+
+let cls = css([width("320px"), height("300px")]);
 
 type self = {retainedProps};
 
@@ -32,7 +36,7 @@ let make =
     oldRetainedProps != newRetainedProps,
   render: (_) =>
     <Waypoint ?onEnter bottomOffset="-400px" topOffset="200px" fireOnRapidScroll=false>
-      <div style=(ReactDOMRe.Style.make(~width="320px", ~height="300px", ()))>
+      <div className=cls>
         <GalleryImage name slug ?thumbnail ?rating submitRating handleOpen />
       </div>
     </Waypoint>

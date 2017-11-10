@@ -3,7 +3,7 @@ open Glamor;
 let component = ReasonReact.statelessComponent("LoginForm");
 
 let facebookCls =
-  css([position("relative"), top("5px"), paddingRight("8px"), Selector("path", [fill("#fff")])]);
+  css([position("relative"), top("5px"), paddingRight("8px"), Selector("& path", [fill("#fff")])]);
 
 let loginButtonCls =
   css([
@@ -56,7 +56,7 @@ let centerCls =
     right("0"),
     height("36px"),
     width("200px"),
-    Selector("a", [textDecoration("none")])
+    Selector("& a", [textDecoration("none")])
   ]);
 
 let statusCls = css([margin("10px 0"), padding("10px"), borderRadius("3px 3px 3px 3px")]);

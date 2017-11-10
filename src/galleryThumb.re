@@ -14,6 +14,10 @@ let cls =
     cursor("pointer"),
     counterIncrement("item-counter"),
     Selector(
+      "@media screen and (min-width: 768px)",
+      [Selector(":hover", [transform("scale(1.05)")])]
+    ),
+    Selector(
       "&:after",
       [
         content("''"),
@@ -26,19 +30,21 @@ let cls =
         opacity("0.2"),
         transition("opacity 0.3s ease-in-out")
       ]
-    ),
-    Selector("&:hover", [transform("scale(1.05)"), Selector("&:after", [opacity("0")])]),
-    Selector("&--medium", [gridRowEnd("span 2")]),
-    Selector("&--large", [gridRowEnd("span 3")]),
-    Selector(
-      "&--full",
-      [
-        gridColumnEnd("auto"),
-        Selector("@media screen and (min-width 768px)", [gridColumn("1/-1"), gridRowEnd("span 2")])
-      ]
     )
   ]);
 
+/* Selector("&--medium", [gridRowEnd("span 2")]),
+   Selector("&--large", [gridRowEnd("span 3")]),
+   Selector(
+     "&--full",
+     [
+       gridColumnEnd("auto"),
+       Selector(
+         "@media screen and (min-width: 768px)",
+         [gridColumn("1/-1"), gridRowEnd("span 2")]
+       )
+     ]
+   ) */
 let detailsCls =
   css([
     position("relative"),
