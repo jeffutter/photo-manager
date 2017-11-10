@@ -1,0 +1,68 @@
+#! /bin/bash
+set -eo pipefail
+
+INPUT=$1
+OUTPUT=$2
+
+IDENTIFY=$(identify -format "%[fx:w] %[fx:h] " "${INPUT}")
+orig_x=$(echo "$IDENTIFY" | cut -f1 -d" ")
+orig_y=$(echo "$IDENTIFY" | cut -f2 -d" ")
+
+target_x=300
+target_y=225
+
+if [[ "$orig_x" -gt "$orig_y" ]]; then
+  long_side="x"
+else
+  long_side="y"
+fi
+
+if [ "$long_side" == "x" ]; then
+  crop_factor=$(bc <<< "scale = 10; $orig_y / $target_y")
+else
+  crop_factor=$(bc <<< "scale = 10; $orig_x / $target_x")
+fi
+
+target_full_x=$(bc <<< "sale = 10; $target_x * $crop_factor")
+target_full_y=$(bc <<< "sale = 10; $target_y * $crop_factor")
+
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  facedetect_options="--data-dir /usr/local/opt/opencv@3/share/OpenCV/"
+else
+  facedetect_options="--data-dir /usr/local/share/OpenCV"
+fi
+
+FACEDATA=$(facedetect $facedetect_options --center --best "${INPUT}")
+if [[ -z "$FACEDATA" ]]; then
+  crop_cmd=()
+else
+  # X/Y of the face on the whole image
+  face_x=$(echo "$FACEDATA" | cut -f1 -d" ")
+  face_y=$(echo "$FACEDATA" | cut -f2 -d" ")
+
+  # If face X/Y + 1/2 crop with/height goes off the side of the image, adjust face X/Y to 1/2 crop width/height
+  if [[ $(bc <<< "scale = 0; $face_x + ($target_full_x / 2)") -gt $(bc <<< "scale = 0; $target_full_x / 1") ]]; then
+    face_x=$(bc <<< "$orig_x - ($target_full_x / 2)")
+  fi
+  if [[ $(bc <<< "scale = 0; $face_y + ($target_full_y / 2)") -gt $(bc <<< "scale = 0; $target_full_y / 1") ]]; then
+    face_y=$(bc <<< "$orig_y - ($target_full_y / 2)")
+  fi
+  if [[ $(bc <<< "scale = 0; $face_x - ($target_full_x / 2)") -lt 0 ]]; then
+    face_x=$(bc <<< "$target_full_x / 2")
+  fi
+  if [[ $(bc <<< "scale = 0; $face_y - ($target_full_y / 2)") -lt 0 ]]; then
+    face_y=$(bc <<< "$target_full_y / 2")
+  fi
+
+  #convert face x/y from "center" to "top" right
+  offset_x=$(bc <<< "scale = 0; $face_x - ($target_full_x / 2)")
+  offset_y=$(bc <<< "scale = 0; $face_y - ($target_full_y / 2)")
+
+  crop_x=$(bc <<< "scale = 0; $target_full_x / 1")
+  crop_y=$(bc <<< "scale = 0; $target_full_y / 1")
+
+  crop_cmd=("-crop" "${crop_x}x${crop_y}!+${offset_x}+${offset_y}")
+fi
+
+set -x
+convert "${INPUT}" -auto-orient -strip ${crop_cmd[@]} -thumbnail "${target_x}x${target_y}^" -gravity center -extent ${target_x}x${target_y}+0+0 -interlace none -quality 70 -format jpg "${OUTPUT}"

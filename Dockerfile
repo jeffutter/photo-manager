@@ -46,8 +46,12 @@ RUN ls -l .
 RUN ls -l /src/rel
 RUN mix release --env=prod
 
-FROM alpine:3.6
-RUN apk add -U bash imagemagick ncurses-libs libcrypto1.0 \
+FROM jeffutter/python-opencv-alpine
+RUN apk add -U bash imagemagick ncurses-libs libcrypto1.0 bc \
     && rm -rf /var/cache/apk/*
+ADD https://raw.githubusercontent.com/wavexx/facedetect/master/facedetect /usr/local/bin/
+ADD bin/face_crop /usr/local/bin
+RUN chmod 755 /usr/local/bin/facedetect \
+    && chmod 755 /usr/local/bin/face_crop
 COPY --from=build /src/_build/prod/rel/photo_management /photo_management
 ENTRYPOINT ["/photo_management/bin/photo_management"]

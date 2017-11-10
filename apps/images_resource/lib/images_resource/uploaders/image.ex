@@ -15,11 +15,7 @@ defmodule ImagesResource.Uploaders.Image do
 
   # image_optim --allow-lossy --jpegoptim-max-quality 80
   def transform(:thumb, _) do
-    {
-      :convert,
-      "-strip -thumbnail 300x225^ -gravity center -extent 300x225 -interlace none -quality 65 -format jpg",
-      :jpg
-    }
+    {:face_crop, fn(input, output) -> "#{input} #{output}" end, :jpg}
   end
 
   def transform(:small, _) do
