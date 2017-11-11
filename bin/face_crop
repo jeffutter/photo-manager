@@ -41,16 +41,20 @@ else
   face_y=$(echo "$FACEDATA" | cut -f2 -d" ")
 
   # If face X/Y + 1/2 crop with/height goes off the side of the image, adjust face X/Y to 1/2 crop width/height
-  if [[ $(bc <<< "scale = 0; $face_x + ($target_full_x / 2)") -gt $(bc <<< "scale = 0; $target_full_x / 1") ]]; then
+  if [[ $(bc <<< "scale = 0; $face_x + ($target_full_x / 2)") -gt $(bc <<< "scale = 0; $orig_x / 1") ]]; then
+    echo "Adjusting X - Too High"
     face_x=$(bc <<< "$orig_x - ($target_full_x / 2)")
   fi
-  if [[ $(bc <<< "scale = 0; $face_y + ($target_full_y / 2)") -gt $(bc <<< "scale = 0; $target_full_y / 1") ]]; then
+  if [[ $(bc <<< "scale = 0; $face_y + ($target_full_y / 2)") -gt $(bc <<< "scale = 0; $orig_y / 1") ]]; then
+    echo "Adjusting Y - Too High"
     face_y=$(bc <<< "$orig_y - ($target_full_y / 2)")
   fi
   if [[ $(bc <<< "scale = 0; $face_x - ($target_full_x / 2)") -lt 0 ]]; then
+    echo "Adjusting X - Too Low"
     face_x=$(bc <<< "$target_full_x / 2")
   fi
   if [[ $(bc <<< "scale = 0; $face_y - ($target_full_y / 2)") -lt 0 ]]; then
+    echo "Adjusting Y - Too Low"
     face_y=$(bc <<< "$target_full_y / 2")
   fi
 

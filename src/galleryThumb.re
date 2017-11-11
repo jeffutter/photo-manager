@@ -33,23 +33,11 @@ let cls =
     )
   ]);
 
-/* Selector("&--medium", [gridRowEnd("span 2")]),
-   Selector("&--large", [gridRowEnd("span 3")]),
-   Selector(
-     "&--full",
-     [
-       gridColumnEnd("auto"),
-       Selector(
-         "@media screen and (min-width: 768px)",
-         [gridColumn("1/-1"), gridRowEnd("span 2")]
-       )
-     ]
-   ) */
 let detailsCls =
   css([
     position("relative"),
     zIndex("1"),
-    padding("15px"),
+    padding("10px 15px"),
     color("#444"),
     background("#fff"),
     letterSpacing("1px"),

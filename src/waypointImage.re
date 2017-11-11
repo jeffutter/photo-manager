@@ -7,7 +7,7 @@ type retainedProps = {
   rating: option(int)
 };
 
-let cls = css([width("320px"), height("300px")]);
+let cls = css([width("320px"), height("295px")]);
 
 type self = {retainedProps};
 
