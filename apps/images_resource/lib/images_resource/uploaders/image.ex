@@ -15,7 +15,7 @@ defmodule ImagesResource.Uploaders.Image do
 
   # image_optim --allow-lossy --jpegoptim-max-quality 80
   def transform(:thumb, _) do
-    {:face_crop, fn(input, output) -> "#{input} #{output}" end, :jpg}
+    {:face_crop, fn input, output -> "#{input} #{output}" end, :jpg}
   end
 
   def transform(:small, _) do

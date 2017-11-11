@@ -3,8 +3,7 @@ defmodule ImagesResource.SyncDB do
   use GenServer
 
   alias ImagesResource.Storage.{Directory, File, Tree}
-  alias ImagesResource.Image
-  alias ImagesResource.DBQueue.Queue, as: DBQueue
+  alias ImagesResource.{Image, Queue}
   import Ecto.Query
 
   @type t :: %{source: atom(), dest: atom(), source_tree: Directory.t(), dest_tree: Directory.t()}
@@ -21,7 +20,7 @@ defmodule ImagesResource.SyncDB do
       when from_name == source_name do
     tree
     |> Tree.diff(dest_tree)
-    |> Enum.each(&DBQueue.add(&1, :thumb))
+    |> Enum.each(&Queue.add(DatabaseQueue, {&1, :thumb}))
 
     {:noreply, %{state | source_tree: tree}}
   end

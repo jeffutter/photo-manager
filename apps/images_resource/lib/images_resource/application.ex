@@ -26,10 +26,18 @@ defmodule ImagesResource.Application do
     import Supervisor.Spec, warn: false
 
     children = [
-      worker(ImagesResource.Uploaders.Queue, []),
-      worker(ImagesResource.Uploaders.Processor, []),
-      worker(ImagesResource.DBQueue.Queue, []),
-      worker(ImagesResource.DBQueue.Processor, []),
+      worker(ImagesResource.Queue, [S3Queue], id: S3Queue),
+      worker(ImagesResource.Queue, [DatabaseQueue], id: DatabaseQueue),
+      worker(
+        ImagesResource.Processor,
+        [S3Queue, ImagesResource.Uploaders.Worker],
+        id: S3Processor
+      ),
+      worker(
+        ImagesResource.Processor,
+        [DatabaseQueue, ImagesResource.DBQueue.Worker],
+        id: DatabaseWorker
+      ),
       worker(
         ImagesResource.Sync,
         [[source: ImageSource, dest: ImageDest, name: Sync1]],
