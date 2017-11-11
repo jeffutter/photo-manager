@@ -28,24 +28,24 @@ type action =
 let component = ReasonReact.reducerComponent("Gallery");
 
 let rec splitDescendants =
-        (descendants, (thumbedImages: list(image), images: list(image), galleries: list('a))) =>
+        ((thumbedImageSlugs: list(string), images: list(image), galleries: list('a)), descendants) =>
   switch descendants {
-  | [] => (List.rev(thumbedImages), List.rev(images), List.rev(galleries))
+  | [] => (List.rev(thumbedImageSlugs), List.rev(images), List.rev(galleries))
   | [descendant, ...rest] =>
     switch descendant##__typename {
     | "Image" =>
       switch (Js.Nullable.to_opt(descendant##thumbnail)) {
       | Some(_) =>
         splitDescendants(
-          rest,
-          ([descendant, ...thumbedImages], [descendant, ...images], galleries)
+          ([descendant##slug, ...thumbedImageSlugs], [descendant, ...images], galleries),
+          rest
         )
-      | None => splitDescendants(rest, (thumbedImages, [descendant, ...images], galleries))
+      | None => splitDescendants((thumbedImageSlugs, [descendant, ...images], galleries), rest)
       }
-    | "Gallery" => splitDescendants(rest, (thumbedImages, images, [descendant, ...galleries]))
+    | "Gallery" => splitDescendants((thumbedImageSlugs, images, [descendant, ...galleries]), rest)
     | type_ =>
       Js.log("Unknown Type: " ++ type_);
-      (thumbedImages, images, galleries)
+      splitDescendants((thumbedImageSlugs, images, galleries), rest)
     }
   };
 
@@ -95,14 +95,13 @@ let make =
       )
     },
   render: (self) => {
-    let (thumbedImages, images, galleries) =
-      splitDescendants(Array.to_list(descendants), ([], [], []));
+    let (thumbedImageSlugs, images, galleries) =
+      descendants |> Array.to_list |> splitDescendants(([], [], []));
     let renderedGalleries =
       List.map(
         (item) => <WaypointGalleryThumb key=item##id name=item##name slug=item##slug />,
         galleries
       );
-    let thumbedImageSlugs = List.map((image) => image##slug, thumbedImages);
     let renderedImages =
       List.mapi(
         (index, image) =>
