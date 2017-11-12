@@ -89,7 +89,7 @@ defmodule ImagesResource.Storage.Tree do
   def find_in(result, []), do: result
 
   def find_in(tree, [h | t]) do
-    case Directory.find_child(tree, h) do
+    case Directory.find_child(tree, %File{name: h}, &compare_name/2) do
       {nil, nil} -> nil
       {_idx, child} -> find_in(child, t)
     end
@@ -127,72 +127,14 @@ defmodule ImagesResource.Storage.Tree do
     end
   end
 
-  @doc ~S"""
-  Insert a child in a give path
-
-  ## Examples
-  iex> new_image = %ImagesResource.Storage.File{
-  ...>   name: "qux.txt",
-  ...>   path: [],
-  ...>   slug: "qux.txt"
-  ...> }
-  ...> [
-  ...>   %ImagesResource.Storage.File{name: "baz.txt", path: ["foo", "bar"], slug: "foo/bar/baz.txt"},
-  ...>   %ImagesResource.Storage.File{name: "foo.txt", path: [], slug: "foo.txt"}
-  ...> ]
-  ...> |> ImagesResource.Storage.Tree.from_list("root")
-  ...> |> ImagesResource.Storage.Tree.insert_in(["foo"], new_image)
-  %ImagesResource.Storage.Directory{
-    children: [
-      %ImagesResource.Storage.Directory{
-        children: [
-          %ImagesResource.Storage.Directory{
-            children: [
-              %ImagesResource.Storage.File{
-                last_modified: nil,
-                name: "baz.txt",
-                path: ["foo", "bar"],
-                slug: "foo/bar/baz.txt",
-                size: nil
-              }
-            ],
-            name: "bar",
-            path: ["foo"],
-            slug: "foo/bar"
-          },
-          %ImagesResource.Storage.File{
-            last_modified: nil,
-            name: "qux.txt",
-            path: ["foo"],
-            slug: "foo/qux.txt",
-            size: nil
-          }
-        ],
-        name: "foo",
-        path: [],
-        slug: "foo"
-      },
-      %ImagesResource.Storage.File{
-        last_modified: nil,
-        name: "foo.txt",
-        path: [],
-        slug: "foo.txt",
-        size: nil
-      }
-    ],
-    name: "root",
-    path: [],
-    slug: "root"
-  }
-
-  """
+ 
   def insert_in(tree, file = %File{path: path}), do: insert_in(tree, path, file)
 
   def insert_in(tree, path, value) when is_binary(path),
     do: insert_in(tree, directory_parts(path), value)
 
   def insert_in(tree = %Directory{name: path_name, children: children, path: path}, [], value) do
-    {index, _child} = Directory.find_child(tree, value.name)
+    {index, _child} = Directory.find_child(tree, value, &compare_name/2)
 
     value =
       case path_name do
@@ -285,51 +227,61 @@ defmodule ImagesResource.Storage.Tree do
     {:add, %ImagesResource.Storage.File{last_modified: nil, name: "foo.txt", path: [], slug: "foo.txt", size: nil}}
   ]
   """
-  def diff(source, dest), do: diff(:remove, source, dest) ++ diff(:add, source, dest)
+  def diff(source, dest, compare_func \\ &compare_name/2), do: diff(:remove, source, dest, compare_func) ++ diff(:add, source, dest, compare_func)
 
-  def diff(:add, %Directory{children: source_children}, dest),
-    do: Enum.flat_map(source_children, add(dest))
+  def diff(:add, %Directory{children: source_children}, dest, compare_func) do
+    Enum.flat_map(source_children, add(dest, compare_func))
+  end
 
-  def diff(:remove, source, %Directory{children: dest_children}),
-    do: Enum.flat_map(dest_children, remove(source))
+  def diff(:remove, source, %Directory{children: dest_children}, compare_func) do
+    Enum.flat_map(dest_children, remove(source, compare_func))
+  end
 
-  defp add(dest), do: fn source_child -> add(source_child, dest) end
+  def compare_name(%{name: left_name}, %{name: right_name}) do
+    left_name == right_name
+  end
 
-  defp add(source_child = %Directory{name: source_child_name}, dest) do
-    case Directory.find_child(dest, source_child_name) do
+  defp add(dest, compare_func), do: fn source_child -> add(source_child, dest, compare_func) end
+
+  defp add(source_child = %Directory{}, dest, compare_func) do
+    case Directory.find_child(dest, source_child, compare_func) do
       {nil, _} ->
         source_child
         |> Directory.flat_children()
         |> Enum.map(fn child -> {:add, child} end)
 
       {_, dest_child} ->
-        diff(:add, source_child, dest_child)
+        diff(:add, source_child, dest_child, compare_func)
     end
   end
 
-  defp add(source_child = %File{name: source_child_name}, dest) do
-    case Directory.find_child(dest, source_child_name) do
+  defp add(source_child = %File{}, dest, compare_func) do
+    case Directory.find_child(dest, source_child, compare_func) do
       {nil, _} -> [{:add, source_child}]
       {_, _dest_child} -> []
     end
   end
 
-  defp remove(source), do: fn dest_child -> remove(dest_child, source) end
+  defp remove(source, compare_func) do
+    fn dest_child ->
+      remove(dest_child, source, compare_func)
+    end
+  end
 
-  defp remove(dest_child = %Directory{name: dest_child_name}, source) do
-    case Directory.find_child(source, dest_child_name) do
+  defp remove(dest_child = %Directory{}, source, compare_func) do
+    case Directory.find_child(source, dest_child, compare_func) do
       {nil, _} ->
         dest_child
         |> Directory.flat_children()
         |> Enum.map(fn child -> {:remove, child} end)
 
       {_, source_child} ->
-        diff(:remove, source_child, dest_child)
+        diff(:remove, source_child, dest_child, compare_func)
     end
   end
 
-  defp remove(dest_child = %File{name: dest_child_name}, source) do
-    case Directory.find_child(source, dest_child_name) do
+  defp remove(dest_child = %File{}, source, compare_func) do
+    case Directory.find_child(source, dest_child, compare_func) do
       {nil, _} -> [{:remove, dest_child}]
       {_, _dest_child} -> []
     end

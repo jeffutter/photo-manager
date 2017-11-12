@@ -3,6 +3,11 @@ defmodule ImagesResource.Application do
 
   use Application
 
+  alias ImagesResource.{Processor, Sources, Sync, SyncDB, Queue, DBQueue, Uploaders}
+  alias DBQueue.Worker, as: DBWorker
+  alias Uploaders.Worker, as: UploadWorker
+  alias Sources.{DB, S3}
+
   def start(_type, _args) do
     case System.get_env("AWS_ENDPOINT") do
       nil ->
@@ -26,52 +31,40 @@ defmodule ImagesResource.Application do
     import Supervisor.Spec, warn: false
 
     children = [
-      worker(ImagesResource.Queue, [S3Queue], id: S3Queue),
-      worker(ImagesResource.Queue, [DatabaseQueue], id: DatabaseQueue),
+      worker(Queue, [S3Queue], id: S3Queue),
+      worker(Queue, [DatabaseQueue], id: DatabaseQueue),
+      worker(Processor, [S3Queue, UploadWorker, [max_demand: 5]], id: S3Processor),
+      worker(Processor, [DatabaseQueue, DBWorker, [max_demand: 5]], id: DatabaseWorker),
+      worker(Sync, [[source: ImageSource, dest: ImageDest, name: Sync1]], id: Sync1),
+      worker(SyncDB, [[source: FullDest, dest: DBDest, name: Sync2]], id: Sync2),
       worker(
-        ImagesResource.Processor,
-        [S3Queue, ImagesResource.Uploaders.Worker],
-        id: S3Processor
-      ),
-      worker(
-        ImagesResource.Processor,
-        [DatabaseQueue, ImagesResource.DBQueue.Worker],
-        id: DatabaseWorker
-      ),
-      worker(
-        ImagesResource.Sync,
-        [[source: ImageSource, dest: ImageDest, name: Sync1]],
-        id: Sync1
-      ),
-      worker(ImagesResource.SyncDB, [[source: FullDest, dest: DBDest, name: Sync2]], id: Sync2),
-      worker(
-        ImagesResource.Sources.S3,
+        S3,
         [
           ImageDest,
           [
-            bucket_name: dest_bucket,
-            path: "original",
-            strip_prefix: ["original"],
-            sync_targets: [Sync1]
+          bucket_name: dest_bucket,
+          path: "original",
+          strip_prefix: ["original"],
+          sync_targets: [Sync1]
           ]
         ],
         id: ImageDest
       ),
       worker(
-        ImagesResource.Sources.S3,
+        S3,
         [ImageSource, [bucket_name: source_bucket, sync_targets: [Sync1]]],
         id: ImageSource
       ),
-      worker(ImagesResource.Sources.DB, [DBDest, [sync_targets: [Sync2]]], id: DBDest),
+      worker(DB, [DBDest, [sync_targets: [Sync2]]], id: DBDest),
       worker(
-        ImagesResource.Sources.S3,
+        S3,
         [
           FullDest,
           [
-            bucket_name: dest_bucket,
-            path: "thumb",
-            strip_prefix: ["thumb"],
-            sync_targets: [Sync2]
+          bucket_name: dest_bucket,
+          path: "thumb",
+          strip_prefix: ["thumb"],
+          sync_targets: [Sync2]
           ]
         ],
         id: FullDest

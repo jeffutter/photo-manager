@@ -37,8 +37,8 @@ defmodule ImagesResource.Storage.Directory do
     end)
   end
 
-  def find_child(%__MODULE__{children: children}, name) do
-    case Enum.find_index(children, fn %{name: child_name} -> child_name == name end) do
+  def find_child(%__MODULE__{children: children}, child, compare_func) do
+    case Enum.find_index(children, fn directory_child -> compare_func.(child, directory_child) end) do
       nil -> {nil, nil}
       index -> {index, Enum.at(children, index)}
     end

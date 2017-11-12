@@ -19,10 +19,22 @@ defmodule ImagesResource.SyncDB do
       )
       when from_name == source_name do
     tree
-    |> Tree.diff(dest_tree)
+    |> Tree.diff(dest_tree, &deep_compare/2)
     |> Enum.each(&Queue.add(DatabaseQueue, {&1, :thumb}))
 
     {:noreply, %{state | source_tree: tree}}
+  end
+
+  def deep_compare(%Directory{slug: left_slug}, %Directory{slug: right_slug}) do
+    left_slug == right_slug
+  end
+
+  def deep_compare(%File{slug: left_slug, last_modified: left_last_modified}, %File{slug: right_slug, last_modified: right_last_modified}) do
+    left_slug == right_slug && left_last_modified == right_last_modified
+  end
+
+  def deep_compare(_, _) do
+    false
   end
 
   def handle_cast({:updated, from_name, tree}, state = %{dest: dest_name})
