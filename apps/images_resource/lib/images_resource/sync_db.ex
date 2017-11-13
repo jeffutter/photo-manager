@@ -25,6 +25,11 @@ defmodule ImagesResource.SyncDB do
     {:noreply, %{state | source_tree: tree}}
   end
 
+  def handle_cast({:updated, from_name, tree}, state = %{dest: dest_name})
+      when from_name == dest_name do
+    {:noreply, %{state | dest_tree: tree}}
+  end
+
   def deep_compare(%Directory{slug: left_slug}, %Directory{slug: right_slug}) do
     left_slug == right_slug
   end
@@ -35,11 +40,6 @@ defmodule ImagesResource.SyncDB do
 
   def deep_compare(_, _) do
     false
-  end
-
-  def handle_cast({:updated, from_name, tree}, state = %{dest: dest_name})
-      when from_name == dest_name do
-    {:noreply, %{state | dest_tree: tree}}
   end
 
   def add(

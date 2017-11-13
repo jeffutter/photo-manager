@@ -8,21 +8,28 @@ defmodule ImagesResource.DBQueue.Worker do
     Logger.info("DB Storing: #{inspect(file)}")
 
     Task.start_link(fn ->
-      case SyncDB.add(file, version) do
-        {:ok, _} ->
-          Queue.ack(queue, job)
-          :ok
+      try do
+        case SyncDB.add(file, version) do
+          {:ok, _} ->
+            Queue.ack(queue, job)
+            :ok
 
-        {:error, :internet_error} ->
-          Logger.error("Internet Error For: #{inspect(file)} - requeuing.")
-          Queue.nack(queue, job)
-          :ok
+          {:error, :internet_error} ->
+            Logger.error("Internet Error For: #{inspect(file)} - requeuing.")
+            Queue.nack(queue, job)
+            :ok
 
-        {:error, message} ->
-          Logger.error(
-            "Unknown Error Occurred Adding To DB: message: #{message}, file: #{inspect(file)}"
-          )
+          {:error, message} ->
+            Logger.error(
+              "Unknown Error Occurred Adding To DB: message: #{message}, file: #{inspect(file)}"
+            )
 
+            Queue.ack(queue, job)
+            :ok
+        end
+      rescue
+        e ->
+          "Unknown Error DB Storing: #{inspect(file)} - Error: #{inspect e}"
           Queue.ack(queue, job)
           :ok
       end
@@ -33,9 +40,16 @@ defmodule ImagesResource.DBQueue.Worker do
     Logger.info("DB Removing: #{inspect(file)}")
 
     Task.start_link(fn ->
-      SyncDB.remove(file, version)
-      Queue.ack(queue, job)
-      :ok
+      try do
+        SyncDB.remove(file, version)
+        Queue.ack(queue, job)
+        :ok
+      rescue
+        e ->
+          "Unknown Error DB Removing: #{inspect(file)} - Error: #{inspect e}"
+          Queue.ack(queue, job)
+          :ok
+      end
     end)
   end
 end

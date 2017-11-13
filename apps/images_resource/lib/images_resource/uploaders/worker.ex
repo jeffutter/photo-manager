@@ -38,6 +38,10 @@ defmodule ImagesResource.Uploaders.Worker do
             stacktrace = System.stacktrace()
             reraise e, stacktrace
         end
+      e ->
+        "Unknown Error S3 Storing: #{inspect(file)} - Error: #{inspect e}"
+        Queue.ack(queue, job)
+        :ok
     end
   end
 

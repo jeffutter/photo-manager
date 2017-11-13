@@ -33,7 +33,7 @@ defmodule ImagesResource.Application do
     children = [
       worker(Queue, [S3Queue], id: S3Queue),
       worker(Queue, [DatabaseQueue], id: DatabaseQueue),
-      worker(Processor, [S3Queue, UploadWorker, [max_demand: 5]], id: S3Processor),
+      worker(Processor, [S3Queue, UploadWorker, [max_demand: 4]], id: S3Processor),
       worker(Processor, [DatabaseQueue, DBWorker, [max_demand: 5]], id: DatabaseWorker),
       worker(Sync, [[source: ImageSource, dest: ImageDest, name: Sync1]], id: Sync1),
       worker(SyncDB, [[source: FullDest, dest: DBDest, name: Sync2]], id: Sync2),
