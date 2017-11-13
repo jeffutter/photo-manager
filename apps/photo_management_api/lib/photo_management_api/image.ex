@@ -70,6 +70,6 @@ defmodule PhotoManagementApi.Image do
 
   defp validate_changeset(struct) do
     struct
-    |> unique_constraint(:unique_image, name: :images_name_path_slug)
+    |> unique_constraint(:unique_image, name: :images_name_path_slug_version)
   end
 end
