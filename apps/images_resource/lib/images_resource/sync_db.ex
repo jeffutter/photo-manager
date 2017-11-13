@@ -29,8 +29,8 @@ defmodule ImagesResource.SyncDB do
     left_slug == right_slug
   end
 
-  def deep_compare(%File{slug: left_slug, last_modified: left_last_modified}, %File{slug: right_slug, last_modified: right_last_modified}) do
-    left_slug == right_slug && left_last_modified == right_last_modified
+  def deep_compare(%File{slug: left_slug, size: left_size}, %File{slug: right_slug, size: right_size}) do
+    left_slug == right_slug && left_size == right_size
   end
 
   def deep_compare(_, _) do
