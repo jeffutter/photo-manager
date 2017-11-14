@@ -42,12 +42,11 @@ defmodule ImagesResource.Mixfile do
       {:config, in_umbrella: true},
       {:photo_management_api, in_umbrella: true},
       {:sentry, github: "getsentry/sentry-elixir"},
-      arc_gcs: "~> 0.0.4",
       gen_stage: "~> 0.12.1",
-      arc: "~> 0.8.0",
       ex_aws: "~> 1.1",
       fastimage: "~> 0.0.7",
       hackney: "~> 1.6",
+      mime: "~> 1.1.0",
       poison: "~> 3.1",
       sweet_xml: "~> 0.6",
       flow: "~> 0.11"

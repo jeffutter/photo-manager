@@ -6,11 +6,22 @@ defmodule ImagesResource.Image do
   """
 
   alias ImagesResource.Storage.{File, S3}
+  alias ImagesResource.Upload.Upload
 
-  def url(%File{name: name, path: path}, version),
-    do: ImagesResource.Uploaders.Image.url({name, path}, version)
+  @endpoint "storage.googleapis.com"
 
-  def url(string, version), do: ImagesResource.Uploaders.Image.url(string, version)
+  def url(_, _, options \\ [])
+  def url(%File{name: name, path: path}, version, options) do
+    bucket = Keyword.get(options, :bucket, bucket())
+
+    "https://#{@endpoint}/#{bucket}"
+    |> Path.join(Upload.s3_key(version, path, name))
+    |> URI.encode()
+  end
+
+  def url(string, version, options) do
+    url(%File{name: string, path: ""}, version, options)
+  end
 
   def s3_path(image, version) do
     base_url =
@@ -81,5 +92,9 @@ defmodule ImagesResource.Image do
 
         {:error, "Unable to read file #{url(file, version)}. Error: #{inspect(e)}"}
     end
+  end
+
+  defp bucket do
+    Config.get(:images_resource, :dest_bucket)
   end
 end

@@ -31,44 +31,44 @@ defmodule ImagesResource.Application do
     import Supervisor.Spec, warn: false
 
     children = [
-      worker(Queue, [S3Queue], id: S3Queue),
-      worker(Queue, [DatabaseQueue], id: DatabaseQueue),
-      worker(Processor, [S3Queue, UploadWorker, [max_demand: 4]], id: S3Processor),
-      worker(Processor, [DatabaseQueue, DBWorker, [max_demand: 5]], id: DatabaseWorker),
-      worker(Sync, [[source: ImageSource, dest: ImageDest, name: Sync1]], id: Sync1),
-      worker(SyncDB, [[source: FullDest, dest: DBDest, name: Sync2]], id: Sync2),
-      worker(
-        S3,
-        [
-          ImageDest,
-          [
-          bucket_name: dest_bucket,
-          path: "original",
-          strip_prefix: ["original"],
-          sync_targets: [Sync1]
-          ]
-        ],
-        id: ImageDest
-      ),
-      worker(
-        S3,
-        [ImageSource, [bucket_name: source_bucket, sync_targets: [Sync1]]],
-        id: ImageSource
-      ),
-      worker(DB, [DBDest, [sync_targets: [Sync2]]], id: DBDest),
-      worker(
-        S3,
-        [
-          FullDest,
-          [
-          bucket_name: dest_bucket,
-          path: "thumb",
-          strip_prefix: ["thumb"],
-          sync_targets: [Sync2]
-          ]
-        ],
-        id: FullDest
-      )
+      # worker(Queue, [S3Queue], id: S3Queue),
+      # worker(Queue, [DatabaseQueue], id: DatabaseQueue),
+      # worker(Processor, [S3Queue, UploadWorker, [max_demand: 4]], id: S3Processor),
+      # worker(Processor, [DatabaseQueue, DBWorker, [max_demand: 5]], id: DatabaseWorker),
+      # worker(Sync, [[source: ImageSource, dest: ImageDest, name: Sync1]], id: Sync1),
+      # worker(SyncDB, [[source: FullDest, dest: DBDest, name: Sync2]], id: Sync2),
+      # worker(
+      #   S3,
+      #   [
+      #     ImageDest,
+      #     [
+      #     bucket_name: dest_bucket,
+      #     path: "original",
+      #     strip_prefix: ["original"],
+      #     sync_targets: [Sync1]
+      #     ]
+      #   ],
+      #   id: ImageDest
+      # ),
+      # worker(
+      #   S3,
+      #   [ImageSource, [bucket_name: source_bucket, sync_targets: [Sync1]]],
+      #   id: ImageSource
+      # ),
+      # worker(DB, [DBDest, [sync_targets: [Sync2]]], id: DBDest),
+      # worker(
+      #   S3,
+      #   [
+      #     FullDest,
+      #     [
+      #     bucket_name: dest_bucket,
+      #     path: "thumb",
+      #     strip_prefix: ["thumb"],
+      #     sync_targets: [Sync2]
+      #     ]
+      #   ],
+      #   id: FullDest
+      # )
     ]
 
     opts = [strategy: :one_for_one, name: ImagesResource.Supervisor]

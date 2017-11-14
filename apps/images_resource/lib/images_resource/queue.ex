@@ -5,14 +5,19 @@ defmodule ImagesResource.Queue do
 
   alias ImagesResource.Job
 
-  defstruct name: "", q: nil, in_progress: nil, pending_demand: 0
+  defstruct name: "", q: nil, in_progress: nil, pending_demand: 0, max_retries: 5
 
-  def start_link(name) do
-    GenStage.start_link(__MODULE__, name, name: name)
+  def start_link(name, options \\ []) do
+    GenStage.start_link(__MODULE__, {name, options}, name: name)
   end
 
-  def init(name) do
-    {:producer, %__MODULE__{name: name, q: :queue.new(), in_progress: Map.new()}}
+  def init({name, options}) do
+    max_retries = Keyword.get(options, :max_retries, 5)
+
+    {
+      :producer,
+      %__MODULE__{name: name, q: :queue.new(), in_progress: Map.new(), max_retries: max_retries}
+    }
   end
 
   def handle_demand(incoming_demand, queue = %__MODULE__{pending_demand: pending_demand}) do
@@ -42,7 +47,7 @@ defmodule ImagesResource.Queue do
           )
 
         {:empty, q} ->
-          Logger.debug("Image #{inspect(name)} Queue Empty")
+          Logger.debug("#{inspect(name)} Queue Empty")
           {:noreply, Enum.reverse(jobs), %__MODULE__{queue | q: q}}
       end
     else
@@ -65,14 +70,33 @@ defmodule ImagesResource.Queue do
     dispatch_jobs(%__MODULE__{queue | in_progress: Map.delete(in_progress, id)}, [])
   end
 
+  def handle_cast({:ack, job = %Job{from: from}, reply}, queue) do
+    Process.send(from, reply, [])
+    handle_cast({:ack, job}, queue)
+  end
+
   def handle_cast(
-        {:nack, job = %Job{id: id}},
-        queue = %__MODULE__{q: q, in_progress: in_progress}
+        {:nack, job = %Job{id: id, retry_count: retry_count}},
+        queue = %__MODULE__{name: name, q: q, in_progress: in_progress, max_retries: max_retries}
       ) do
-    dispatch_jobs(
-      %__MODULE__{queue | q: :queue.in(job, q), in_progress: Map.delete(in_progress, id)},
-      []
-    )
+    if retry_count < max_retries do
+      dispatch_jobs(
+        %__MODULE__{
+          queue
+          | q: :queue.in(%Job{job | retry_count: retry_count + 1}, q),
+            in_progress: Map.delete(in_progress, id)
+        },
+        []
+      )
+    else
+      Logger.error(
+        "#{inspect(name)} Queue failed to re-queue job, retry(#{retry_count}/#{max_retries}): #{
+          inspect(job)
+        }"
+      )
+
+      dispatch_jobs(%__MODULE__{queue | in_progress: Map.delete(in_progress, id)}, [])
+    end
   end
 
   def handle_call(:state, _from, queue) do
@@ -85,15 +109,31 @@ defmodule ImagesResource.Queue do
       _ -> false
     end
 
-    Enum.any?(:queue.to_list(q), compare) || Enum.any?(Map.keys(in_progress), compare)
+    Enum.any?(:queue.to_list(q), compare) || Enum.any?(Map.values(in_progress), compare)
   end
 
   def add(queue_name, event) do
     GenStage.cast(queue_name, {:push, event, self()})
   end
 
-  def ack(queue_name, job) do
+  def ack(job = %Job{queue: queue}) do
+    ack(queue, job)
+  end
+
+  def ack(queue_name, job = %Job{}) do
     GenStage.cast(queue_name, {:ack, job})
+  end
+
+  def ack(job = %Job{queue: queue}, reply) do
+    ack(queue, job, reply)
+  end
+
+  def ack(queue_name, job = %Job{}, reply) do
+    GenStage.cast(queue_name, {:ack, job, reply})
+  end
+
+  def nack(job = %Job{queue: queue}) do
+    nack(queue, job)
   end
 
   def nack(queue_name, job) do
