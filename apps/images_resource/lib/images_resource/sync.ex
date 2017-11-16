@@ -19,7 +19,7 @@ defmodule ImagesResource.Sync do
       when from_name == source_name do
     tree
     |> Tree.diff(dest_tree)
-    |> Enum.each(&Queue.add(S3Queue, &1))
+    |> Enum.each(&Queue.add(PrimaryQueue, &1))
 
     {:noreply, %{state | source_tree: tree}}
   end

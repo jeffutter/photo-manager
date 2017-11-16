@@ -12,7 +12,7 @@ defmodule ImagesResource.Upload.Upload do
       |> ensure_keyword_list()
       |> Keyword.put(:acl, :public_read)
 
-    case S3.put(new_path, key, s3_options) do
+    case S3.put(new_path, key, s3_options, [bucket: Config.get(:images_resource, :dest_bucket)]) do
       :ok ->
         {:ok, nil}
 

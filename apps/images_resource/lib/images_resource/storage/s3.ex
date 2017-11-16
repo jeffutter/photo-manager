@@ -43,22 +43,26 @@ defmodule ImagesResource.Storage.S3 do
   end
 
   def put(file_path, s3_key, s3_options, opts \\ []) do
-    try do
-      opts
-      |> Keyword.get(:bucket, bucket())
-      |> ExAws.S3.put_object(s3_key, OSFile.read!(file_path), s3_options)
-      |> ExAws.request()
-      |> case do
-           {:ok, %{status_code: 200}} -> :ok
-           {:ok, :done} -> :ok
-           {:error, error} -> {:error, error}
-         end
-    rescue
-      e in ExAws.Error ->
-        Logger.error(inspect(e))
-        Logger.error(e.message)
-        {:error, :invalid_bucket}
-    end
+    opts
+    |> Keyword.get(:bucket, bucket())
+    |> ExAws.S3.put_object(s3_key, OSFile.read!(file_path), s3_options)
+    |> ExAws.request()
+    |> case do
+          {:ok, %{status_code: 200}} -> :ok
+          {:ok, :done} -> :ok
+          {:error, error} -> {:error, error}
+        end
+  rescue
+    e in ExAws.Error ->
+      Logger.error(inspect(e))
+      Logger.error(e.message)
+      {:error, :invalid_bucket}
+  end
+
+  def delete(s3_key, opts \\ []) do
+    opts
+    |> Keyword.get(:bucket, bucket())
+    |> ExAws.S3.delete_object(s3_key)
   end
 
   defp bucket do

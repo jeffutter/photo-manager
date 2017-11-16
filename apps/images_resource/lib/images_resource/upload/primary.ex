@@ -2,6 +2,9 @@ defmodule ImagesResource.Upload.Primary do
   require Logger
 
   alias ImagesResource.Queue
+  alias ImagesResource.Storage.{S3}
+  alias ImagesResource.Storage.File, as: StorageFile
+  alias ImagesResource.Upload.Upload
 
   use ImagesResource.Worker
 
@@ -22,6 +25,16 @@ defmodule ImagesResource.Upload.Primary do
     |> upload(file)
     |> cleanup()
     |> reply()
+  end
+
+  def handle_event({:remove, %StorageFile{name: name, path: path}}) do
+    #TODO: Needs more error handling
+    Enum.each(@versions, fn version ->
+      key = Upload.s3_key(version, path, name)
+      S3.delete(key, [bucket: Config.get(:images_resource, :dest_bucket)])
+    end)
+    
+    {:ok, nil}
   end
 
   def download(status = %__MODULE__{error: false, event: {:add, f}}) do

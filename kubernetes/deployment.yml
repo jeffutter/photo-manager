@@ -12,8 +12,7 @@ spec:
     spec:
       containers:
         - name: photo-manager
-          image: jeffutter/photo-manager@sha256:99974d04d2d22ff0f71977f7d89b40e0ce744d539aa0871199d85dab694119f6
-          image: jeffutter/photo-manager@sha256:fde653016d5509ae6703e68b84eeb4be037b379b84e5dfd9adcc49e90f59d1a1
+          image: jeffutter/photo-manager@sha256:eda9212a7f76e08dd931a699798f69c00e2391923c93d312792001422e7846d6
           args: ["foreground"]
           ports:
             - name: http

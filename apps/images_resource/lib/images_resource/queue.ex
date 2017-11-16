@@ -5,7 +5,7 @@ defmodule ImagesResource.Queue do
 
   alias ImagesResource.Job
 
-  defstruct name: "", q: nil, in_progress: nil, pending_demand: 0, max_retries: 5
+  defstruct name: "", q: nil, in_progress: nil, pending_demand: 0, max_retries: 5, reply: false
 
   def start_link(name, options \\ []) do
     GenStage.start_link(__MODULE__, {name, options}, name: name)
@@ -13,10 +13,11 @@ defmodule ImagesResource.Queue do
 
   def init({name, options}) do
     max_retries = Keyword.get(options, :max_retries, 5)
+    reply = Keyword.get(options, :reply, false)
 
     {
       :producer,
-      %__MODULE__{name: name, q: :queue.new(), in_progress: Map.new(), max_retries: max_retries}
+      %__MODULE__{name: name, q: :queue.new(), in_progress: Map.new(), max_retries: max_retries, reply: reply}
     }
   end
 
@@ -70,8 +71,10 @@ defmodule ImagesResource.Queue do
     dispatch_jobs(%__MODULE__{queue | in_progress: Map.delete(in_progress, id)}, [])
   end
 
-  def handle_cast({:ack, job = %Job{from: from}, reply}, queue) do
-    Process.send(from, reply, [])
+  def handle_cast({:ack, job = %Job{from: from}, reply}, queue = %__MODULE__{reply: send_reply}) do
+    if send_reply do
+      Process.send(from, reply, [])
+    end
     handle_cast({:ack, job}, queue)
   end
 

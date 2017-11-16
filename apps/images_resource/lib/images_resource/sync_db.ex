@@ -18,9 +18,11 @@ defmodule ImagesResource.SyncDB do
         state = %{source: source_name, dest_tree: dest_tree}
       )
       when from_name == source_name do
-    tree
-    |> Tree.diff(dest_tree, &deep_compare/2)
-    |> Enum.each(&Queue.add(DatabaseQueue, {&1, :thumb}))
+    if dest_tree && tree do
+      tree
+      |> Tree.diff(dest_tree, &deep_compare/2)
+      |> Enum.each(&Queue.add(DatabaseQueue, {&1, :thumb}))
+    end
 
     {:noreply, %{state | source_tree: tree}}
   end
@@ -35,7 +37,7 @@ defmodule ImagesResource.SyncDB do
   end
 
   def deep_compare(%File{slug: left_slug, size: left_size}, %File{slug: right_slug, size: right_size}) do
-    left_slug == right_slug && left_size == right_size
+    left_slug == right_slug && to_string(left_size) == to_string(right_size)
   end
 
   def deep_compare(_, _) do
