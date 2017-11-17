@@ -46,7 +46,7 @@ defmodule ImagesResource.Queue.Worker do
           log(
             :info,
             job,
-            "Durration",
+            "Duration",
             to_string(:erlang.convert_time_unit(end_time - start_time, :native, :millisecond)) <>
               "ms"
           )

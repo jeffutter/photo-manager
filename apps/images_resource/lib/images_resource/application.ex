@@ -36,9 +36,9 @@ defmodule ImagesResource.Application do
 
     children = [
       worker(Queue, [PrimaryQueue], id: PrimaryQueue),
-      worker(Queue, [DownloadQueue, [reply: true]], id: DownloadQueue),
-      worker(Queue, [TransformQueue, [reply: true]], id: TransformQueue),
-      worker(Queue, [UploadQueue, [reply: true]], id: UploadQueue),
+      worker(Queue, [DownloadQueue], id: DownloadQueue),
+      worker(Queue, [TransformQueue], id: TransformQueue),
+      worker(Queue, [UploadQueue], id: UploadQueue),
       worker(Processor, [PrimaryQueue, PrimaryWorker], id: PrimaryWorker),
       worker(Processor, [DownloadQueue, DownloadWorker], id: DownloadWorker),
       worker(
