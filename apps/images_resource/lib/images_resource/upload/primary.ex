@@ -125,32 +125,44 @@ defmodule ImagesResource.Upload.Primary do
     instance_timeout = Keyword.get(options, :instance_timeout, 5_000)
     batch_timeout = Keyword.get(options, :batch_timeout, 20_000)
 
-    results =
+    id_and_task =
       messages
       |> Enum.map(fn {id, message} ->
-           Task.async(fn ->
-             case sub_queue(module, message, instance_timeout) do
-               {:ok, message} -> {id, {:ok, message}}
-               {:error, e} -> {id, {:error, e}}
-             end
-           end)
+           {
+             Task.async(fn ->
+               case sub_queue(module, message, instance_timeout) do
+                 {:ok, message} -> {:ok, message}
+                 {:error, e} -> {:error, e}
+               end
+             end),
+             id
+           }
          end)
+      |> Enum.into(%{})
+
+    results =
+      id_and_task
+      |> Enum.map(fn {task, _id} -> task end)
       |> Task.yield_many(batch_timeout)
       |> Enum.map(fn {task, res} ->
-           res || Task.shutdown(task, :brutal_kill)
+           {
+             Map.get(id_and_task, task),
+             res || Task.shutdown(task, :brutal_kill)
+           }
          end)
       |> Enum.map(fn
-           {:ok, {id, {:ok, message}}} -> {id, {:ok, message}}
-           {:ok, {id, {:error, e}}} -> {id, {:error, e}}
-           {:exit, _} -> {random_version(), {:error, "Task Exited"}}
-           e -> {random_version(), {:error, "Unexpeceted Task Error: #{e}"}}
+           {id, {:ok, {:ok, message}}} -> {id, {:ok, message}}
+           {id, {:ok, {:error, e}}} -> {id, {:error, e}}
+           {id, {:exit, e}} -> {id, {:error, "Task Exited: #{inspect(e)}"}}
+           {id, e} -> {id, {:error, "Unexpeceted Task Error: #{inspect(e)}"}}
          end)
+      |> Enum.into(%{})
 
     if Enum.all?(results, fn
          {_, {:ok, _}} -> true
          _ -> false
        end) do
-      {:ok, Enum.into(results, %{})}
+      {:ok, results}
     else
       {
         :error,

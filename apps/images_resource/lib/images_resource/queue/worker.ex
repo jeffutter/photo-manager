@@ -4,7 +4,7 @@ defmodule ImagesResource.Queue.Worker do
   @callback handle_event(event :: any) :: {:ok, any} | {:error, any} | {:retry, any}
 
   defmacro __using__(_) do
-    quote do
+    quote location: :keep do
       use ImagesResource.Queue.Logger
 
       def start_link(job = %Job{event: event}) do
