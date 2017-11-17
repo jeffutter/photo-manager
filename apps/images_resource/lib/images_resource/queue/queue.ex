@@ -1,9 +1,9 @@
-defmodule ImagesResource.Queue do
+defmodule ImagesResource.Queue.Queue do
   require Logger
 
   use GenStage
 
-  alias ImagesResource.Job
+  alias ImagesResource.Queue.Job
 
   defstruct name: "", q: nil, in_progress: nil, pending_demand: 0, max_retries: 5, reply: false
 
@@ -17,7 +17,13 @@ defmodule ImagesResource.Queue do
 
     {
       :producer,
-      %__MODULE__{name: name, q: :queue.new(), in_progress: Map.new(), max_retries: max_retries, reply: reply}
+      %__MODULE__{
+        name: name,
+        q: :queue.new(),
+        in_progress: Map.new(),
+        max_retries: max_retries,
+        reply: reply
+      }
     }
   end
 
@@ -75,6 +81,7 @@ defmodule ImagesResource.Queue do
     if send_reply do
       Process.send(from, reply, [])
     end
+
     handle_cast({:ack, job}, queue)
   end
 

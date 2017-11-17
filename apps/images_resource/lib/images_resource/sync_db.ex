@@ -3,7 +3,7 @@ defmodule ImagesResource.SyncDB do
   use GenServer
 
   alias ImagesResource.Storage.{Directory, File, Tree}
-  alias ImagesResource.{Image, Queue}
+  alias ImagesResource.{Image, Queue.Queue}
   import Ecto.Query
 
   @type t :: %{source: atom(), dest: atom(), source_tree: Directory.t(), dest_tree: Directory.t()}
@@ -36,7 +36,10 @@ defmodule ImagesResource.SyncDB do
     left_slug == right_slug
   end
 
-  def deep_compare(%File{slug: left_slug, size: left_size}, %File{slug: right_slug, size: right_size}) do
+  def deep_compare(%File{slug: left_slug, size: left_size}, %File{
+        slug: right_slug,
+        size: right_size
+      }) do
     left_slug == right_slug && to_string(left_size) == to_string(right_size)
   end
 

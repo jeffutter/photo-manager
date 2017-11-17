@@ -48,10 +48,10 @@ defmodule ImagesResource.Storage.S3 do
     |> ExAws.S3.put_object(s3_key, OSFile.read!(file_path), s3_options)
     |> ExAws.request()
     |> case do
-          {:ok, %{status_code: 200}} -> :ok
-          {:ok, :done} -> :ok
-          {:error, error} -> {:error, error}
-        end
+         {:ok, %{status_code: 200}} -> :ok
+         {:ok, :done} -> :ok
+         {:error, error} -> {:error, error}
+       end
   rescue
     e in ExAws.Error ->
       Logger.error(inspect(e))

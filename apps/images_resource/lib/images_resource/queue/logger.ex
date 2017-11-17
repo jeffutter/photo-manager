@@ -1,8 +1,11 @@
 defmodule ImagesResource.Queue.Logger do
+  alias ImagesResouce.Queue.Job
+
   defmacro __using__(_) do
     quote do
       require Logger
 
+      @spec log(atom, Job.t(), String.t(), String.t() | nil) :: :ok
       def log(level, job, message, details \\ nil) do
         output = inspect(__MODULE__) <> " - " <> message <> " for: " <> inspect(job)
 

@@ -1,4 +1,5 @@
-defmodule ImagesResource.Processor do
+defmodule ImagesResource.Queue.Processor do
+  @spec start_link(term, term, Keyword.t()) :: {:ok, pid}
   def start_link(queue, worker_module, options \\ []) do
     import Supervisor.Spec
 

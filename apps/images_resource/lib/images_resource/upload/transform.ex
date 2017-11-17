@@ -1,7 +1,7 @@
 defmodule ImagesResource.Upload.Transform do
-  use ImagesResource.Worker
+  use ImagesResource.Queue.Worker
 
-  @behaviour ImagesResource.Worker
+  @behaviour ImagesResource.Queue.Worker
   def handle_event({original_path, version}) do
     {cmd, args, ext} = transform(version, original_path)
 

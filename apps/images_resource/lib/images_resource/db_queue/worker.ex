@@ -3,9 +3,9 @@ defmodule ImagesResource.DBQueue.Worker do
 
   alias ImagesResource.SyncDB
 
-  use ImagesResource.Worker
+  use ImagesResource.Queue.Worker
 
-  @behaviour ImagesResource.Worker
+  @behaviour ImagesResource.Queue.Worker
   def handle_event({{:add, file}, version}) do
     case SyncDB.add(file, version) do
       {:ok, _} ->
@@ -17,7 +17,6 @@ defmodule ImagesResource.DBQueue.Worker do
       {:error, message} ->
         {:error, message}
     end
-
   rescue
     e ->
       {:error, e}
@@ -26,7 +25,6 @@ defmodule ImagesResource.DBQueue.Worker do
   def handle_event({{:remove, file}, version}) do
     SyncDB.remove(file, version)
     {:ok, nil}
-
   rescue
     e ->
       {:error, e}

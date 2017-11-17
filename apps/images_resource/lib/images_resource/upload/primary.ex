@@ -1,12 +1,12 @@
 defmodule ImagesResource.Upload.Primary do
   require Logger
 
-  alias ImagesResource.Queue
+  alias ImagesResource.Queue.Queue
   alias ImagesResource.Storage.{S3}
   alias ImagesResource.Storage.File, as: StorageFile
   alias ImagesResource.Upload.Upload
 
-  use ImagesResource.Worker
+  use ImagesResource.Queue.Worker
 
   defstruct event: nil,
             tempfiles: [],
@@ -17,7 +17,7 @@ defmodule ImagesResource.Upload.Primary do
 
   @versions [:original, :thumb, :small, :medium, :large]
 
-  @behaviour ImagesResource.Worker
+  @behaviour ImagesResource.Queue.Worker
   def handle_event(event = {:add, file}) do
     %__MODULE__{event: event}
     |> download()
@@ -28,12 +28,12 @@ defmodule ImagesResource.Upload.Primary do
   end
 
   def handle_event({:remove, %StorageFile{name: name, path: path}}) do
-    #TODO: Needs more error handling
+    # TODO: Needs more error handling
     Enum.each(@versions, fn version ->
       key = Upload.s3_key(version, path, name)
-      S3.delete(key, [bucket: Config.get(:images_resource, :dest_bucket)])
+      S3.delete(key, bucket: Config.get(:images_resource, :dest_bucket))
     end)
-    
+
     {:ok, nil}
   end
 
@@ -43,6 +43,7 @@ defmodule ImagesResource.Upload.Primary do
       {:error, e} -> %__MODULE__{status | error: true, error_message: e}
     end
   end
+
   def download(status), do: status
 
   def transform(status = %__MODULE__{error: false, original_path: original_path}) do
@@ -158,5 +159,4 @@ defmodule ImagesResource.Upload.Primary do
       }
     end
   end
-
 end

@@ -1,9 +1,9 @@
 defmodule ImagesResource.Upload.Upload do
   alias ImagesResource.Storage.S3
 
-  use ImagesResource.Worker
+  use ImagesResource.Queue.Worker
 
-  @behaviour ImagesResource.Worker
+  @behaviour ImagesResource.Queue.Worker
   def handle_event({new_path, version, file}) do
     key = s3_key(version, file.path, file.name)
 
@@ -12,7 +12,7 @@ defmodule ImagesResource.Upload.Upload do
       |> ensure_keyword_list()
       |> Keyword.put(:acl, :public_read)
 
-    case S3.put(new_path, key, s3_options, [bucket: Config.get(:images_resource, :dest_bucket)]) do
+    case S3.put(new_path, key, s3_options, bucket: Config.get(:images_resource, :dest_bucket)) do
       :ok ->
         {:ok, nil}
 

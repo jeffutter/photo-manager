@@ -127,7 +127,6 @@ defmodule ImagesResource.Storage.Tree do
     end
   end
 
- 
   def insert_in(tree, file = %File{path: path}), do: insert_in(tree, path, file)
 
   def insert_in(tree, path, value) when is_binary(path),
@@ -227,7 +226,8 @@ defmodule ImagesResource.Storage.Tree do
     {:add, %ImagesResource.Storage.File{last_modified: nil, name: "foo.txt", path: [], slug: "foo.txt", size: nil}}
   ]
   """
-  def diff(source, dest, compare_func \\ &compare_name/2), do: diff(:remove, source, dest, compare_func) ++ diff(:add, source, dest, compare_func)
+  def diff(source, dest, compare_func \\ &compare_name/2),
+    do: diff(:remove, source, dest, compare_func) ++ diff(:add, source, dest, compare_func)
 
   def diff(:add, %Directory{children: source_children}, dest, compare_func) do
     Enum.flat_map(source_children, add(dest, compare_func))

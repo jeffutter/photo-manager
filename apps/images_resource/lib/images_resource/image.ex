@@ -11,6 +11,7 @@ defmodule ImagesResource.Image do
   @endpoint "storage.googleapis.com"
 
   def url(_, _, options \\ [])
+
   def url(%File{name: name, path: path}, version, options) do
     bucket = Keyword.get(options, :bucket, bucket())
 

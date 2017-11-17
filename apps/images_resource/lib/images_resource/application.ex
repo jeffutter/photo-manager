@@ -3,7 +3,8 @@ defmodule ImagesResource.Application do
 
   use Application
 
-  alias ImagesResource.{Processor, Sources, Sync, SyncDB, Queue, Upload, DBQueue}
+  alias ImagesResource.{Sources, Sync, SyncDB, Upload, DBQueue}
+  alias ImagesResource.Queue.{Processor, Queue}
   alias Upload.Download, as: DownloadWorker
   alias Upload.Primary, as: PrimaryWorker
   alias Upload.Transform, as: TransformWorker
@@ -40,7 +41,11 @@ defmodule ImagesResource.Application do
       worker(Queue, [UploadQueue, [reply: true]], id: UploadQueue),
       worker(Processor, [PrimaryQueue, PrimaryWorker], id: PrimaryWorker),
       worker(Processor, [DownloadQueue, DownloadWorker], id: DownloadWorker),
-      worker(Processor, [TransformQueue, TransformWorker], id: TransformWorker),
+      worker(
+        Processor,
+        [TransformQueue, TransformWorker, [max_demand: System.schedulers_online()]],
+        id: TransformWorker
+      ),
       worker(Processor, [UploadQueue, UploadWorker], id: UploadWorker),
       worker(Queue, [DatabaseQueue], id: DatabaseQueue),
       worker(Processor, [DatabaseQueue, DBWorker, [max_demand: 5]], id: DatabaseWorker),
@@ -51,10 +56,10 @@ defmodule ImagesResource.Application do
         [
           ImageDest,
           [
-          bucket_name: dest_bucket,
-          path: "original",
-          strip_prefix: ["original"],
-          sync_targets: [Sync1]
+            bucket_name: dest_bucket,
+            path: "original",
+            strip_prefix: ["original"],
+            sync_targets: [Sync1]
           ]
         ],
         id: ImageDest
@@ -70,10 +75,10 @@ defmodule ImagesResource.Application do
         [
           FullDest,
           [
-          bucket_name: dest_bucket,
-          path: "thumb",
-          strip_prefix: ["thumb"],
-          sync_targets: [Sync2]
+            bucket_name: dest_bucket,
+            path: "thumb",
+            strip_prefix: ["thumb"],
+            sync_targets: [Sync2]
           ]
         ],
         id: FullDest

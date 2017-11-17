@@ -1,5 +1,5 @@
-defmodule ImagesResource.Worker do
-  alias ImagesResource.{Job, Queue}
+defmodule ImagesResource.Queue.Worker do
+  alias ImagesResource.Queue.{Job, Queue}
 
   @callback handle_event(event :: any) :: {:ok, any} | {:error, any} | {:retry, any}
 
@@ -10,11 +10,12 @@ defmodule ImagesResource.Worker do
       def start_link(job = %Job{event: event}) do
         log(:info, job, "Adding")
 
-        start_time = if Logger.level in [:debug, :info] do
-                       :erlang.monotonic_time()
-                     else
-                       nil
-                     end
+        start_time =
+          if Logger.level() in [:debug, :info] do
+            :erlang.monotonic_time()
+          else
+            nil
+          end
 
         Task.start_link(fn ->
           case handle_event(event) do
@@ -37,15 +38,17 @@ defmodule ImagesResource.Worker do
           end
         end)
       end
-      
+
       def log_time(job, start_time) do
-        if Logger.level in [:debug, :info] do
+        if Logger.level() in [:debug, :info] do
           end_time = :erlang.monotonic_time()
+
           log(
             :info,
             job,
             "Durration",
-            to_string(:erlang.convert_time_unit(end_time - start_time, :native, :millisecond)) <> "ms"
+            to_string(:erlang.convert_time_unit(end_time - start_time, :native, :millisecond)) <>
+              "ms"
           )
         end
       end

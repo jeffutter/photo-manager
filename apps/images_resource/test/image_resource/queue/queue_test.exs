@@ -1,7 +1,7 @@
-defmodule ImagesResource.QueueTest do
+defmodule ImagesResource.Queue.QueueTest do
   use ExUnit.Case
 
-  alias ImagesResource.{Job, Queue}
+  alias ImagesResource.Queue.{Job, Queue}
 
   defmodule Worker do
     def start_link(job = %Job{queue: queue, from: from, event: event}) do

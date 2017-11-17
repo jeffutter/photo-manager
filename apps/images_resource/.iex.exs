@@ -5,8 +5,19 @@ alias Upload.Primary, as: PrimaryWorker
 alias Upload.Transform, as: TransformWorker
 alias Upload.Upload, as: UploadWorker
 
-{:ok, source_pid} = Sources.S3.start_link(ImageSource, bucket_name: Config.get(:images_resource, :source_bucket), sync_targets: [])
-f = Sources.S3.tree(ImageSource) |> Map.get(:children) |> Enum.at(0) |> Map.get(:children) |> Enum.at(0)
+{:ok, source_pid} =
+  Sources.S3.start_link(
+    ImageSource,
+    bucket_name: Config.get(:images_resource, :source_bucket),
+    sync_targets: []
+  )
+
+f =
+  Sources.S3.tree(ImageSource)
+  |> Map.get(:children)
+  |> Enum.at(0)
+  |> Map.get(:children)
+  |> Enum.at(0)
 
 {:ok, primary_pid} = Queue.start_link(PrimaryQueue)
 {:ok, download_pid} = Queue.start_link(DownloadQueue)
@@ -24,4 +35,4 @@ f = Sources.S3.tree(ImageSource) |> Map.get(:children) |> Enum.at(0) |> Map.get(
 # {:ok, fan_pid} = Upload.FanOutVersions.start_link()
 # {:ok, cleanup_pid} = Upload.Cleanup.start_link()
 
-#Queue.add(PrimaryQueue, {:add, f})
+# Queue.add(PrimaryQueue, {:add, f})
