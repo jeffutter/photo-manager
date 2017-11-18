@@ -13,7 +13,7 @@ type action =
 
 let component = ReasonReact.reducerComponent("InfiniteScroll");
 
-let setContainerRef = (r, {ReasonReact.state}) => state.container := Js.Null.to_opt(r);
+let setContainerRef = (r, {ReasonReact.state}) => state.container := Js.Nullable.to_opt(r);
 
 let make =
     (

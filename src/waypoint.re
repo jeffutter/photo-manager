@@ -11,7 +11,7 @@ let make =
   ReasonReact.wrapJsForReason(
     ~reactClass=waypoint,
     ~props={
-      "onEnter": Js.Null_undefined.from_opt(onEnter),
+      "onEnter": Js.Nullable.from_opt(onEnter),
       "bottomOffset": bottomOffset,
       "topOffset": topOffset,
       "fireOnRapidScroll": Js.Boolean.to_js_boolean(fireOnRapidScroll)

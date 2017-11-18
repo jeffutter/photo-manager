@@ -63,7 +63,7 @@ let make =
       ~rating: option(int)=?,
       ~handleOpen,
       ~submitRating,
-      ~innerRef: option((Js.null(Dom.element) => unit))=?,
+      ~innerRef: option((Js.Nullable.t(Dom.element) => unit))=?,
       _children
     ) => {
   ...component,

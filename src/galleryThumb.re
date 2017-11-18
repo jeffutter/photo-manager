@@ -51,7 +51,12 @@ let detailsCls =
 let component = ReasonReact.statelessComponent("GalleryThumb");
 
 let make =
-    (~name: string, ~slug: string, ~innerRef: option((Js.null(Dom.element) => unit))=?, _children) => {
+    (
+      ~name: string,
+      ~slug: string,
+      ~innerRef: option((Js.Nullable.t(Dom.element) => unit))=?,
+      _children
+    ) => {
   ...component,
   render: (_self) => {
     let link = "/gallery/" ++ slug;

@@ -39,7 +39,7 @@ module NavLink = {
   let make =
       (
         ~_to: string,
-        ~innerRef: option((Js.null(Dom.element) => unit))=?,
+        ~innerRef: option((Js.Nullable.t(Dom.element) => unit))=?,
         ~className: option(string)=?,
         ~activeClassName: option(string)=?,
         ~onClick: option((ReactEventRe.Mouse.t => unit))=?,
@@ -49,7 +49,7 @@ module NavLink = {
       ~reactClass=navLink,
       ~props={
         "to": _to,
-        "innerRef": Js.Null_undefined.from_opt(innerRef),
+        "innerRef": Js.Nullable.from_opt(innerRef),
         "className":
           switch className {
           | Some(name) => toString(name)
@@ -60,7 +60,7 @@ module NavLink = {
           | Some(name) => toString(name)
           | None => ""
           },
-        "onClick": Js.Null_undefined.from_opt(onClick)
+        "onClick": Js.Nullable.from_opt(onClick)
       },
       children
     );
@@ -70,7 +70,7 @@ module Redirect = {
   let make = (~_to: string, ~from: option(string)=?, children) =>
     ReasonReact.wrapJsForReason(
       ~reactClass=redirect,
-      ~props={"to": _to, "from": Js.Null_undefined.from_opt(from)},
+      ~props={"to": _to, "from": Js.Nullable.from_opt(from)},
       children
     );
 };
@@ -89,9 +89,9 @@ module Route = {
       ~reactClass=route,
       ~props={
         "exact": Js.Boolean.to_js_boolean(optionToBool(exact)),
-        "path": Js.Null_undefined.from_opt(path),
-        "component": Js.Null_undefined.from_opt(component),
-        "render": Js.Null_undefined.from_opt(render)
+        "path": Js.Nullable.from_opt(path),
+        "component": Js.Nullable.from_opt(component),
+        "render": Js.Nullable.from_opt(render)
       },
       children
     );
