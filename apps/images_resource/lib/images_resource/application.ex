@@ -43,7 +43,7 @@ defmodule ImagesResource.Application do
       worker(Processor, [DownloadQueue, DownloadWorker], id: DownloadWorker),
       worker(
         Processor,
-        [TransformQueue, TransformWorker, [max_demand: System.schedulers_online()]],
+        [TransformQueue, TransformWorker, [max_demand: max_demand()]],
         id: TransformWorker
       ),
       worker(Processor, [UploadQueue, UploadWorker], id: UploadWorker),
@@ -87,5 +87,15 @@ defmodule ImagesResource.Application do
 
     opts = [strategy: :one_for_one, name: ImagesResource.Supervisor]
     Supervisor.start_link(children, opts)
+  end
+
+  defp max_demand do
+    schedulers = System.schedulers_online() || 2
+
+    if schedulers >= 2 do
+      schedulers
+    else
+      2
+    end
   end
 end
