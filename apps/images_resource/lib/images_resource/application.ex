@@ -4,7 +4,7 @@ defmodule ImagesResource.Application do
   use Application
 
   alias ImagesResource.{Sources, Sync, SyncDB, Upload, DBQueue}
-  alias ImagesResource.Queue.{Processor, Queue}
+  alias JobQueue.{Processor, Queue}
   alias Upload.Download, as: DownloadWorker
   alias Upload.Primary, as: PrimaryWorker
   alias Upload.Transform, as: TransformWorker

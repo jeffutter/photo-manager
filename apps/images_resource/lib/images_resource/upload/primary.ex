@@ -1,12 +1,12 @@
 defmodule ImagesResource.Upload.Primary do
   require Logger
 
-  alias ImagesResource.Queue.Queue
+  alias JobQueue.Queue
   alias ImagesResource.Storage.{S3}
   alias ImagesResource.Storage.File, as: StorageFile
   alias ImagesResource.Upload.Upload
 
-  use ImagesResource.Queue.Worker
+  use JobQueue.Worker
 
   defstruct event: nil,
             tempfiles: [],
@@ -17,7 +17,7 @@ defmodule ImagesResource.Upload.Primary do
 
   @versions [:original, :thumb, :small, :medium, :large]
 
-  @behaviour ImagesResource.Queue.Worker
+  @behaviour JobQueue.Worker
   def handle_event(event = {:add, file}) do
     %__MODULE__{event: event}
     |> download()

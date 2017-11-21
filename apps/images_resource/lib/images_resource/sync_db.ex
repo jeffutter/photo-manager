@@ -3,7 +3,8 @@ defmodule ImagesResource.SyncDB do
   use GenServer
 
   alias ImagesResource.Storage.{Directory, File, Tree}
-  alias ImagesResource.{Image, Queue.Queue}
+  alias ImagesResource.{Image}
+  alias JobQueue.Queue
   import Ecto.Query
 
   @type t :: %{source: atom(), dest: atom(), source_tree: Directory.t(), dest_tree: Directory.t()}

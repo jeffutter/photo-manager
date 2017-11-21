@@ -1,5 +1,6 @@
 alias ImagesResource
-alias ImagesResource.{Processor, Sources, Queue, Upload}
+alias ImagesResource.{Sources, Upload}
+alias ImagesResource.Queue.{Queue, Processor}
 alias Upload.Download, as: DownloadWorker
 alias Upload.Primary, as: PrimaryWorker
 alias Upload.Transform, as: TransformWorker

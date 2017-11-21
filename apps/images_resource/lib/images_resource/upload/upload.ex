@@ -1,9 +1,9 @@
 defmodule ImagesResource.Upload.Upload do
   alias ImagesResource.Storage.S3
 
-  use ImagesResource.Queue.Worker
+  use JobQueue.Worker
 
-  @behaviour ImagesResource.Queue.Worker
+  @behaviour JobQueue.Worker
   def handle_event({new_path, version, file}) do
     key = s3_key(version, file.path, file.name)
 

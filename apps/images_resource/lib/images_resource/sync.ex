@@ -3,7 +3,7 @@ defmodule ImagesResource.Sync do
   use GenServer
 
   alias ImagesResource.Storage.{Directory, Tree}
-  alias ImagesResource.Queue.Queue
+  alias JobQueue.Queue
 
   @type t :: %{source: atom(), dest: atom(), source_tree: Directory.t(), dest_tree: Directory.t()}
   defstruct source: nil, dest: nil, source_tree: nil, dest_tree: nil

@@ -3,9 +3,9 @@ defmodule ImagesResource.Upload.Download do
   alias ImagesResource.Storage.File, as: StorageFile
   alias ImagesResource.Storage.S3
 
-  use ImagesResource.Queue.Worker
+  use JobQueue.Worker
 
-  @behaviour ImagesResource.Queue.Worker
+  @behaviour JobQueue.Worker
   def handle_event(file) do
     with source_bucket <- Config.get(:images_resource, :source_bucket),
          full_path <- StorageFile.full_path(file),
