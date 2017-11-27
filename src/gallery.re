@@ -138,7 +138,7 @@ let make =
     let swipeOptions = {"index": self.state.currentImage};
     <div className="gallery">
       <BreadCrumbs slug path name />
-      (ReasonReact.element(GalleryBody.make(Array.of_list(renderedDescendants))))
+      <GalleryBody> ...(Array.of_list(renderedDescendants)) </GalleryBody>
       <PhotoSwipe
         isOpen=self.state.lightboxIsOpen
         items=(Array.of_list(swipeImages))

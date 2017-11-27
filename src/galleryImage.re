@@ -72,7 +72,7 @@ let make =
       ReactEventRe.Mouse.stopPropagation(event);
       submitRating({"slug": slug, "rating": i})
     };
-    let r =
+    let stars =
       switch rating {
       | Some(i) => stars(i, 5, 1, handleClick, [])
       | None => stars(0, 5, 1, handleClick, [])
@@ -92,7 +92,7 @@ let make =
       )
       <div className=detailsCls>
         <div> (ReasonReact.stringToElement(name)) </div>
-        (ReasonReact.createDomElement("div", ~props=Js.Obj.empty(), Array.of_list(r)))
+        (ReasonReact.createDomElement("div", ~props=Js.Obj.empty(), Array.of_list(stars)))
       </div>
     </div>
   }
