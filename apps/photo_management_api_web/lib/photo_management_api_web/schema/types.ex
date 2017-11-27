@@ -7,6 +7,7 @@ defmodule PhotoManagementApi.Web.Schema.Types do
 
   alias ImagesResource.Storage.{File, Directory}
   alias PhotoManagementApi.Image, as: DBImage
+  alias PhotoManagementApi.User
 
   union :descendants do
     description("A child of a directory")
@@ -29,7 +30,7 @@ defmodule PhotoManagementApi.Web.Schema.Types do
     field(:width, :integer, resolve: from_db(:width))
     field(:height, :integer, resolve: from_db(:height))
     field(:thumbnail, :integer, resolve: from_db(:base64))
-    field(:rating, :integer, resolve: from_db({:rating, :rating}))
+    field(:rating, :integer, resolve: from_db({:rating, :rating, 0}))
     field(:small_url, :string, resolve: &Resolver.Image.small_url/3)
     field(:medium_url, :string, resolve: &Resolver.Image.medium_url/3)
     field(:large_url, :string, resolve: &Resolver.Image.large_url/3)
@@ -69,13 +70,13 @@ defmodule PhotoManagementApi.Web.Schema.Types do
   end
 
   defp from_db(field) do
-    fn file = %File{}, _, %{context: %{current_user: %PhotoManagementApi.User{id: user_id}}} ->
+    fn file = %File{}, _, %{context: %{current_user: %User{id: user_id}}} ->
       batch({__MODULE__, :images_from_db, user_id}, file, fn batch_results ->
         case field do
-          {relation_name, field_name} ->
+          {relation_name, field_name, default} ->
             with image when not is_nil(image) <- Map.get(batch_results, file),
                  relation <- Map.get(image, relation_name, %{}) || %{},
-                 value <- Map.get(relation, field_name) do
+                 value <- Map.get(relation, field_name, default) do
               {:ok, value}
             else
               _ ->

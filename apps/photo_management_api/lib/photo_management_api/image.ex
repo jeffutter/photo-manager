@@ -1,9 +1,10 @@
 defmodule PhotoManagementApi.Image do
+  alias PhotoManagementApi.{Rating, Repo}
+
   use PhotoManagementApi.Schema
 
   import EctoEnum, except: [cast: 3]
   import Ecto.Query
-  alias PhotoManagementApi.Repo
 
   defenum(VersionEnum, original: 0, thumb: 1, small: 2, medium: 3, large: 4)
 
@@ -41,31 +42,32 @@ defmodule PhotoManagementApi.Image do
   end
 
   def get_all_by_slugs([], user_id) do
-    query =
-      from(
-        i in __MODULE__,
-        limit: 20,
-        left_join: r in PhotoManagementApi.Rating,
-        on: i.slug == r.slug and r.user_id == ^user_id
-      )
-
-    query
-    |> preload(:rating)
+    user_id
+    |> get_all_by_slugs_query()
+    |> limit(20)
     |> Repo.all()
   end
 
   def get_all_by_slugs(slugs, user_id) do
-    query =
+    user_id
+    |> get_all_by_slugs_query()
+    |> where([i], i.slug in ^slugs)
+    |> Repo.all()
+  end
+
+  defp get_all_by_slugs_query(user_id) do
+    rating_query =
       from(
-        i in __MODULE__,
-        where: i.slug in ^slugs,
-        left_join: r in PhotoManagementApi.Rating,
-        on: i.slug == r.slug and r.user_id == ^user_id
+        r in Rating,
+        where: r.user_id == ^user_id
       )
 
-    query
-    |> preload(:rating)
-    |> Repo.all()
+    from(
+      i in __MODULE__,
+      left_join: r in Rating,
+      on: r.slug == i.slug and r.user_id == ^user_id,
+      preload: [rating: ^rating_query]
+    )
   end
 
   defp validate_changeset(struct) do
