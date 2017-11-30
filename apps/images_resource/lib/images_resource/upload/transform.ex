@@ -55,7 +55,7 @@ defmodule ImagesResource.Upload.Transform do
   end
 
   defp generate_temporary_path(full_path, ext \\ nil) do
-    extension = (ext && to_string(ext)) || Path.extname(full_path || "")
+    extension = (ext && ("." <> to_string(ext))) || Path.extname(full_path || "")
 
     file_name =
       :crypto.strong_rand_bytes(20)
