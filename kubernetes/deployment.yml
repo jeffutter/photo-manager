@@ -12,8 +12,15 @@ spec:
     spec:
       containers:
         - name: photo-manager
-          image: jeffutter/photo-manager@sha256:140077535a77e163710be05c08d8131d45fc1492bf91c7f12d7560f996816d76
+          image: jeffutter/photo-manager@sha256:bd83b22bb0e7ae64dc7d41d818f3830ed19b925865b3997729c56be9530d6c11
           args: ["foreground"]
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "180Mi"
+            limits:
+              cpu: "400m"
+              memory: "384Mi"
           ports:
             - name: http
               containerPort: 4000
@@ -21,14 +28,14 @@ spec:
             httpGet:
               path: /
               port: 4000
-            initialDelaySeconds: 3
-            periodSeconds: 3
+            initialDelaySeconds: 20
+            periodSeconds: 5
           readinessProbe:
             httpGet:
               path: /
               port: 4000
-            initialDelaySeconds: 3
-            periodSeconds: 3
+            initialDelaySeconds: 20
+            periodSeconds: 5
           env:
             - name: PORT
               value: "4000"
