@@ -4,7 +4,7 @@ defmodule PhotoManagementApi.Web.Plug.SPA do
   def call(conn, []) do
     if String.match?(
          conn.request_path,
-         ~r/^\/(?:(?!(api|auth|config|socket|graphql|graphiql|metrics|wobserver))).*/
+         ~r/^\/(?:(?!(__auth|api|auth|config|socket|graphql|graphiql|metrics|wobserver))).*/
        ) do
       %{conn | request_path: "/index.html", path_info: ["index.html"]}
     else

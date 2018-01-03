@@ -29,7 +29,6 @@ const cache = new InMemoryCache({
 });
 
 const httpLink = createHttpLink({
-  // uri: "http://gallery.sadclown.net/graphiql"
   uri: "/graphiql"
 });
 

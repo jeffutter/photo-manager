@@ -26,6 +26,7 @@ config :logger, :console,
 config :photo_management_api_web, :generators, context_app: :photo_management_api
 
 config :ueberauth, Ueberauth,
+  base_path: "/__auth",
   providers: [
     facebook: {Ueberauth.Strategy.Facebook, []}
   ]

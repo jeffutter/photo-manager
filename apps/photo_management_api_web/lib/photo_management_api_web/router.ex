@@ -30,6 +30,11 @@ defmodule PhotoManagementApi.Web.Router do
     get("/:provider/callback", AuthController, :callback)
   end
 
+  scope "/__auth", PhotoManagementApi.Web do
+    get("/:provider", AuthController, :request)
+    get("/:provider/callback", AuthController, :callback)
+  end
+
   scope "/" do
     pipe_through(:graphql)
 

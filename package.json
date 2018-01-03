@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "proxy": {
+    "/__auth": {
+      "target": "http://localhost:4000"
+    },
     "/auth": {
       "target": "http://localhost:4000"
     },
