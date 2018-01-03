@@ -1,6 +1,6 @@
 type t;
 
-[@bs.send] external resize : (t, bool) => unit = "";
+[@bs.send] external resize : (t, Js.boolean) => unit = "";
 
 [@bs.send] external pack : t => unit = "";
 
