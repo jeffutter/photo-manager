@@ -1,4 +1,4 @@
-FROM node:8-stretch as ui
+FROM node:8.9.2-stretch as ui
 RUN mkdir -p /src
 WORKDIR /src
 
