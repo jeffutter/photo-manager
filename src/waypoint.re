@@ -1,8 +1,9 @@
-[@bs.module] external waypoint : ReasonReact.reactClass = "react-waypoint";
+[@bs.module "react-waypoint"]
+external waypoint : ReasonReact.reactClass = "default";
 
 let make =
     (
-      ~onEnter: option(('a => unit))=?,
+      ~onEnter: option('a => unit)=?,
       ~bottomOffset: string,
       ~topOffset: string,
       ~fireOnRapidScroll: bool,
