@@ -27,7 +27,7 @@
     "apollo-link-error": "^1.0.0",
     "apollo-link-http": "^1.0.0",
     "bricks.js": "^1.8.0",
-    "bs-glamor": "SentiaAnalytics/bs-glamor#global_merge_keyframes",
+    "bs-glamor": "poeschko/bs-glamor",
     "graphql": "^0.12.0",
     "graphql-tag": "^2.5.0",
     "isomorphic-fetch": "^2.2.1",
