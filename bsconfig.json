@@ -5,7 +5,6 @@
   ],
   "bs-dependencies": [
     "reason-react",
-    "bs-glamor",
     "bs-jest"
   ],
   "reason": {
