@@ -18,7 +18,7 @@ RUN yarn run build
 RUN cd apps/photo_management_api_web/priv/static \
     && find . -type f -name \*.json -o -name \*.js -o -name \*.css -o -name \*.map | xargs -I {} sh -c 'gzip -kf9 {} && brotli --quality 9 --input {} --output {}.br'
 
-FROM elixir:1.5-alpine as build
+FROM elixir:1.6-alpine as build
 RUN mkdir -p /src
 WORKDIR /src
 
