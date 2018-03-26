@@ -1,39 +1,50 @@
-open Glamor;
+open Css;
 
 let component = ReasonReact.statelessComponent("GalleryImage");
 
 let cls =
-  css([
-    width("300px"),
-    maxWidth("300px"),
-    position("inherit"), /* hack for react-waypoint */
-    boxSizing("border-box"),
-    color("#fff"),
-    backgroundSize("cover"),
-    backgroundPosition("center"),
-    boxShadow("-2px 2px 10px 0 rgba(68,68,68,.4)"),
-    transition("transform 0.3s ease-in-out"),
-    cursor("pointer"),
-    counterIncrement("item-counter"),
-    Selector(
+  style([
+    width(px(300)),
+    maxWidth(px(300)),
+    `declaration(("position", "inherit")), /* hack for react-waypoint */
+    boxSizing(borderBox),
+    color(hex("fff")),
+    backgroundSize(cover),
+    `declaration(("backgroundPosition", "center")),
+    boxShadow(
+      ~x=px(-2),
+      ~y=px(2),
+      ~blur=px(10),
+      ~spread=px(0),
+      rgba(68, 68, 68, 0.4),
+    ),
+    transition(~duration=300, ~timingFunction=`easeInOut, "transform"),
+    cursor(`pointer),
+    `declaration(("counterIncrement", "item-counter")),
+    selector(
       "@media screen and (min-width: 768px)",
-      [Selector(":hover", [transform("scale(1.05)")])]
-    )
+      [selector(":hover", [transform(scale(1.05, 1.05))])],
+    ),
   ]);
 
 let detailsCls =
-  css([
-    position("relative"),
-    zIndex("1"),
-    padding("10px 15px"),
-    color("#444"),
-    background("#fff"),
-    letterSpacing("1px"),
-    color("#828282"),
-    Selector(
+  style([
+    position(relative),
+    zIndex(1),
+    padding2(~v=px(10), ~h=px(15)),
+    color(hex("444")),
+    background(hex("fff")),
+    letterSpacing(px(1)),
+    color(hex("828282")),
+    selector(
       "&:before",
-      [fontWeight("bold"), fontSize("1.1rem"), paddingRight("0.5em"), color("#444")]
-    )
+      [
+        `declaration(("fontWeight", "bold")),
+        fontSize(rem(1.1)),
+        paddingRight(em(0.5)),
+        color(hex("444")),
+      ],
+    ),
   ]);
 
 let rec stars = (filled, total, index, handleClick, acc) =>
@@ -43,7 +54,7 @@ let rec stars = (filled, total, index, handleClick, acc) =>
       total - 1,
       index + 1,
       handleClick,
-      [<Star filled=true index handleClick />, ...acc]
+      [<Star filled=true index handleClick />, ...acc],
     ) :
     total > 0 ?
       stars(
@@ -51,7 +62,7 @@ let rec stars = (filled, total, index, handleClick, acc) =>
         total - 1,
         index + 1,
         handleClick,
-        [<Star filled=false index handleClick />, ...acc]
+        [<Star filled=false index handleClick />, ...acc],
       ) :
       List.rev(acc);
 
@@ -63,27 +74,29 @@ let make =
       ~rating: option(int)=?,
       ~handleOpen,
       ~submitRating,
-      ~innerRef: option((Js.Nullable.t(Dom.element) => unit))=?,
-      _children
+      ~innerRef: option(Js.Nullable.t(Dom.element) => unit)=?,
+      _children,
     ) => {
   ...component,
-  render: (_self) => {
+  render: _self => {
     let handleClick = (i, event) => {
       ReactEventRe.Mouse.stopPropagation(event);
-      submitRating({"slug": slug, "rating": i})
+      submitRating({"slug": slug, "rating": i});
     };
     let stars =
-      switch rating {
+      switch (rating) {
       | Some(i) => stars(i, 5, 1, handleClick, [])
       | None => stars(0, 5, 1, handleClick, [])
       };
     <div onClick=handleOpen ref=?innerRef className=cls>
       (
-        switch thumbnail {
+        switch (thumbnail) {
         | Some(thumb) =>
           <img
             src=thumb
-            className=(css([objectFit("cover"), display("block")]))
+            className=(
+              style([`declaration(("object-fit", "cover")), display(block)])
+            )
             width="300"
             height="225"
           />
@@ -92,8 +105,14 @@ let make =
       )
       <div className=detailsCls>
         <div> (ReasonReact.stringToElement(name)) </div>
-        (ReasonReact.createDomElement("div", ~props=Js.Obj.empty(), Array.of_list(stars)))
+        (
+          ReasonReact.createDomElement(
+            "div",
+            ~props=Js.Obj.empty(),
+            Array.of_list(stars),
+          )
+        )
       </div>
-    </div>
-  }
+    </div>;
+  },
 };

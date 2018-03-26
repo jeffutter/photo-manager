@@ -9,14 +9,14 @@ type image = {
   "small_url": string,
   "width": string,
   "height": string,
-  "rating": Js.Nullable.t(int)
+  "rating": Js.Nullable.t(int),
 };
 
 type state = {
   lightboxIsOpen: bool,
   currentImage: int,
   pendingImages: list(string),
-  loadingTimeout: ref(option(Js.Global.timeoutId))
+  loadingTimeout: ref(option(Js.Global.timeoutId)),
 };
 
 type action =
@@ -28,24 +28,47 @@ type action =
 let component = ReasonReact.reducerComponent("Gallery");
 
 let rec splitDescendants =
-        ((thumbedImageSlugs: list(string), images: list(image), galleries: list('a)), descendants) =>
-  switch descendants {
-  | [] => (List.rev(thumbedImageSlugs), List.rev(images), List.rev(galleries))
+        (
+          (
+            thumbedImageSlugs: list(string),
+            images: list(image),
+            galleries: list('a),
+          ),
+          descendants,
+        ) =>
+  switch (descendants) {
+  | [] => (
+      List.rev(thumbedImageSlugs),
+      List.rev(images),
+      List.rev(galleries),
+    )
   | [descendant, ...rest] =>
-    switch descendant##__typename {
+    switch (descendant##__typename) {
     | "Image" =>
-      switch (Js.Nullable.to_opt(descendant##thumbnail)) {
+      switch (Js.Nullable.toOption(descendant##thumbnail)) {
       | Some(_) =>
         splitDescendants(
-          ([descendant##slug, ...thumbedImageSlugs], [descendant, ...images], galleries),
-          rest
+          (
+            [descendant##slug, ...thumbedImageSlugs],
+            [descendant, ...images],
+            galleries,
+          ),
+          rest,
         )
-      | None => splitDescendants((thumbedImageSlugs, [descendant, ...images], galleries), rest)
+      | None =>
+        splitDescendants(
+          (thumbedImageSlugs, [descendant, ...images], galleries),
+          rest,
+        )
       }
-    | "Gallery" => splitDescendants((thumbedImageSlugs, images, [descendant, ...galleries]), rest)
+    | "Gallery" =>
+      splitDescendants(
+        (thumbedImageSlugs, images, [descendant, ...galleries]),
+        rest,
+      )
     | type_ =>
       Js.log("Unknown Type: " ++ type_);
-      splitDescendants((thumbedImageSlugs, images, galleries), rest)
+      splitDescendants((thumbedImageSlugs, images, galleries), rest);
     }
   };
 
@@ -57,50 +80,72 @@ let make =
       ~descendants=[||],
       ~loadNextPage: Js.Array.t(string) => unit,
       ~submitRating,
-      _children
+      _children,
     ) => {
   ...component,
   initialState: () => {
     lightboxIsOpen: false,
     currentImage: 0,
     pendingImages: [],
-    loadingTimeout: ref(None)
+    loadingTimeout: ref(None),
   },
   reducer: (action, state) =>
-    switch action {
+    switch (action) {
     | OpenLightbox(index) =>
-      ReasonReact.Update({...state, lightboxIsOpen: true, currentImage: index})
-    | CloseLightbox => ReasonReact.Update({...state, lightboxIsOpen: false, currentImage: 0})
+      ReasonReact.Update({
+        ...state,
+        lightboxIsOpen: true,
+        currentImage: index,
+      })
+    | CloseLightbox =>
+      ReasonReact.Update({...state, lightboxIsOpen: false, currentImage: 0})
     | AddImage(slug) =>
-      let new_state = {...state, pendingImages: [slug, ...state.pendingImages]};
+      let new_state = {
+        ...state,
+        pendingImages: [slug, ...state.pendingImages],
+      };
       ReasonReact.UpdateWithSideEffects(
         new_state,
         (
-          (self) =>
-            switch state.loadingTimeout^ {
+          self =>
+            switch (state.loadingTimeout^) {
             | Some(_) => ()
             | None =>
               state.loadingTimeout :=
-                Some(Js.Global.setTimeout(self.reduce((_) => LoadImages), 200));
-              ()
+                Some(
+                  Js.Global.setTimeout(self.reduce((_) => LoadImages), 200),
+                );
+              ();
             }
-        )
-      )
+        ),
+      );
     | LoadImages =>
       let chunks = Utils.chunkList(20, state.pendingImages);
-      let newState = {...state, pendingImages: [], loadingTimeout: ref(None)};
+      let newState = {
+        ...state,
+        pendingImages: [],
+        loadingTimeout: ref(None),
+      };
       ReasonReact.UpdateWithSideEffects(
         newState,
-        ((_self) => List.iter((chunk) => loadNextPage(Array.of_list(chunk)), chunks))
-      )
+        (
+          _self =>
+            List.iter(chunk => loadNextPage(Array.of_list(chunk)), chunks)
+        ),
+      );
     },
-  render: (self) => {
+  render: self => {
     let (thumbedImageSlugs, images, galleries) =
       descendants |> Array.to_list |> splitDescendants(([], [], []));
     let renderedGalleries =
       List.map(
-        (item) => <WaypointGalleryThumb key=item##id name=item##name slug=item##slug />,
-        galleries
+        item =>
+          <WaypointGalleryThumb
+            key=item##id
+            name=item##name
+            slug=item##slug
+          />,
+        galleries,
       );
     let renderedImages =
       List.mapi(
@@ -110,20 +155,26 @@ let make =
             slug=image##slug
             onEnter=(
               () =>
-                switch (List.exists((imageSlug) => image##slug == imageSlug, thumbedImageSlugs)) {
-                | false => self.reduce((_event) => AddImage(image##slug), ())
+                switch (
+                  List.exists(
+                    imageSlug => image##slug == imageSlug,
+                    thumbedImageSlugs,
+                  )
+                ) {
+                | false => self.reduce(_event => AddImage(image##slug), ())
                 | _ => ()
                 }
             )
-            handleOpen=(self.reduce((_event) => OpenLightbox(index)))
-            thumbnail=(Js.Nullable.to_opt(image##thumbnail))
+            handleOpen=(self.reduce(_event => OpenLightbox(index)))
+            thumbnail=(Js.Nullable.toOption(image##thumbnail))
             name=image##name
-            rating=(Js.Nullable.to_opt(image##rating))
+            rating=(Js.Nullable.toOption(image##rating))
             submitRating
           />,
-        images
+        images,
       );
-    let renderedDescendants = List.concat([renderedGalleries, renderedImages]);
+    let renderedDescendants =
+      List.concat([renderedGalleries, renderedImages]);
     let swipeImages =
       List.map(
         (image: image) => {
@@ -131,9 +182,9 @@ let make =
           "msrc": image##small_url,
           "w": image##width,
           "h": image##height,
-          "title": image##name
+          "title": image##name,
         },
-        images
+        images,
       );
     let swipeOptions = {"index": self.state.currentImage};
     <div className="gallery">
@@ -142,9 +193,9 @@ let make =
       <PhotoSwipe
         isOpen=self.state.lightboxIsOpen
         items=(Array.of_list(swipeImages))
-        onClose=(self.reduce((_event) => CloseLightbox))
+        onClose=(self.reduce(_event => CloseLightbox))
         options=swipeOptions
       />
-    </div>
-  }
+    </div>;
+  },
 };

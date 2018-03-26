@@ -1,12 +1,12 @@
-open Glamor;
+open Css;
 
 let component = ReasonReact.statelessComponent("CircleLoader");
 
-let cls = css([margin("0 auto"), display("block")]);
+let cls = style([margin2(~v=zero, ~h=auto), display(block)]);
 
-let make = (_children) => {
+let make = _children => {
   ...component,
-  render: (_self) =>
+  render: _self =>
     <svg
       width="300px"
       height="225px"
@@ -60,7 +60,7 @@ let make = (_children) => {
           />
         </circle>
       </g>
-    </svg>
+    </svg>,
 };
 
 let default = ReasonReact.wrapReasonForJs(~component, (_) => make([||]));

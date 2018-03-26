@@ -1,26 +1,32 @@
-open Glamor;
+open Css;
 
-[@bs.val] external assign3 : (Js.t({..}), Js.t({..}), Js.t({..})) => Js.t({..}) = "Object.assign";
+[@bs.val]
+external assign3 : (Js.t({..}), Js.t({..}), Js.t({..})) => Js.t({..}) =
+  "Object.assign";
 
-type descendants = {. "name": string, "id": string};
+type descendants = {
+  .
+  "name": string,
+  "id": string,
+};
 
 type gallery = {
   .
   "name": string,
   "path": Js.Array.t(string),
   "slug": string,
-  "descendants": Js.Array.t(descendants)
+  "descendants": Js.Array.t(descendants),
 };
 
 let component = ReasonReact.statelessComponent("GalleryContainer");
 
 let cls =
-  css([
-    padding("56px 8px 8px 8px"),
-    position("absolute"),
-    width("100%"),
-    height("100%"),
-    boxSizing("border-box")
+  style([
+    padding4(~top=px(56), ~right=px(8), ~bottom=px(8), ~left=px(8)),
+    position(absolute),
+    width(`percent(100.0)),
+    height(`percent(100.0)),
+    boxSizing(borderBox),
   ]);
 
 let make =
@@ -31,31 +37,32 @@ let make =
       ~moreGallery: gallery,
       ~loadNextPage: Js.Array.t(string) => unit,
       ~submitRating,
-      _children
+      _children,
     ) => {
   ...component,
-  render: (_self) =>
+  render: _self =>
     switch (loading, moreLoading) {
     | (false, false) =>
       let newDescendants =
         Js.Array.map(
-          (descendant) => {
+          descendant => {
             let foundIndex =
               Js.Array.findIndex(
-                (moreDescendant) => moreDescendant##id == descendant##id,
-                moreGallery##descendants
+                moreDescendant => moreDescendant##id == descendant##id,
+                moreGallery##descendants,
               );
-            switch foundIndex {
+            switch (foundIndex) {
             | index when index >= 0 =>
               let descendants = moreGallery##descendants;
               let foundDescendant = descendants[index];
-              assign3(Js.Obj.empty(), descendant, foundDescendant)
+              assign3(Js.Obj.empty(), descendant, foundDescendant);
             | _ => descendant
-            }
+            };
           },
-          gallery##descendants
+          gallery##descendants,
         );
-      let newGallery = assign3(Js.Obj.empty(), gallery, {"descendants": newDescendants});
+      let newGallery =
+        assign3(Js.Obj.empty(), gallery, {"descendants": newDescendants});
       <div className=cls>
         <Gallery
           loadNextPage
@@ -65,22 +72,20 @@ let make =
           slug=newGallery##slug
           descendants=newGallery##descendants
         />
-      </div>
+      </div>;
     | _ => <div className=cls> <FullPageSpinner /> </div>
-    }
+    },
 };
 
 let default =
-  ReasonReact.wrapReasonForJs(
-    ~component,
-    (jsProps) =>
-      make(
-        ~loading=Js.to_bool(jsProps##queryData##loading),
-        ~gallery=jsProps##queryData##gallery,
-        ~moreLoading=Js.to_bool(jsProps##moreLoading),
-        ~moreGallery=jsProps##moreGallery,
-        ~submitRating=jsProps##submitRating,
-        ~loadNextPage=jsProps##loadNextPage,
-        [||]
-      )
+  ReasonReact.wrapReasonForJs(~component, jsProps =>
+    make(
+      ~loading=Js.to_bool(jsProps##queryData##loading),
+      ~gallery=jsProps##queryData##gallery,
+      ~moreLoading=Js.to_bool(jsProps##moreLoading),
+      ~moreGallery=jsProps##moreGallery,
+      ~submitRating=jsProps##submitRating,
+      ~loadNextPage=jsProps##loadNextPage,
+      [||],
+    )
   );

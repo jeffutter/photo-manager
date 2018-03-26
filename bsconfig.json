@@ -4,6 +4,7 @@
     "src"
   ],
   "bs-dependencies": [
+    "bs-css",
     "reason-react",
     "bs-jest"
   ],
