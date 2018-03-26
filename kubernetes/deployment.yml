@@ -10,9 +10,18 @@ spec:
         app: photo-manager
         postgres-postgresql-client: "true"
     spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: beta.kubernetes.io/instance-type
+                operator: NotIn
+                values:
+                - f1-micro
       containers:
         - name: photo-manager
-          image: jeffutter/photo-manager@sha256:bd83b22bb0e7ae64dc7d41d818f3830ed19b925865b3997729c56be9530d6c11
+          image: jeffutter/photo-manager@sha256:99bfcb6676ca3061dd822ad7d82c3185062d4dca8626c199dab1db399f52e9b1
           args: ["foreground"]
           resources:
             requests:
