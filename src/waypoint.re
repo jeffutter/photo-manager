@@ -7,15 +7,15 @@ let make =
       ~bottomOffset: string,
       ~topOffset: string,
       ~fireOnRapidScroll: bool,
-      children
+      children,
     ) =>
   ReasonReact.wrapJsForReason(
     ~reactClass=waypoint,
     ~props={
-      "onEnter": Js.Nullable.from_opt(onEnter),
+      "onEnter": Js.Nullable.fromOption(onEnter),
       "bottomOffset": bottomOffset,
       "topOffset": topOffset,
-      "fireOnRapidScroll": Js.Boolean.to_js_boolean(fireOnRapidScroll)
+      "fireOnRapidScroll": Js.Boolean.to_js_boolean(fireOnRapidScroll),
     },
-    children
+    children,
   );

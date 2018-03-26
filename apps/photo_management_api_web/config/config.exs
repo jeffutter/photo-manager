@@ -28,15 +28,18 @@ config :photo_management_api_web, :generators, context_app: :photo_management_ap
 config :ueberauth, Ueberauth,
   base_path: "/__auth",
   providers: [
-    facebook: {Ueberauth.Strategy.Facebook, []}
+    facebook: {Ueberauth.Strategy.Facebook, []},
+    google: {Ueberauth.Strategy.Google, []}
   ]
 
 config :ueberauth, Ueberauth.Strategy.Facebook.OAuth,
   client_id: {:system, "FACEBOOK_CLIENT_ID"},
   client_secret: {:system, "FACEBOOK_CLIENT_SECRET"}
 
-# optional
-# optional
+config :ueberauth, Ueberauth.Strategy.Google.OAuth,
+  client_id: {:system, "GOOGLE_CLIENT_ID"},
+  client_secret: {:system, "GOOGLE_CLIENT_SECRET"}
+
 # optional
 config :guardian, Guardian,
   allowed_algos: ["HS512"],

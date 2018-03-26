@@ -13,6 +13,14 @@ defmodule PhotoManagementApi.Web.Application do
       }
     ])
 
+    Application.put_env(:ueberauth, Ueberauth.Strategy.Google.OAuth, [
+      {:client_id, Config.get_sub_key(:ueberauth, Ueberauth.Strategy.Google.OAuth, :client_id)},
+      {
+        :client_secret,
+        Config.get_sub_key(:ueberauth, Ueberauth.Strategy.Google.OAuth, :client_secret)
+      }
+    ])
+
     PhotoManagementApi.Web.Endpoint.PipelineInstrumenter.setup()
     PhotoManagementApi.Web.PhoenixInstrumenter.setup()
     # Prometheus.Registry.register_collector(:prometheus_process_collector)

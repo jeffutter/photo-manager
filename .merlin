@@ -1,6 +1,6 @@
 ####{BSB GENERATED: NO EDIT
-FLG -ppx '/usr/local/lib/node_modules/bs-platform/lib/reactjs_jsx_ppx_2.exe'
-FLG -ppx /usr/local/lib/node_modules/bs-platform/lib/bsppx.exe
+FLG -ppx '/Users/jutter/.nvm/versions/node/v8.8.1/lib/node_modules/bs-platform/lib/reactjs_jsx_ppx_2.exe'
+FLG -ppx /Users/jutter/.nvm/versions/node/v8.8.1/lib/node_modules/bs-platform/lib/bsppx.exe
 S /Users/jutter/src/photo-manager/node_modules/bs-platform/lib/ocaml
 B /Users/jutter/src/photo-manager/node_modules/bs-platform/lib/ocaml
 FLG -nostdlib -no-alias-deps -color always

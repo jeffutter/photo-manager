@@ -36,9 +36,15 @@ defmodule PhotoManagementApi.Web.AuthController do
       name: name_from_auth(auth),
       avatar: auth.info.image,
       email: auth.info.email,
-      provider: :facebook
+      provider: provider(auth.provider)
     }
   end
+
+  defp provider("facebook"), do: :facebook
+  defp provider(:facebook), do: :facebook
+
+  defp provider("google"), do: :google
+  defp provider(:google), do: :google
 
   defp name_from_auth(auth) do
     if auth.info.name do

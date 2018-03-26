@@ -104,6 +104,16 @@ spec:
                 secretKeyRef:
                   name: photo-manager
                   key: facebook_client_secret
+            - name: GOOGLE_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: photo-manager
+                  key: google_client_id
+            - name: GOOGLE_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: photo-manager
+                  key: google_client_secret
             - name: SENTRY_DSN
               valueFrom:
                 secretKeyRef:

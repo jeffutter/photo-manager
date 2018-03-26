@@ -8,7 +8,7 @@ defmodule PhotoManagementApi.User do
   import Ecto.Query, only: [from: 2]
   import EctoEnum, except: [cast: 3]
 
-  defenum(ProviderEnum, facebook: 0)
+  defenum(ProviderEnum, facebook: 0, google: 1)
 
   schema "users" do
     field(:email, :string)
