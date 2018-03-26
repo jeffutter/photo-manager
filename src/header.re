@@ -1,5 +1,13 @@
 open Css;
 
+let setLocationHref: string => unit = [%bs.raw
+  {|
+    function (val) {
+      window.location.href = val
+    }
+  |}
+];
+
 let headerCls =
   style([
     position(fixed),
@@ -146,7 +154,8 @@ let openNavMobileToggle = style([transform(rotate(deg(90)))]);
 type state = {_open: bool};
 
 type action =
-  | ToggleNav;
+  | ToggleNav
+  | LogOut;
 
 let component = ReasonReact.reducerComponent("Header");
 
@@ -156,6 +165,10 @@ let make = _children => {
   reducer: (action, state) =>
     switch (action) {
     | ToggleNav => ReasonReact.Update({_open: ! state._open})
+    | LogOut =>
+      Cookies.logOut();
+      setLocationHref("/");
+      ReasonReact.NoUpdate;
     },
   render: self => {
     let headerClasses = [|headerCls|];
@@ -195,9 +208,9 @@ let make = _children => {
           </li>
           <li>
             <ReactRouterDom.NavLink
-              activeClassName=activeCls
-              _to="/logout"
-              onClick=(self.reduce(_envent => ToggleNav))>
+              _to="/"
+              className=activeCls
+              onClick=(self.reduce(_event => LogOut))>
               (ReasonReact.stringToElement("Logout"))
             </ReactRouterDom.NavLink>
           </li>

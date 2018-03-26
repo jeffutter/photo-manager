@@ -51,7 +51,7 @@ let loginButtonCls = [
   display(block),
   selector(
     "> span",
-    [`declaration(("line-height", "28px")), verticalAlign(middle)],
+    [`declaration(("lineHeight", "28px")), verticalAlign(middle)],
   ),
   /* selector("&:before", loginButtonBefore),
      selector("&:focus", loginButtonFocus),

@@ -29,7 +29,7 @@ const cache = new InMemoryCache({
 });
 
 const httpLink = createHttpLink({
-  uri: "/graphiql"
+  uri: "https://gallery.sadclown.net/graphiql"
 });
 
 const middlewareLink = setContext(() => {

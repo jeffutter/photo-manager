@@ -12,17 +12,6 @@ let cls =
     height(`percent(100.0)),
   ]);
 
-module Logout = {
-  let component = ReasonReact.statelessComponent("Logout");
-  let make = _children => {
-    ...component,
-    render: _self => {
-      Cookies.logOut();
-      <ReactRouterDom.Redirect _to="/" />;
-    },
-  };
-};
-
 module GalleryRedirect = {
   let component = ReasonReact.statelessComponent("GalleryRedirect");
   let make = _children => {
@@ -33,7 +22,6 @@ module GalleryRedirect = {
 
 let routerBody = () => {
   let createLoginForm = (_) => <LoginForm />;
-  let createLogout = (_) => <Logout />;
   let createGalleryRedirect = (_) => <GalleryRedirect />;
   let createGallery = jsProps =>
     <GalleryRoute
@@ -47,12 +35,6 @@ let routerBody = () => {
       exact=true
       path="/login"
       component=createLoginForm
-    />,
-    <ReactRouterDom.Route
-      key="2"
-      exact=true
-      path="/logout"
-      component=createLogout
     />,
   |];
   if (Cookies.loggedIn()) {
