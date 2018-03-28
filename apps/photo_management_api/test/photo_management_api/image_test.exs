@@ -28,19 +28,19 @@ defmodule PhotoManagementApi.ImageTest do
     {:ok, user1} =
       %User{}
       |> User.registration_changeset(%{
-           email: "fake1@email.com",
-           name: "Name1",
-           password: "Password1"
-         })
+        email: "fake1@email.com",
+        name: "Name1",
+        password: "Password1"
+      })
       |> Repo.insert()
 
     {:ok, user2} =
       %User{}
       |> User.registration_changeset(%{
-           email: "fake2@email.com",
-           name: "Name2",
-           password: "Password2"
-         })
+        email: "fake2@email.com",
+        name: "Name2",
+        password: "Password2"
+      })
       |> Repo.insert()
 
     Rating.rate_image(image.slug, 3, user1.id)

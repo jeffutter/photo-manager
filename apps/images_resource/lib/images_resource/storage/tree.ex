@@ -175,8 +175,8 @@ defmodule ImagesResource.Storage.Tree do
     |> Enum.sort()
     |> Enum.map(&Path.split/1)
     |> Enum.reduce(tree, fn path, tree ->
-         make_directories(path, [], tree)
-       end)
+      make_directories(path, [], tree)
+    end)
   end
 
   defp make_directories([], _, tree), do: tree

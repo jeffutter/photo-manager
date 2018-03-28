@@ -49,7 +49,12 @@ defmodule ImagesResource.Upload.Primary do
   def transform(status = %__MODULE__{error: false, original_path: original_path}) do
     messages = Enum.map(@versions, fn version -> {version, {original_path, version}} end)
 
-    case Queue.add_sync_batch(TransformQueue, messages, instance_timeout: 60_000, batch_timeout: 120_000) do
+    case Queue.add_sync_batch(
+           TransformQueue,
+           messages,
+           instance_timeout: 60_000,
+           batch_timeout: 120_000
+         ) do
       {:ok, results} ->
         paths = for {_, {:ok, path}} <- results, do: path
         %__MODULE__{status | tempfiles: paths, versions: results}
@@ -68,7 +73,12 @@ defmodule ImagesResource.Upload.Primary do
         {version, {thumb_path, version, file}}
       end)
 
-    case Queue.add_sync_batch(UploadQueue, messages, instance_timeout: 60_000, batch_timeout: 120_000) do
+    case Queue.add_sync_batch(
+           UploadQueue,
+           messages,
+           instance_timeout: 60_000,
+           batch_timeout: 120_000
+         ) do
       {:ok, results} ->
         %__MODULE__{status | versions: results}
 
@@ -82,9 +92,9 @@ defmodule ImagesResource.Upload.Primary do
   def cleanup(status = %__MODULE__{original_path: original_path, tempfiles: tempfiles}) do
     [original_path | tempfiles]
     |> Enum.each(fn path ->
-         # TODO: Convert to queue, catch errors from File.rm
-         File.rm(path)
-       end)
+      # TODO: Convert to queue, catch errors from File.rm
+      File.rm(path)
+    end)
 
     status
   end

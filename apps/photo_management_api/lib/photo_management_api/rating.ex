@@ -22,10 +22,10 @@ defmodule PhotoManagementApi.Rating do
   def changeset(struct, params \\ %{}) do
     struct
     |> cast(params, [
-         :rating,
-         :slug,
-         :user_id
-       ])
+      :rating,
+      :slug,
+      :user_id
+    ])
     |> validate_required([:rating, :slug, :user_id])
     |> validate_changeset
   end

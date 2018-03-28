@@ -21,6 +21,22 @@ defmodule PhotoManagementApi.Web.Application do
       }
     ])
 
+    guardian_env = Application.get_env(:photo_management_api_web, PhotoManagementApi.Web.Guardian)
+
+    Application.put_env(
+      :photo_management_api_web,
+      PhotoManagementApi.Web.Guardian,
+      Keyword.put(
+        guardian_env,
+        :secret_key,
+        Config.get_sub_key(
+          :photo_management_api_web,
+          PhotoManagementApi.Web.Guardian,
+          :secret_key
+        )
+      )
+    )
+
     PhotoManagementApi.Web.Endpoint.PipelineInstrumenter.setup()
     PhotoManagementApi.Web.PhoenixInstrumenter.setup()
     # Prometheus.Registry.register_collector(:prometheus_process_collector)

@@ -2,11 +2,12 @@ defmodule PhotoManagementApi.Web.SessionController do
   use PhotoManagementApi.Web, :controller
 
   alias PhotoManagementApi.User
+  alias PhotoManagementApi.Web.Guardian
 
   def sign_in(conn, %{"session" => %{"email" => email, "password" => password}}) do
     case User.find_and_confirm_password(email, password) do
       {:ok, user} ->
-        {:ok, jwt, _full_claims} = Guardian.encode_and_sign(user, :api)
+        {:ok, jwt, _full_claims} = Guardian.encode_and_sign(user, %{}, token_type: :api)
 
         conn
         |> render("sign_in.json", user: user, jwt: jwt)

@@ -46,7 +46,7 @@ defmodule PhotoManagementApi.Web.Mixfile do
       {:photo_management_api, in_umbrella: true},
       {:images_resource, in_umbrella: true},
       {:config, in_umbrella: true},
-      {:guardian, "~> 0.14"},
+      {:guardian, "~> 1.0.1"},
       {:absinthe, "~> 1.4.10"},
       {:absinthe_plug, "~> 1.4.2"},
       {:cowboy, "~> 1.0"},

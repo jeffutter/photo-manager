@@ -74,10 +74,10 @@ defmodule PhotoManagementApi.User do
     |> unique_constraint(:email)
     |> validate_length(:password, min: 8)
     |> validate_format(
-         :password,
-         ~r/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).*/,
-         message: "Must include at least one lowercase letter, one uppercase letter, and one digit"
-       )
+      :password,
+      ~r/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).*/,
+      message: "Must include at least one lowercase letter, one uppercase letter, and one digit"
+    )
     |> generate_password_hash
   end
 

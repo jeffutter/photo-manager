@@ -57,8 +57,8 @@ defmodule PhotoManagementApi.Web.Schema.Types do
             matching_children =
               children
               |> Enum.filter(fn child ->
-                   Enum.member?(slugs, child.slug)
-                 end)
+                Enum.member?(slugs, child.slug)
+              end)
 
             {:ok, matching_children}
 
@@ -109,9 +109,9 @@ defmodule PhotoManagementApi.Web.Schema.Types do
     |> Enum.map(fn file -> Map.get(file, :slug) end)
     |> DBImage.get_all_by_slugs(user_id)
     |> Enum.map(fn image ->
-         file = Enum.find(files, fn f -> f.slug == image.slug end)
-         {file, image}
-       end)
+      file = Enum.find(files, fn f -> f.slug == image.slug end)
+      {file, image}
+    end)
     |> Enum.into(%{})
   end
 end

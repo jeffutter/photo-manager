@@ -40,16 +40,14 @@ config :ueberauth, Ueberauth.Strategy.Google.OAuth,
   client_id: {:system, "GOOGLE_CLIENT_ID"},
   client_secret: {:system, "GOOGLE_CLIENT_SECRET"}
 
-# optional
-config :guardian, Guardian,
+config :photo_management_api_web, PhotoManagementApi.Web.Guardian,
   allowed_algos: ["HS512"],
   verify_module: Guardian.JWT,
   issuer: "PhotoManagement",
   ttl: {30, :days},
   allowed_drift: 2000,
   verify_issuer: true,
-  secret_key: {:system, "GUARDIAN_SECRET_KEY"},
-  serializer: PhotoManagementApi.Web.GuardianSerializer
+  secret_key: {:system, "GUARDIAN_SECRET_KEY"}
 
 config :wobserver,
   mode: :plug,

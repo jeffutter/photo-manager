@@ -7,6 +7,7 @@ defmodule PhotoManagementApi.Web.AuthController do
 
   alias Ueberauth.Auth
   alias PhotoManagementApi.User
+  alias PhotoManagementApi.Web.Guardian
 
   def callback(conn = %Plug.Conn{assigns: %{ueberauth_failure: fails}}, _params) do
     Logger.error("Uberauth Failed: #{inspect(fails)}")
@@ -15,7 +16,7 @@ defmodule PhotoManagementApi.Web.AuthController do
 
   def callback(conn = %Plug.Conn{assigns: %{ueberauth_auth: auth}}, _params) do
     {:ok, user = %User{}} = find_or_create(auth)
-    {:ok, jwt, full_claims} = Guardian.encode_and_sign(user, :api)
+    {:ok, jwt, full_claims} = Guardian.encode_and_sign(user, %{}, token_type: :api)
 
     max_age = full_claims["exp"] - full_claims["iat"]
 

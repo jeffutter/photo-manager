@@ -4,9 +4,7 @@ defmodule PhotoManagementApi.Web.Router do
   use Sentry.Plug
 
   pipeline :graphql do
-    plug(Guardian.Plug.VerifyHeader, realm: "Bearer")
-    plug(Guardian.Plug.LoadResource)
-    # plug Guardian.Plug.EnsureAuthenticated
+    plug(PhotoManagementApi.Web.Guardian.AuthPipeline)
     plug(PhotoManagementApi.Web.Context)
   end
 

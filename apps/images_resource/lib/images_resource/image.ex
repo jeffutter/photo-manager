@@ -47,9 +47,9 @@ defmodule ImagesResource.Image do
     |> Path.extname()
     |> String.slice(1..-1)
     |> case do
-         "jpg" -> "jpeg"
-         t -> t
-       end
+      "jpg" -> "jpeg"
+      t -> t
+    end
   end
 
   def base_64(file = %File{}, version) do
@@ -75,16 +75,16 @@ defmodule ImagesResource.Image do
       |> url(version)
       |> Fastimage.size()
       |> case do
-           :unknown_type ->
-             Logger.error(
-               "Fast Image Failed: Unable to read file #{url(file, version)}. Error: unknown_type"
-             )
+        :unknown_type ->
+          Logger.error(
+            "Fast Image Failed: Unable to read file #{url(file, version)}. Error: unknown_type"
+          )
 
-             {:error, "Unable to read file #{url(file, version)}. Error: unknown_type"}
+          {:error, "Unable to read file #{url(file, version)}. Error: unknown_type"}
 
-           size ->
-             {:ok, size}
-         end
+        size ->
+          {:ok, size}
+      end
     rescue
       e ->
         Logger.error(

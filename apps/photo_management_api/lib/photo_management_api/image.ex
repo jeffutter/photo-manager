@@ -27,16 +27,16 @@ defmodule PhotoManagementApi.Image do
   def changeset(struct, params \\ %{}) do
     struct
     |> cast(params, [
-         :name,
-         :path,
-         :slug,
-         :size,
-         :last_modified,
-         :width,
-         :height,
-         :base64,
-         :version
-       ])
+      :name,
+      :path,
+      :slug,
+      :size,
+      :last_modified,
+      :width,
+      :height,
+      :base64,
+      :version
+    ])
     |> validate_required([:name, :path, :slug, :size, :last_modified, :width, :height, :version])
     |> validate_changeset
   end
