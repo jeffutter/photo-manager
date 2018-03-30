@@ -39,7 +39,8 @@ defmodule PhotoManagementApi.Mixfile do
       {:prometheus_ecto, "~> 1.0.1"},
       {:ecto_enum, github: "gjaldon/ecto_enum"},
       {:ecto, "~> 2.1"},
-      {:sentry, github: "getsentry/sentry-elixir"}
+      {:sentry, github: "getsentry/sentry-elixir"},
+      {:entropy_string, "~> 1.2.0"}
     ]
   end
 

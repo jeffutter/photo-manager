@@ -20,5 +20,11 @@ defmodule PhotoManagementApi.Web.Schema do
 
       resolve(&Resolver.Image.rate_image/2)
     end
+
+    field :protected_link, type: :protected_link_token do
+      arg(:slug, non_null(:string))
+
+      resolve(&Resolver.ProtectedLink.get_protected_link/2)
+    end
   end
 end

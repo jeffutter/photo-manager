@@ -36,6 +36,10 @@ defmodule PhotoManagementApi.Web.Schema.Types do
     field(:large_url, :string, resolve: &Resolver.Image.large_url/3)
   end
 
+  object :protected_link_token do
+    field(:token, :string)
+  end
+
   object :gallery do
     field(:id, :string, resolve: fn %{slug: slug}, _, _ -> {:ok, slug} end)
     field(:name, :string)
