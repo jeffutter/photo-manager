@@ -21,7 +21,7 @@ spec:
                 - f1-micro
       containers:
         - name: photo-manager
-          image: jeffutter/photo-manager@sha256:99bfcb6676ca3061dd822ad7d82c3185062d4dca8626c199dab1db399f52e9b1
+          image: jeffutter/photo-manager@sha256:cf0a758cae1636364312b25c6400789142f8cee160ff67a36c2b380f74b8a60b
           args: ["foreground"]
           resources:
             requests:
