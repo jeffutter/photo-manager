@@ -35,10 +35,10 @@ defmodule ImagesResource.Application do
     import Supervisor.Spec, warn: false
 
     children = [
-      worker(Queue, [PrimaryQueue], id: PrimaryQueue),
-      worker(Queue, [DownloadQueue], id: DownloadQueue),
-      worker(Queue, [TransformQueue], id: TransformQueue),
-      worker(Queue, [UploadQueue], id: UploadQueue),
+      worker(Queue, [PrimaryQueue, [dedupe: true]], id: PrimaryQueue),
+      worker(Queue, [DownloadQueue, [dedupe: true]], id: DownloadQueue),
+      worker(Queue, [TransformQueue, [dedupe: true]], id: TransformQueue),
+      worker(Queue, [UploadQueue, [dedupe: true]], id: UploadQueue),
       worker(Processor, [PrimaryQueue, PrimaryWorker], id: PrimaryWorker),
       worker(Processor, [DownloadQueue, DownloadWorker], id: DownloadWorker),
       worker(
@@ -47,7 +47,7 @@ defmodule ImagesResource.Application do
         id: TransformWorker
       ),
       worker(Processor, [UploadQueue, UploadWorker], id: UploadWorker),
-      worker(Queue, [DatabaseQueue], id: DatabaseQueue),
+      worker(Queue, [DatabaseQueue, [dedupe: true]], id: DatabaseQueue),
       worker(Processor, [DatabaseQueue, DBWorker, [max_demand: 5]], id: DatabaseWorker),
       worker(Sync, [[source: ImageSource, dest: ImageDest, name: Sync1]], id: Sync1),
       worker(SyncDB, [[source: FullDest, dest: DBDest, name: Sync2]], id: Sync2),
