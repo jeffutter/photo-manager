@@ -29,7 +29,8 @@ const cache = new InMemoryCache({
 });
 
 const httpLink = createHttpLink({
-  uri: "https://gallery.sadclown.net/graphiql"
+  // uri: "https://gallery.sadclown.net/graphiql"
+  uri: "/graphiql"
 });
 
 const middlewareLink = setContext(() => {
@@ -45,7 +46,7 @@ const beforeLink = middlewareLink.concat(httpLink);
 
 const errorLink = onError(({ networkError, graphQLErrors }) => {
   if (networkError && networkError.statusCode === 401) {
-    logOut();
+    logOut(1);
   }
 });
 
