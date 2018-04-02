@@ -16,7 +16,7 @@ let cls =
       ~spread=px(0),
       rgba(68, 68, 68, 0.4),
     ),
-    transition("transform 0.3s ease-in-out"),
+    transition(~duration=300, ~timingFunction=`easeInOut, "transform"),
     cursor(`pointer),
     `declaration(("counterIncrement", "item-counter")),
     selector(
@@ -61,17 +61,11 @@ let detailsCls =
 
 let component = ReasonReact.statelessComponent("GalleryThumb");
 
-let make =
-    (
-      ~name: string,
-      ~slug: string,
-      ~innerRef: option(Js.Nullable.t(Dom.element) => unit)=?,
-      _children,
-    ) => {
+let make = (~name: string, ~slug: string, _children) => {
   ...component,
   render: _self => {
     let link = "/gallery/" ++ slug;
-    <ReactRouterDom.NavLink _to=link className=cls ?innerRef>
+    <NavLink _to=link className=cls>
       <svg
         viewBox="0 0 8 8"
         width="200px"
@@ -89,6 +83,6 @@ let make =
         />
       </svg>
       <div className=detailsCls> (ReasonReact.stringToElement(name)) </div>
-    </ReactRouterDom.NavLink>;
+    </NavLink>;
   },
 };

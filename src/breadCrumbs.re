@@ -32,9 +32,9 @@ let make = (~path: 'a, ~slug: string, ~name: string, _children) => {
     switch (slug) {
     | "root" =>
       <div className=cls>
-        <ReactRouterDom.NavLink activeClassName=activeCls _to="/gallery">
+        <NavLink className=activeCls _to="/gallery">
           (ReasonReact.stringToElement("Gallery"))
-        </ReactRouterDom.NavLink>
+        </NavLink>
       </div>
     | _ =>
       let splitSlug =
@@ -56,17 +56,17 @@ let make = (~path: 'a, ~slug: string, ~name: string, _children) => {
         Js.Array.mapi(
           ({name: n, path: p}, idx) =>
             <span key=(Js.Int.toString(idx))>
-              <ReactRouterDom.NavLink activeClassName=activeCls _to=p>
+              <NavLink className=activeCls _to=p>
                 (ReasonReact.stringToElement(n))
-              </ReactRouterDom.NavLink>
+              </NavLink>
               (ReasonReact.stringToElement(" / "))
             </span>,
           pathObjs,
         );
       let rootNavLink =
-        <ReactRouterDom.NavLink activeClassName=activeCls _to="/gallery">
+        <NavLink className=activeCls _to="/gallery">
           (ReasonReact.stringToElement("Gallery"))
-        </ReactRouterDom.NavLink>;
+        </NavLink>;
       ReasonReact.createDomElement(
         "div",
         ~props={"className": cls},

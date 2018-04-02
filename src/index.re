@@ -6,4 +6,6 @@
 
 ReactDOMRe.renderToElementWithId(<App />, "root");
 
+ReasonReact.Router.push("");
+
 register_service_worker();
