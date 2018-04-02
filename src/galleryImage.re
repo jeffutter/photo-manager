@@ -1,7 +1,5 @@
 open Css;
 
-let component = ReasonReact.statelessComponent("GalleryImage");
-
 let cls =
   style([
     width(px(300)),
@@ -66,6 +64,8 @@ let rec stars = (filled, total, index, handleClick, acc) =>
       ) :
       List.rev(acc);
 
+let component = ReasonReact.statelessComponent("GalleryImage");
+
 let make =
     (
       ~name: string,
@@ -95,7 +95,7 @@ let make =
           <img
             src=thumb
             className=(
-              style([`declaration(("object-fit", "cover")), display(block)])
+              style([`declaration(("objectFit", "cover")), display(block)])
             )
             width="300"
             height="225"

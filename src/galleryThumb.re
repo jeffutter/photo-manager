@@ -16,7 +16,7 @@ let cls =
       ~spread=px(0),
       rgba(68, 68, 68, 0.4),
     ),
-    transition("transform 0.3s ease-in-out"),
+    transition(~duration=300, ~timingFunction=`easeInOut, "transform"),
     cursor(`pointer),
     `declaration(("counterIncrement", "item-counter")),
     selector(
