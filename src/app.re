@@ -12,83 +12,80 @@ let cls =
     height(`percent(100.0)),
   ]);
 
-module GalleryRedirect = {
-  let component = ReasonReact.statelessComponent("GalleryRedirect");
-  let make = _children => {
+module Redirect = {
+  let component = ReasonReact.statelessComponent("Redirect");
+  let make = (~path, _children) => {
     ...component,
-    render: _self => <ReactRouterDom.Redirect _to="/gallery" />,
+    didMount: _self => {
+      ReasonReact.Router.push(path);
+      ReasonReact.NoUpdate;
+    },
+    render: _self => <div />,
   };
 };
 
-let routerBody = () => {
-  let createLoginForm = (_) => <LoginForm />;
-  let createGalleryRedirect = (_) => <GalleryRedirect />;
-  let createGallery = jsProps =>
-    <GalleryRoute
-      _match=jsProps##_match
-      location=jsProps##location
-      history=jsProps##history
-    />;
-  let routes = [|
-    <ReactRouterDom.Route
-      key="1"
-      exact=true
-      path="/login"
-      component=createLoginForm
-    />,
-  |];
-  if (Cookies.loggedIn()) {
-    ignore(Js.Array.push(<Header />, routes));
-    ignore(
-      Js.Array.push(
-        <ReactRouterDom.Route
-          path="/gallery/:slug?"
-          component=createGallery
-        />,
-        routes,
-      ),
-    );
-    ignore(
-      Js.Array.push(
-        <ReactRouterDom.Route
-          exact=true
-          path="/"
-          component=createGalleryRedirect
-        />,
-        routes,
-      ),
-    );
-  } else {
-    let redir = <ReactRouterDom.Redirect key="3" from="/" _to="/login" />;
-    ignore(Js.Array.push(redir, routes));
-    Dom.Storage.setItem(
-      "loginFlash",
-      "Your login has expired or is invalid.",
-      Dom.Storage.localStorage,
-    );
-  };
-  routes;
-};
+type route =
+  | Redirect(string)
+  | LoginForm
+  | Gallery(list(string));
 
-let component = ReasonReact.statelessComponent("App");
+type state = {route};
+
+type action =
+  | ChangeRoute(route);
+
+let reducer = (action, _state) =>
+  switch (action) {
+  | ChangeRoute(route) => ReasonReact.Update({route: route})
+  };
+
+let component = ReasonReact.reducerComponent("App");
+
+let mapUrlToRoute = (url: ReasonReact.Router.url) => {
+  Js.log(url.path);
+  switch (url.path, Cookies.loggedIn()) {
+  | (_, false) => LoginForm
+  | (["gallery"], true) => Gallery([""])
+  | (["gallery", ...rest], true) => Gallery(rest)
+  | ([], true) => Redirect("/gallery")
+  | _ => LoginForm
+  };
+};
 
 let make = _children => {
   ...component,
-  render: _self =>
-    ReasonReact.element(
-      ApolloProvider.make(
-        ~client,
-        [|
-          ReasonReact.element(
-            ReactRouterDom.BrowserRouter.make([|
-              ReasonReact.createDomElement(
-                "div",
-                ~props={"id": "app", "className": cls},
-                routerBody(),
-              ),
-            |]),
-          ),
-        |],
-      ),
+  reducer,
+  subscriptions: self => [
+    Sub(
+      () =>
+        ReasonReact.Router.watchUrl(url =>
+          self.send(ChangeRoute(url |> mapUrlToRoute))
+        ),
+      ReasonReact.Router.unwatchUrl,
     ),
+  ],
+  initialState: () => {route: LoginForm},
+  render: self =>
+    <div id="app" className=cls>
+      <ApolloProvider client>
+        (
+          switch (self.state.route) {
+          | Redirect(path) => <Redirect path />
+          | LoginForm => <LoginForm />
+          | Gallery(slugs) =>
+            <div>
+              <Header />
+              <GalleryRoute
+                _match={
+                  "params": {
+                    "slug": Js.Array.joinWith("/", Array.of_list(slugs)),
+                  },
+                }
+              />
+              <div> (ReasonReact.stringToElement("Gallery")) </div>
+            </div>
+          }
+        )
+      </ApolloProvider>
+    </div>,
 };

@@ -191,28 +191,28 @@ let make = _children => {
       <nav className=navCls>
         <ul>
           <li>
-            <ReactRouterDom.NavLink
-              activeClassName=activeCls
+            <NavLink
+              className=activeCls
               _to="/"
               onClick=(self.reduce(_event => ToggleNav))>
               (ReasonReact.stringToElement("Home"))
-            </ReactRouterDom.NavLink>
+            </NavLink>
           </li>
           <li>
-            <ReactRouterDom.NavLink
-              activeClassName=activeCls
+            <NavLink
+              className=activeCls
               _to="/gallery"
               onClick=(self.reduce(_event => ToggleNav))>
               (ReasonReact.stringToElement("Gallery"))
-            </ReactRouterDom.NavLink>
+            </NavLink>
           </li>
           <li>
-            <ReactRouterDom.NavLink
+            <NavLink
               _to="/"
               className=activeCls
               onClick=(self.reduce(_event => LogOut))>
               (ReasonReact.stringToElement("Logout"))
-            </ReactRouterDom.NavLink>
+            </NavLink>
           </li>
         </ul>
       </nav>
