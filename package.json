@@ -47,7 +47,7 @@
   },
   "devDependencies": {
     "bs-css": "^6.5.0",
-    "bs-jest": "^0.3.0",
+    "@glennsl/bs-jest": "^0.4.2",
     "reason-react": "^0.3.0"
   }
 }
