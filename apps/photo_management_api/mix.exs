@@ -33,6 +33,7 @@ defmodule PhotoManagementApi.Mixfile do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
+      {:canada, "~> 1.0.1"},
       {:comeonin, "~> 4.0"},
       {:bcrypt_elixir, "~> 1.0"},
       {:postgrex, "~> 0.13"},
