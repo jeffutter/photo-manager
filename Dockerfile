@@ -11,6 +11,7 @@ RUN yarn install
 
 ADD bsconfig.json /src/bsconfig.json
 ADD src/ /src/src
+ADD __tests__/ /src/__tests__
 ADD public/ /src/public
 
 RUN mkdir -p apps/photo_management_api_web/priv/static/
