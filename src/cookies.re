@@ -50,7 +50,7 @@ let loggedIn = () : bool => {
   };
 };
 
-let logOut = (setWarning: bool) : unit => {
+let logOut = (~setWarning: bool=false, ()) : unit => {
   if (setWarning) {
     Dom.Storage.setItem(
       "loginFlash",
