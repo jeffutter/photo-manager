@@ -6,8 +6,22 @@ defmodule PhotoManagementApi.Web.AuthController do
   plug(Ueberauth)
 
   alias Ueberauth.Auth
-  alias PhotoManagementApi.User
+  alias PhotoManagementApi.{User, ProtectedLinkToken}
   alias PhotoManagementApi.Web.Guardian
+
+  def token_exchange(conn, %{"token" => token}) do
+    {:ok, protected_link} =
+      token
+      |> find_protected_link()
+
+    {:ok, jwt, full_claims} = Guardian.encode_and_sign(protected_link, %{}, token_type: :api)
+
+    max_age = full_claims["exp"] - full_claims["iat"]
+
+    conn
+    |> put_resp_cookie("access_token", jwt, max_age: max_age, http_only: false)
+    |> redirect(to: "/")
+  end
 
   def callback(conn = %Plug.Conn{assigns: %{ueberauth_failure: fails}}, _params) do
     Logger.error("Uberauth Failed: #{inspect(fails)}")
@@ -23,6 +37,10 @@ defmodule PhotoManagementApi.Web.AuthController do
     conn
     |> put_resp_cookie("access_token", jwt, max_age: max_age, http_only: false)
     |> redirect(to: "/")
+  end
+
+  def find_protected_link(token) do
+    ProtectedLinkToken.find(%ProtectedLinkToken{token: token})
   end
 
   def find_or_create(auth = %Auth{}) do

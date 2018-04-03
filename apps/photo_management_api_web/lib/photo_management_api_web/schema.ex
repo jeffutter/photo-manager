@@ -22,7 +22,7 @@ defmodule PhotoManagementApi.Web.Schema do
     end
 
     field :protected_link, type: :protected_link_token do
-      arg(:slug, non_null(:string))
+      arg(:slugs, list_of(non_null(:string)))
 
       resolve(&Resolver.ProtectedLink.get_protected_link/2)
     end

@@ -23,14 +23,10 @@ defmodule PhotoManagementApi.Web.Router do
     get("/", ConfigController, :get)
   end
 
-  scope "/auth", PhotoManagementApi.Web do
-    get("/:provider", AuthController, :request)
-    get("/:provider/callback", AuthController, :callback)
-  end
-
   scope "/__auth", PhotoManagementApi.Web do
     get("/:provider", AuthController, :request)
     get("/:provider/callback", AuthController, :callback)
+    post("/token", AuthController, :token_exchange)
   end
 
   scope "/" do

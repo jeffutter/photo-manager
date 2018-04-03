@@ -14,6 +14,19 @@ defmodule PhotoManagementApi.ProtectedLinkToken do
     belongs_to(:user, User)
   end
 
+  def find(%__MODULE__{token: token}) do
+    query =
+      from(
+        t in __MODULE__,
+        where: t.token == ^token
+      )
+
+    case Repo.one(query) do
+      protected_link_token = %__MODULE__{} -> {:ok, protected_link_token}
+      _ -> {:error, :notfound}
+    end
+  end
+
   def create(%User{id: user_id}, slugs) do
     token = EntropyString.token()
 

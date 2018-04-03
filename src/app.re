@@ -43,11 +43,15 @@ let component = ReasonReact.reducerComponent("App");
 
 let mapUrlToRoute = (url: ReasonReact.Router.url) => {
   Js.log(url.path);
-  switch (url.path, Cookies.loggedIn()) {
-  | (_, false) => LoginForm
-  | (["gallery"], true) => Gallery([""])
-  | (["gallery", ...rest], true) => Gallery(rest)
-  | ([], true) => Redirect("/gallery")
+  let parsedSearch = QueryString.parse(url.search);
+  let tokenQuery = QueryString.getSingle(parsedSearch, "token");
+  Js.log(tokenQuery);
+  switch (url.path, Cookies.loggedIn(), tokenQuery) {
+  | (_, false, Some(_)) => LoginForm
+  | (_, false, None) => LoginForm
+  | (["gallery"], true, _) => Gallery([""])
+  | (["gallery", ...rest], true, _) => Gallery(rest)
+  | ([], true, _) => Redirect("/gallery")
   | _ => LoginForm
   };
 };
