@@ -8,6 +8,7 @@ defmodule PhotoManagementApi.Web.Context do
   import Plug.Conn
 
   alias Guardian.Plug
+  alias PhotoManagementApi.{ProtectedLinkToken, User}
 
   def init(opts), do: opts
 
@@ -33,8 +34,11 @@ defmodule PhotoManagementApi.Web.Context do
       nil ->
         {:error, 401, "invalid authorization token"}
 
-      user ->
+      user = %User{} ->
         {:ok, %{current_user: user}}
+
+      protected_link_token = %ProtectedLinkToken{} ->
+        {:ok, %{protected_link_token: protected_link_token}}
     end
   end
 end

@@ -1,11 +1,24 @@
 defmodule PhotoManagementApi.Web.Resolver.Gallery do
   alias ImagesResource.Gallery
   alias ImagesResource.Storage.Directory
+  alias PhotoManagementApi.{User, ProtectedLinkToken}
 
-  def all(_parent, args, _info) do
+  def all(_parent, args, %{context: %{current_user: %User{}}}) do
+    args
+    |> Map.get(:slug)
+    |> find_by_slug()
+  end
+
+  def all(_parent, args, %{context: %{protected_link_token: %ProtectedLinkToken{slugs: pl_slugs}}}) do
     slug = Map.get(args, :slug)
-
-    find_by_slug(slug)
+    IO.inspect(slug)
+    IO.inspect(pl_slugs)
+    case Enum.any?(pl_slugs, fn pl_slug -> String.starts_with?(slug, pl_slug) end) do
+      true ->
+        find_by_slug(slug)
+      false ->
+        {:error, "Not Authorized"}
+    end
   end
 
   defp find_by_slug(slug) do
