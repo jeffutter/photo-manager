@@ -1,50 +1,5 @@
 open Css;
 
-let cls =
-  style([
-    width(px(300)),
-    maxWidth(px(300)),
-    `declaration(("position", "inherit")), /* hack for react-waypoint */
-    boxSizing(borderBox),
-    color(hex("fff")),
-    backgroundSize(cover),
-    `declaration(("backgroundPosition", "center")),
-    boxShadow(
-      ~x=px(-2),
-      ~y=px(2),
-      ~blur=px(10),
-      ~spread=px(0),
-      rgba(68, 68, 68, 0.4),
-    ),
-    transition(~duration=300, ~timingFunction=`easeInOut, "transform"),
-    cursor(`pointer),
-    `declaration(("counterIncrement", "item-counter")),
-    selector(
-      "@media screen and (min-width: 768px)",
-      [selector(":hover", [transform(scale(1.05, 1.05))])],
-    ),
-  ]);
-
-let detailsCls =
-  style([
-    position(relative),
-    zIndex(1),
-    padding2(~v=px(10), ~h=px(15)),
-    color(hex("444")),
-    background(hex("fff")),
-    letterSpacing(px(1)),
-    color(hex("828282")),
-    selector(
-      "&:before",
-      [
-        `declaration(("fontWeight", "bold")),
-        fontSize(rem(1.1)),
-        paddingRight(em(0.5)),
-        color(hex("444")),
-      ],
-    ),
-  ]);
-
 let rec stars = (filled, total, index, handleClick, acc) =>
   filled > 0 ?
     stars(
@@ -64,7 +19,10 @@ let rec stars = (filled, total, index, handleClick, acc) =>
       ) :
       List.rev(acc);
 
-let component = ReasonReact.statelessComponent("GalleryImage");
+let handleClickStar = (submitRating, slug, i, event) => {
+  ReactEventRe.Mouse.stopPropagation(event);
+  submitRating({"slug": slug, "rating": i});
+};
 
 let make =
     (
@@ -74,20 +32,14 @@ let make =
       ~rating: option(int)=?,
       ~handleOpen,
       ~submitRating,
-      _children,
-    ) => {
-  ...component,
-  render: _self => {
-    let handleClick = (i, event) => {
-      ReactEventRe.Mouse.stopPropagation(event);
-      submitRating({"slug": slug, "rating": i});
-    };
+    ) =>
+  GalleryItem.make(~render=(wrapClass, detailsClass) => {
     let stars =
       switch (rating) {
-      | Some(i) => stars(i, 5, 1, handleClick, [])
-      | None => stars(0, 5, 1, handleClick, [])
+      | Some(i) => stars(i, 5, 1, handleClickStar(submitRating, slug), [])
+      | None => stars(0, 5, 1, handleClickStar(submitRating, slug), [])
       };
-    <div onClick=handleOpen className=cls>
+    <div onClick=handleOpen className=wrapClass>
       (
         switch (thumbnail) {
         | Some(thumb) =>
@@ -102,7 +54,7 @@ let make =
         | None => <CircleLoader />
         }
       )
-      <div className=detailsCls>
+      <div className=detailsClass>
         <div> (ReasonReact.stringToElement(name)) </div>
         (
           ReasonReact.createDomElement(
@@ -113,5 +65,4 @@ let make =
         )
       </div>
     </div>;
-  },
-};
+  });
