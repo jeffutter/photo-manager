@@ -74,7 +74,6 @@ let make =
       ~rating: option(int)=?,
       ~handleOpen,
       ~submitRating,
-      ~innerRef: option(Js.Nullable.t(Dom.element) => unit)=?,
       _children,
     ) => {
   ...component,
@@ -88,7 +87,7 @@ let make =
       | Some(i) => stars(i, 5, 1, handleClick, [])
       | None => stars(0, 5, 1, handleClick, [])
       };
-    <div onClick=handleOpen ref=?innerRef className=cls>
+    <div onClick=handleOpen className=cls>
       (
         switch (thumbnail) {
         | Some(thumb) =>
