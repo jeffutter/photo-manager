@@ -7,22 +7,23 @@ type retainedProps = {
   rating: option(int),
 };
 
-let cls = style([width(px(320)), height(px(295))]);
+let cls = (~w, ~h) => style([width(px(w)), height(px(h))]);
 
 type self = {retainedProps};
 
 let component =
-  ReasonReact.statelessComponentWithRetainedProps("WaypointImage");
+  ReasonReact.statelessComponentWithRetainedProps("WaypointItem");
 
 let make =
     (
       ~onEnter: option('a => unit)=?,
       ~name: string,
       ~slug: string,
-      ~thumbnail: option(string),
-      ~rating: option(int),
-      ~handleOpen,
-      ~submitRating,
+      ~thumbnail: option(string)=?,
+      ~rating: option(int)=?,
+      ~w: int,
+      ~h: int,
+      ~render,
       _children,
     ) => {
   ...component,
@@ -43,8 +44,6 @@ let make =
   render: (_) =>
     <Waypoint
       ?onEnter bottomOffset="-400px" topOffset="200px" fireOnRapidScroll=false>
-      <div className=cls>
-        <GalleryImage name slug ?thumbnail ?rating submitRating handleOpen />
-      </div>
+      <div className=(cls(~w, ~h))> (render()) </div>
     </Waypoint>,
 };

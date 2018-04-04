@@ -139,18 +139,13 @@ let make =
       descendants |> Array.to_list |> splitDescendants(([], [], []));
     let renderedGalleries =
       List.map(
-        item =>
-          <WaypointGalleryThumb
-            key=item##id
-            name=item##name
-            slug=item##slug
-          />,
+        item => <GalleryThumb key=item##id name=item##name slug=item##slug />,
         galleries,
       );
     let renderedImages =
       List.mapi(
         (index, image) =>
-          <WaypointImage
+          <GalleryImage
             key=image##id
             slug=image##slug
             onEnter=(
