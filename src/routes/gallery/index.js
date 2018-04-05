@@ -2,7 +2,7 @@
 import { graphql, compose } from "react-apollo";
 import gql from "graphql-tag";
 
-import { $$default as GalleryContainer } from "../../galleryContainer.re";
+import { $$default as GalleryContainer } from "../../galleryContainer.bs.js";
 
 const queryOptions = ({ match: { params: { slug } } }) => {
   const s = slug || "root";

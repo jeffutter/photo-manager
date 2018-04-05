@@ -36,18 +36,55 @@
     "react-dom": "^16.0.0",
     "react-photoswipe": "^1.3.0",
     "react-waypoint": "^8.0.0",
-    "reason-scripts": "0.8.0"
+    "reason-react": "^0.3.0",
+    "svgr": "^1.9.1"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build && rm -rf apps/photo_management_api_web/priv/static/* && cp -Rp build/* apps/photo_management_api_web/priv/static",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject",
-    "prepare": "npm link bs-platform"
+    "build": "bsb -make-world",
+    "start": "bsb -make-world -w",
+    "clean": "bsb -clean-world",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "webpack": "webpack -w",
+    "webpack:production": "NODE_ENV=production webpack"
   },
   "devDependencies": {
     "@glennsl/bs-jest": "^0.4.2",
+    "autoprefixer": "^8.2.0",
+    "babel-eslint": "^8.2.2",
+    "babel-loader": "^8.0.0-beta.2",
+    "babel-plugin-named-asset-import": "^1.0.0-next.b2fd8db8",
+    "babel-preset-react-app": "^4.0.0-next.b2fd8db8",
     "bs-css": "^6.5.0",
-    "reason-react": "^0.3.0"
+    "bs-platform": "^2.2.3",
+    "css-loader": "^0.28.11",
+    "file-loader": "^1.1.11",
+    "html-webpack-plugin": "^3.2.0",
+    "mini-css-extract-plugin": "^0.4.0",
+    "optimize-css-assets-webpack-plugin": "^4.0.0",
+    "postcss-flexbugs-fixes": "^3.3.0",
+    "postcss-loader": "^2.1.3",
+    "react-dev-utils": "^5.0.1",
+    "style-loader": "^0.20.3",
+    "sw-precache-webpack-plugin": "^0.11.5",
+    "thread-loader": "^1.1.5",
+    "uglifyjs-webpack-plugin": "^1.2.4",
+    "url-loader": "^1.0.1",
+    "webpack": "^4.0.1",
+    "webpack-bundle-analyzer": "^2.11.1",
+    "webpack-cli": "^2.0.10",
+    "webpack-manifest-plugin": "^2.0.0-rc.2"
+  },
+  "browserslist": {
+    "development": [
+      "last 2 chrome versions",
+      "last 2 firefox versions",
+      "last 2 edge versions"
+    ],
+    "production": [
+      ">1%",
+      "last 4 versions",
+      "Firefox ESR",
+      "not ie < 11"
+    ]
   }
 }

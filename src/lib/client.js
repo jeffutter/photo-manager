@@ -7,8 +7,8 @@ import {
 import { createHttpLink } from "apollo-link-http";
 import { setContext } from "apollo-link-context";
 import { onError } from "apollo-link-error";
-import { readCookie } from "../cookies.re";
-import { logOut } from "../cookies.re";
+import { readCookie } from "../cookies.bs.js";
+import { logOut } from "../cookies.bs.js";
 
 const myFragmentMatcher = new IntrospectionFragmentMatcher({
   introspectionQueryResultData: {

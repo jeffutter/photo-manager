@@ -1,25 +1,32 @@
 {
-  "name": "reason-scripts",
+  "name": "photo-manager",
+  "reason": {
+    "react-jsx": 2
+  },
   "sources": [
     {
-      "dir": "src"
+      "dir": "src",
+      "subdirs": true
     },
     {
       "dir": "__tests__",
       "type": "dev"
     }
   ],
-  "bs-dependencies": [
-    "bs-css",
-    "reason-react"
+  "package-specs": [
+    {
+      /*"module": "commonjs",*/
+      "module": "es6-global",
+      "in-source": true
+    }
   ],
+  "suffix": ".bs.js",
+  "namespace": true,
+  "bsc-flags": ["-bs-super-errors"],
+  "bs-dependencies": ["bs-css", "reason-react"],
   "bs-dev-dependencies": ["@glennsl/bs-jest"],
-  "reason": {
-    "react-jsx": 2
-  },
-  "subdirs" : true,
-  "bsc-flags": [
-    "-bs-super-errors"
-  ],
-  "refmt": 3
+  "refmt": 3,
+  "warnings": {
+    "error": "+5"
+  }
 }
