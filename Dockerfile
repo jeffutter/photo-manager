@@ -9,15 +9,14 @@ ADD yarn.lock /src
 
 RUN yarn install
 
+ADD webpack.config.js /src
 ADD bsconfig.json /src/bsconfig.json
 ADD src/ /src/src
 ADD __tests__/ /src/__tests__
 ADD public/ /src/public
 
 RUN mkdir -p apps/photo_management_api_web/priv/static/
-RUN yarn run build
-RUN cd apps/photo_management_api_web/priv/static \
-    && find . -type f -name \*.json -o -name \*.js -o -name \*.css -o -name \*.map | xargs -I {} sh -c 'gzip -kf9 {} && brotli --quality 9 --input {} --output {}.br'
+RUN yarn run webpack:production
 
 FROM elixir:1.6-alpine as build
 RUN mkdir -p /src
@@ -43,8 +42,6 @@ COPY --from=ui /src/apps/photo_management_api_web/priv/static/ apps/photo_manage
 
 ENV MIX_ENV prod
 RUN mix compile
-RUN ls -l .
-RUN ls -l /src/rel
 RUN mix release --env=prod
 
 FROM jeffutter/python-opencv-alpine

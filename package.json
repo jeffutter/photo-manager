@@ -29,7 +29,7 @@
     "clean": "bsb -clean-world",
     "test": "echo \"Error: no test specified\" && exit 1",
     "webpack": "NODE_ENV=development webpack -w",
-    "webpack:production": "NODE_ENV=production webpack && rm -rf apps/photo_management_api_web/priv/static/* && cp -Rp build/* apps/photo_management_api_web/priv/static"
+    "webpack:production": "bsb -clean-world && bsb -make-world && NODE_ENV=production webpack && rm -rf apps/photo_management_api_web/priv/static/* && cp -Rp build/* apps/photo_management_api_web/priv/static"
   },
   "devDependencies": {
     "@glennsl/bs-jest": "^0.4.2",
@@ -39,9 +39,11 @@
     "babel-plugin-graphql-tag": "^1.5.0",
     "babel-plugin-named-asset-import": "^1.0.0-next.b2fd8db8",
     "babel-preset-react-app": "^4.0.0-next.b2fd8db8",
+    "brotli-webpack-plugin": "^0.5.0",
     "bs-css": "^6.5.0",
     "bs-platform": "^2.2.3",
     "case-sensitive-paths-webpack-plugin": "^2.1.2",
+    "compression-webpack-plugin": "^1.1.11",
     "concurrently": "^3.5.1",
     "css-loader": "^0.28.11",
     "file-loader": "^1.1.11",

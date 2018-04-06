@@ -1,14 +1,16 @@
-const webpack = require("webpack");
-const path = require("path");
-const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
+const autoprefixer = require("autoprefixer");
+const BrotliPlugin = require('brotli-webpack-plugin');
+const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
+const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
+const CompressionPlugin = require("compression-webpack-plugin");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const ManifestPlugin = require("webpack-manifest-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
-const ManifestPlugin = require("webpack-manifest-plugin");
-const autoprefixer = require("autoprefixer");
-const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
-const HtmlWebpackPlugin = require("html-webpack-plugin");
+const path = require("path");
 const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
-const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
+const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
+const webpack = require("webpack");
 
 const outputDir = path.join(__dirname, "build/");
 const isProd = process.env.NODE_ENV === "production";
@@ -294,6 +296,19 @@ module.exports = {
       // navigateFallback: publicUrl + '/index.html',
       // navigateFallbackWhitelist: [/^(?!\/__).*/],
     }) : null,
+    isProd ? new CompressionPlugin({
+      asset: "[path].gz[query]",
+      algorithm: "gzip",
+      test: /\.(js|css|html|svg)$/,
+      threshold: 0,
+      minRatio: 0.8
+    }) : null,
+    isProd ? new BrotliPlugin({
+      asset: '[path].br[query]',
+      test: /\.(js|css|html|svg)$/,
+      threshold: 0,
+      minRatio: 0.8
+    }) : null
   ].filter((plugin) => plugin),
   node: {
     dgram: "empty",
