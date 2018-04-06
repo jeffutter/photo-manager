@@ -52,6 +52,7 @@
     "autoprefixer": "^8.2.0",
     "babel-eslint": "^8.2.2",
     "babel-loader": "^8.0.0-beta.2",
+    "babel-plugin-graphql-tag": "^1.5.0",
     "babel-plugin-named-asset-import": "^1.0.0-next.b2fd8db8",
     "babel-preset-react-app": "^4.0.0-next.b2fd8db8",
     "bs-css": "^6.5.0",

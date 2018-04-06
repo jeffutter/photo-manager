@@ -76,6 +76,7 @@ module.exports = {
                   // @remove-on-eject-end
                   presets: [require.resolve("babel-preset-react-app")],
                   plugins: [
+                    require.resolve("babel-plugin-graphql-tag"),
                     [
                       require.resolve("babel-plugin-named-asset-import"),
                       {
