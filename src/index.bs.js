@@ -19,9 +19,9 @@ Css.$$global("body, html", /* :: */[
               /* :: */[
                 Css.margin(Css.px(0)),
                 /* :: */[
-                  Css.background(Css.hex("#fafafa")),
+                  Css.backgroundColor(Css.hex("fafafa")),
                   /* :: */[
-                    Css.color(Css.hex("#333")),
+                    Css.color(Css.hex("333")),
                     /* [] */0
                   ]
                 ]
@@ -32,7 +32,7 @@ Css.$$global("body, html", /* :: */[
       ]
     ]);
 
-((require('react-photoswipe/lib/photoswipe.css')));
+((require('react-photoswipe/dist/photoswipe.css')));
 
 ReactDOMRe.renderToElementWithId(ReasonReact.element(/* None */0, /* None */0, App$PhotoManager.make(/* array */[])), "root");
 

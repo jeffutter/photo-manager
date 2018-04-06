@@ -5,10 +5,10 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 const ManifestPlugin = require("webpack-manifest-plugin");
 const autoprefixer = require("autoprefixer");
-const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
-  .BundleAnalyzerPlugin;
+const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
+const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 
 const outputDir = path.join(__dirname, "build/");
 const isProd = process.env.NODE_ENV === "production";
@@ -27,9 +27,41 @@ const postCSSLoaderOptions = {
 };
 
 module.exports = {
-  entry: "./src/index.bs.js",
+  entry: isProd ? "./src/index.bs.js" : [
+    require.resolve('react-dev-utils/webpackHotDevClient'),
+    "./src/index.bs.js"
+  ],
+  output: {
+    path: outputDir,
+    // publicPath: outputDir,
+    publicPath: "/",
+    filename: isProd ? "static/js/[name].[chunkhash:8].js" : 'static/js/bundle.js',
+    chunkFilename: isProd ? "static/js/[name].[chunkhash:8].chunk.js" : "static/js/[name].chunk.js"
+  },
   mode: isProd ? "production" : "development",
-  devtool: shouldUseSourceMap ? "source-map" : false,
+  devtool: shouldUseSourceMap ? (isProd ? "source-map" : 'cheap-module-source-map') : false,
+  devServer: {
+    index: 'index.html',
+    historyApiFallback: true,
+    overlay: false,
+    proxy: {
+      "/__auth": {
+        "target": "http://localhost:4000"
+      },
+      "/auth": {
+        "target": "http://localhost:4000"
+      },
+      "/config": {
+        "target": "http://localhost:4000"
+      },
+      "/graphql": {
+        "target": "http://localhost:4000"
+      },
+      "/graphiql": {
+        "target": "http://localhost:4000"
+      }
+    },
+  },
   module: {
     rules: [
       {
@@ -38,7 +70,7 @@ module.exports = {
             test: /\.css$/,
             exclude: /\.module\.css$/,
             use: [
-              MiniCssExtractPlugin.loader,
+              isProd ? MiniCssExtractPlugin.loader : require.resolve('style-loader'),
               {
                 loader: require.resolve("css-loader"),
                 options: {
@@ -88,7 +120,8 @@ module.exports = {
                       }
                     ]
                   ],
-                  compact: true,
+                  compact: isProd ? true : false,
+                  cacheDirectory: isProd ? false : true,
                   highlightCode: true
                 }
               }
@@ -182,7 +215,7 @@ module.exports = {
         cache: true,
         sourceMap: shouldUseSourceMap
       }),
-      new OptimizeCSSAssetsPlugin()
+      new OptimizeCSSAssetsPlugin({ cssProcessorOptions: { zindex: false } })
     ],
     // Automatically split vendor and commons
     // https://twitter.com/wSokra/status/969633336732905474
@@ -202,20 +235,22 @@ module.exports = {
   },
   plugins: [
     new webpack.DefinePlugin(process.env.NODE_ENV || "development"),
-    new MiniCssExtractPlugin({
+    isProd ? new MiniCssExtractPlugin({
       // Options similar to the same options in webpackOptions.output
       // both options are optional
       filename: "static/css/[name].[contenthash:8].css",
       chunkFilename: "static/css/[name].[contenthash:8].chunk.css"
-    }),
-    new ManifestPlugin({
+    }) : null,
+    isProd ? null : new webpack.NamedModulesPlugin(),
+    isProd ? null : new CaseSensitivePathsPlugin(),
+    isProd ? new ManifestPlugin({
       fileName: "asset-manifest.json"
       // publicPath: publicPath
-    }),
-    new BundleAnalyzerPlugin({
+    }) : null,
+    isProd ? new BundleAnalyzerPlugin({
       analyzerMode: "static",
       openAnalyzer: false
-    }),
+    }) : null,
     new HtmlWebpackPlugin({
       inject: true,
       template: "./src/index.html",
@@ -232,7 +267,7 @@ module.exports = {
         minifyURLs: true
       }
     }),
-    new SWPrecacheWebpackPlugin({
+    isProd ? new SWPrecacheWebpackPlugin({
       // By default, a cache-busting query parameter is appended to requests
       // used to populate the caches, to ensure the responses are fresh.
       // If a URL is already hashed by Webpack, then there is no concern
@@ -258,15 +293,8 @@ module.exports = {
       // https://github.com/facebook/create-react-app/blob/master/packages/react-scripts/template/README.md#service-worker-considerations
       // navigateFallback: publicUrl + '/index.html',
       // navigateFallbackWhitelist: [/^(?!\/__).*/],
-    }),
-  ],
-  output: {
-    path: outputDir,
-    // publicPath: outputDir,
-    publicPath: "/",
-    filename: "static/js/[name].[chunkhash:8].js",
-    chunkFilename: "static/js/[name].[chunkhash:8].chunk.js"
-  },
+    }) : null,
+  ].filter((plugin) => plugin),
   node: {
     dgram: "empty",
     fs: "empty",

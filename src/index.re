@@ -1,3 +1,6 @@
+[@bs.module "./registerServiceWorker"]
+external register_service_worker : unit => unit = "default";
+
 Css.(
   global(
     "body, html",
@@ -8,15 +11,13 @@ Css.(
       width(pct(100.0)),
       height(pct(100.0)),
       margin(px(0)),
-      background(hex("#fafafa")),
-      color(hex("#333"))
-    ]
+      backgroundColor(hex("fafafa")),
+      color(hex("333")),
+    ],
   )
 );
 
-[%bs.raw {|require('react-photoswipe/lib/photoswipe.css')|}];
-
-[@bs.module "./registerServiceWorker"] external register_service_worker : unit => unit = "default";
+[%bs.raw {|require('react-photoswipe/dist/photoswipe.css')|}];
 
 ReactDOMRe.renderToElementWithId(<App />, "root");
 
