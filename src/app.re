@@ -1,7 +1,5 @@
 open Css;
 
-[@bs.module "./lib/client.js"] external client : 'a = "default";
-
 let cls =
   style([
     transition(~duration=400, ~timingFunction=`ease, "all"),
@@ -41,16 +39,16 @@ let reducer = (action, _state) =>
 
 let component = ReasonReact.reducerComponent("App");
 
-let mapUrlToRoute = (url: ReasonReact.Router.url) => {
-  Js.log(url.path);
+let mapUrlToRoute = (url: ReasonReact.Router.url) =>
   switch (url.path, Cookies.loggedIn()) {
   | (_, false) => LoginForm
-  | (["gallery"], true) => Gallery([""])
+  | (["gallery"], true) => Gallery(["root"])
   | (["gallery", ...rest], true) => Gallery(rest)
   | ([], true) => Redirect("/gallery")
   | _ => LoginForm
   };
-};
+
+module Query = Client.Instance.Query;
 
 let make = _children => {
   ...component,
@@ -67,25 +65,39 @@ let make = _children => {
   initialState: () => {route: LoginForm},
   render: self =>
     <div id="app" className=cls>
-      <ApolloProvider client>
-        (
-          switch (self.state.route) {
-          | Redirect(path) => <Redirect path />
-          | LoginForm => <LoginForm />
-          | Gallery(slugs) =>
-            <div>
-              <Header />
-              <GalleryRoute
-                _match={
-                  "params": {
-                    "slug": Js.Array.joinWith("/", Array.of_list(slugs)),
-                  },
-                }
-              />
-              <div> (ReasonReact.stringToElement("Gallery")) </div>
-            </div>
-          }
-        )
-      </ApolloProvider>
+      (
+        switch (self.state.route) {
+        | Redirect(path) => <Redirect path />
+        | LoginForm => <LoginForm />
+        | Gallery(slugs) =>
+          let slug = Js.Array.joinWith("/", Array.of_list(slugs));
+          let galleryQuery = GalleryQueries.GalleryQuery.make(~slug, ());
+          <div>
+            <Header />
+            <Query query=galleryQuery>
+              ...(
+                   (response, parse) =>
+                     switch (response) {
+                     | Loading => <FullPageSpinner />
+                     | Failed(error) =>
+                       <div> (ReasonReact.stringToElement(error)) </div>
+                     | Loaded(result) =>
+                       let data = parse(result);
+                       <LoadMoreWrapper slug>
+                         ...(
+                              (moreGallery, loadMore) =>
+                                <GalleryContainer
+                                  gallery=data##gallery
+                                  moreGallery
+                                  loadNextPage=loadMore
+                                />
+                            )
+                       </LoadMoreWrapper>;
+                     }
+                 )
+            </Query>
+          </div>;
+        }
+      )
     </div>,
 };

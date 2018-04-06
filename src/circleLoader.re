@@ -63,4 +63,4 @@ let make = _children => {
     </svg>,
 };
 
-let default = ReasonReact.wrapReasonForJs(~component, (_) => make([||]));
+let default = ReasonReact.wrapReasonForJs(~component, _ => make([||]));

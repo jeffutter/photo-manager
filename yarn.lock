@@ -4564,6 +4564,13 @@ graphql@^0.13.0:
   dependencies:
     iterall "1.1.x"
 
+graphql_ppx@^0.2.1:
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/graphql_ppx/-/graphql_ppx-0.2.1.tgz#7e8c164e271d21e9d19ed7b302a239c1d5b0b189"
+  dependencies:
+    request "^2.82.0"
+    yargs "^11.0.0"
+
 grouped-queue@^0.3.3:
   version "0.3.3"
   resolved "https://registry.yarnpkg.com/grouped-queue/-/grouped-queue-0.3.3.tgz#c167d2a5319c5a0e0964ef6a25b7c2df8996c85c"
@@ -7914,6 +7921,12 @@ realpath-native@^1.0.0:
   dependencies:
     util.promisify "^1.0.0"
 
+reason-apollo@^0.6.20:
+  version "0.6.20"
+  resolved "https://registry.yarnpkg.com/reason-apollo/-/reason-apollo-0.6.20.tgz#0f2c14cc0c1f8c0b782df042e64b5fb1e1f626ec"
+  dependencies:
+    fbjs "^0.8.16"
+
 reason-react@^0.3.0:
   version "0.3.4"
   resolved "https://registry.yarnpkg.com/reason-react/-/reason-react-0.3.4.tgz#afec4073ec0ea8122833f52b7e77219ef8ab8467"
@@ -8161,7 +8174,7 @@ request@2.81.0:
     tunnel-agent "^0.6.0"
     uuid "^3.0.0"
 
-request@^2.79.0, request@^2.83.0:
+request@^2.79.0, request@^2.82.0, request@^2.83.0:
   version "2.85.0"
   resolved "https://registry.yarnpkg.com/request/-/request-2.85.0.tgz#5a03615a47c61420b3eb99b7dba204f83603e1fa"
   dependencies:
@@ -9945,6 +9958,23 @@ yargs@^10.0.3:
     which-module "^2.0.0"
     y18n "^3.2.1"
     yargs-parser "^8.1.0"
+
+yargs@^11.0.0:
+  version "11.0.0"
+  resolved "https://registry.yarnpkg.com/yargs/-/yargs-11.0.0.tgz#c052931006c5eee74610e5fc0354bedfd08a201b"
+  dependencies:
+    cliui "^4.0.0"
+    decamelize "^1.1.1"
+    find-up "^2.1.0"
+    get-caller-file "^1.0.1"
+    os-locale "^2.0.0"
+    require-directory "^2.1.1"
+    require-main-filename "^1.0.1"
+    set-blocking "^2.0.0"
+    string-width "^2.0.0"
+    which-module "^2.0.0"
+    y18n "^3.2.1"
+    yargs-parser "^9.0.2"
 
 yargs@^11.1.0:
   version "11.1.0"

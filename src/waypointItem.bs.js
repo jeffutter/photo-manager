@@ -19,7 +19,7 @@ function cls(w, h) {
 
 var component = ReasonReact.statelessComponentWithRetainedProps("WaypointItem");
 
-function make(onEnter, name, slug, thumbnail, rating, w, h, render, _) {
+function make(onEnter, name, slug, thumbnail, rating, w, h, children) {
   var newrecord = component.slice();
   newrecord[/* shouldUpdate */8] = (function (param) {
       return Caml_obj.caml_notequal(param[/* oldSelf */0][/* retainedProps */3], param[/* newSelf */1][/* retainedProps */3]);
@@ -27,7 +27,7 @@ function make(onEnter, name, slug, thumbnail, rating, w, h, render, _) {
   newrecord[/* render */9] = (function () {
       return ReasonReact.element(/* None */0, /* None */0, Waypoint$PhotoManager.make(onEnter, "-400px", "200px", /* false */0, /* array */[React.createElement("div", {
                             className: cls(w, h)
-                          }, Curry._1(render, /* () */0))]));
+                          }, Curry._1(children, /* () */0))]));
     });
   newrecord[/* retainedProps */11] = /* record */[
     /* name */name,

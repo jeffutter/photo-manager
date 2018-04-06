@@ -21,15 +21,15 @@ defmodule PhotoManagementApi.Web.Schema.Types do
   end
 
   object :image do
-    field(:id, :string, resolve: fn %{slug: slug}, _, _ -> {:ok, slug} end)
-    field(:name, :string)
-    field(:path, list_of(:string))
-    field(:slug, :string)
+    field(:id, non_null(:string), resolve: fn %{slug: slug}, _, _ -> {:ok, slug} end)
+    field(:name, non_null(:string))
+    field(:path, non_null(list_of(non_null(:string))))
+    field(:slug, non_null(:string))
     field(:last_modified, :string, resolve: from_db(:last_modified))
     field(:size, :string, resolve: from_db(:size))
     field(:width, :integer, resolve: from_db(:width))
     field(:height, :integer, resolve: from_db(:height))
-    field(:thumbnail, :integer, resolve: from_db(:base64))
+    field(:thumbnail, :string, resolve: from_db(:base64))
     field(:rating, :integer, resolve: from_db({:rating, :rating, 0}))
     field(:small_url, :string, resolve: &Resolver.Image.small_url/3)
     field(:medium_url, :string, resolve: &Resolver.Image.medium_url/3)
@@ -37,14 +37,14 @@ defmodule PhotoManagementApi.Web.Schema.Types do
   end
 
   object :gallery do
-    field(:id, :string, resolve: fn %{slug: slug}, _, _ -> {:ok, slug} end)
-    field(:name, :string)
-    field(:path, list_of(:string))
-    field(:slug, :string)
+    field(:id, non_null(:string), resolve: fn %{slug: slug}, _, _ -> {:ok, slug} end)
+    field(:name, non_null(:string))
+    field(:path, non_null(list_of(non_null(:string))))
+    field(:slug, non_null(:string))
     field(:total_descendants, :integer, resolve: fn %{total_children: tc}, _, _ -> {:ok, tc} end)
 
-    field :descendants, list_of(:descendants) do
-      arg(:slugs, list_of(:string))
+    field :descendants, list_of(non_null(:descendants)) do
+      arg(:slugs, list_of(non_null(:string)))
 
       resolve(fn %{children: children}, args, _ ->
         slugs = Map.get(args, :slugs)

@@ -2,6 +2,7 @@
 
 import * as Css from "../node_modules/bs-css/src/Css.js";
 import * as Curry from "../node_modules/bs-platform/lib/es6/curry.js";
+import * as ReasonReact from "../node_modules/reason-react/src/ReasonReact.js";
 
 function cls(lightBG) {
   return Css.style(/* :: */[
@@ -153,14 +154,21 @@ var detailsCls = Css.style(/* :: */[
       ]
     ]);
 
-function make($staropt$star, render) {
+var component = ReasonReact.statelessComponent("GalleryItem");
+
+function make($staropt$star, children) {
   var lightBG = $staropt$star ? $staropt$star[0] : /* true */1;
-  return Curry._2(render, cls(lightBG), detailsCls);
+  var newrecord = component.slice();
+  newrecord[/* render */9] = (function () {
+      return Curry._2(children, cls(lightBG), detailsCls);
+    });
+  return newrecord;
 }
 
 export {
   cls ,
   detailsCls ,
+  component ,
   make ,
   
 }

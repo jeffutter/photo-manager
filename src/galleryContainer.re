@@ -4,21 +4,12 @@ open Css;
 external assign3 : (Js.t({..}), Js.t({..}), Js.t({..})) => Js.t({..}) =
   "Object.assign";
 
-type descendants = {
-  .
-  "name": string,
-  "id": string,
-};
-
-type gallery = {
-  .
-  "name": string,
-  "path": Js.Array.t(string),
-  "slug": string,
-  "descendants": Js.Array.t(descendants),
-};
-
 let component = ReasonReact.statelessComponent("GalleryContainer");
+
+let contains = (~value: 'a, theList: array('a)) => {
+  let f = (found, elem) => found || elem == value;
+  Array.fold_left(f, false, theList);
+};
 
 let cls =
   style([
@@ -29,63 +20,139 @@ let cls =
     boxSizing(borderBox),
   ]);
 
+let findDescendantInDescendants =
+    (
+      descendant: GalleryQueries.descendant,
+      descendants: GalleryQueries.moreDescendants,
+    ) => {
+  let foundIndex =
+    Js.Array.findIndex(
+      moreDescendant =>
+        switch (descendant, moreDescendant) {
+        | (`Gallery(gallery), `Gallery(moreGallery)) =>
+          gallery##id == moreGallery##id
+        | (`Image(image), `Image(moreImage)) => image##id == moreImage##id
+        | _ => false
+        },
+      descendants,
+    );
+  switch (foundIndex) {
+  | index when index >= 0 =>
+    let foundDescendant = descendants[index];
+    Some(foundDescendant);
+  | _ => None
+  };
+};
+
+let mergeGallery =
+    (
+      _gallery: GalleryQueries.galleryNoDescendants,
+      gallery: GalleryQueries.galleryNoDescendants,
+    )
+    : GalleryQueries.galleryNoDescendants => gallery;
+
+let mergeImage =
+    (image: GalleryQueries.image, moreImage: GalleryQueries.moreImage)
+    : GalleryQueries.completeImage => {
+  "id": image##id,
+  "name": image##name,
+  "path": image##path,
+  "slug": image##slug,
+  "size": image##size,
+  "width": image##width,
+  "height": image##height,
+  "rating": image##rating,
+  "smallUrl": image##smallUrl,
+  "mediumUrl": image##mediumUrl,
+  "largeUrl": image##largeUrl,
+  "thumbnail": moreImage##thumbnail,
+};
+
+let convertGallery =
+    (gallery: GalleryQueries.galleryNoDescendants)
+    : GalleryQueries.galleryNoDescendants => gallery;
+
+let convertImage =
+    (image: GalleryQueries.image)
+    : GalleryQueries.completeImage => {
+  "id": image##id,
+  "name": image##name,
+  "path": image##path,
+  "slug": image##slug,
+  "size": image##size,
+  "width": image##width,
+  "height": image##height,
+  "rating": image##rating,
+  "smallUrl": image##smallUrl,
+  "mediumUrl": image##mediumUrl,
+  "largeUrl": image##largeUrl,
+  "thumbnail": None,
+};
+
+let noMatchCompleteChild =
+    (descendant: GalleryQueries.descendant)
+    : GalleryQueries.completeDescendant =>
+  switch (descendant) {
+  | `Image(image) => `CompleteImage(convertImage(image))
+  | `Gallery(gallery) => `CompleteGallery(convertGallery(gallery))
+  };
+
+let completeChild =
+    (
+      descendant: GalleryQueries.descendant,
+      descendants: option(GalleryQueries.moreDescendants),
+    )
+    : GalleryQueries.completeDescendant =>
+  switch (descendants) {
+  | None => noMatchCompleteChild(descendant)
+  | Some(descendants) =>
+    let foundDescendant =
+      findDescendantInDescendants(descendant, descendants);
+    switch (foundDescendant) {
+    | None => noMatchCompleteChild(descendant)
+    | Some(foundDescendant) =>
+      switch (descendant, foundDescendant) {
+      | (`Gallery(gallery), `Gallery(foundGallery)) =>
+        `CompleteGallery(mergeGallery(gallery, foundGallery))
+      | (`Image(image), `Image(foundImage)) =>
+        `CompleteImage(mergeImage(image, foundImage))
+      | _ => noMatchCompleteChild(descendant)
+      }
+    };
+  };
+
 let make =
     (
-      ~loading: bool=false,
-      ~gallery: gallery,
-      ~moreLoading: bool=false,
-      ~moreGallery: gallery,
-      ~loadNextPage: Js.Array.t(string) => unit,
-      ~submitRating,
+      ~gallery: option(GalleryQueries.gallery),
+      ~moreGallery: option(GalleryQueries.moreGallery),
+      ~loadNextPage: array(string) => unit,
       _children,
     ) => {
   ...component,
   render: _self =>
-    switch (loading, moreLoading) {
-    | (false, false) =>
-      let newDescendants =
-        Js.Array.map(
-          descendant => {
-            let foundIndex =
-              Js.Array.findIndex(
-                moreDescendant => moreDescendant##id == descendant##id,
-                moreGallery##descendants,
+    <div className=cls>
+      (
+        switch (gallery, moreGallery) {
+        | (Some(gallery), Some(moreGallery)) =>
+          switch (gallery##descendants) {
+          | Some(descendants) =>
+            let newDescendants =
+              Array.map(
+                descendant =>
+                  completeChild(descendant, moreGallery##descendants),
+                descendants,
               );
-            switch (foundIndex) {
-            | index when index >= 0 =>
-              let descendants = moreGallery##descendants;
-              let foundDescendant = descendants[index];
-              assign3(Js.Obj.empty(), descendant, foundDescendant);
-            | _ => descendant
-            };
-          },
-          gallery##descendants,
-        );
-      let newGallery =
-        assign3(Js.Obj.empty(), gallery, {"descendants": newDescendants});
-      <div className=cls>
-        <Gallery
-          loadNextPage
-          submitRating
-          name=newGallery##name
-          path=newGallery##path
-          slug=newGallery##slug
-          descendants=newGallery##descendants
-        />
-      </div>;
-    | _ => <div className=cls> <FullPageSpinner /> </div>
-    },
+            <Gallery
+              loadNextPage
+              name=gallery##name
+              path=gallery##path
+              slug=gallery##slug
+              descendants=newDescendants
+            />;
+          | None => <FullPageSpinner />
+          }
+        | _ => <FullPageSpinner />
+        }
+      )
+    </div>,
 };
-
-let default =
-  ReasonReact.wrapReasonForJs(~component, jsProps =>
-    make(
-      ~loading=Js.to_bool(jsProps##queryData##loading),
-      ~gallery=jsProps##queryData##gallery,
-      ~moreLoading=Js.to_bool(jsProps##moreLoading),
-      ~moreGallery=jsProps##moreGallery,
-      ~submitRating=jsProps##submitRating,
-      ~loadNextPage=jsProps##loadNextPage,
-      [||],
-    )
-  );

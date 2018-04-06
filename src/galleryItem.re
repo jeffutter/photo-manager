@@ -61,4 +61,9 @@ let detailsCls =
     ),
   ]);
 
-let make = (~lightBG=true, ~render) => render(cls(lightBG), detailsCls);
+let component = ReasonReact.statelessComponent("GalleryItem");
+
+let make = (~lightBG=true, children) => {
+  ...component,
+  render: _ => children(cls(lightBG), detailsCls),
+};

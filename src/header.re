@@ -220,4 +220,4 @@ let make = _children => {
   },
 };
 
-let default = ReasonReact.wrapReasonForJs(~component, (_) => make([||]));
+let default = ReasonReact.wrapReasonForJs(~component, _ => make([||]));

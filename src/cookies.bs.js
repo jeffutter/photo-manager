@@ -2,7 +2,6 @@
 
 import * as $$String from "../node_modules/bs-platform/lib/es6/string.js";
 import * as Caml_int32 from "../node_modules/bs-platform/lib/es6/caml_int32.js";
-import * as ClientJs from "./lib/client.js";
 
 function createCookie(name, value, days, _) {
   if (days) {
@@ -49,9 +48,7 @@ function logOut($staropt$star, _) {
   if (setWarning) {
     localStorage.setItem("loginFlash", "Your login has expired or is invalid.");
   }
-  eraseCookie("access_token");
-  ClientJs.default.resetStore();
-  return /* () */0;
+  return eraseCookie("access_token");
 }
 
 export {
@@ -62,4 +59,4 @@ export {
   logOut ,
   
 }
-/* ./lib/client.js Not a pure module */
+/* No side effect */

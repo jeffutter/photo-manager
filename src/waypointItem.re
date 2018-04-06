@@ -23,8 +23,7 @@ let make =
       ~rating: option(int)=?,
       ~w: int,
       ~h: int,
-      ~render,
-      _children,
+      children,
     ) => {
   ...component,
   retainedProps: {
@@ -41,9 +40,9 @@ let make =
       },
     ) =>
     oldRetainedProps != newRetainedProps,
-  render: (_) =>
+  render: _ =>
     <Waypoint
       ?onEnter bottomOffset="-400px" topOffset="200px" fireOnRapidScroll=false>
-      <div className=(cls(~w, ~h))> (render()) </div>
+      <div className=(cls(~w, ~h))> (children()) </div>
     </Waypoint>,
 };

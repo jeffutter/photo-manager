@@ -1,17 +1,3 @@
-type image = {
-  .
-  "__typename": string,
-  "id": string,
-  "name": string,
-  "slug": string,
-  "thumbnail": Js.Nullable.t(string),
-  "large_url": string,
-  "small_url": string,
-  "width": string,
-  "height": string,
-  "rating": Js.Nullable.t(int),
-};
-
 type state = {
   lightboxIsOpen: bool,
   currentImage: int,
@@ -31,8 +17,8 @@ let rec splitDescendants =
         (
           (
             thumbedImageSlugs: list(string),
-            images: list(image),
-            galleries: list('a),
+            images: list(GalleryQueries.completeImage),
+            galleries: list(GalleryQueries.galleryNoDescendants),
           ),
           descendants,
         ) =>
@@ -43,32 +29,29 @@ let rec splitDescendants =
       List.rev(galleries),
     )
   | [descendant, ...rest] =>
-    switch (descendant##__typename) {
-    | "Image" =>
-      switch (Js.Nullable.toOption(descendant##thumbnail)) {
+    switch (descendant) {
+    | `CompleteImage(image) =>
+      switch (image##thumbnail) {
       | Some(_) =>
         splitDescendants(
           (
-            [descendant##slug, ...thumbedImageSlugs],
-            [descendant, ...images],
+            [image##slug, ...thumbedImageSlugs],
+            [image, ...images],
             galleries,
           ),
           rest,
         )
       | None =>
         splitDescendants(
-          (thumbedImageSlugs, [descendant, ...images], galleries),
+          (thumbedImageSlugs, [image, ...images], galleries),
           rest,
         )
       }
-    | "Gallery" =>
+    | `CompleteGallery(gallery) =>
       splitDescendants(
-        (thumbedImageSlugs, images, [descendant, ...galleries]),
+        (thumbedImageSlugs, images, [gallery, ...galleries]),
         rest,
       )
-    | type_ =>
-      Js.log("Unknown Type: " ++ type_);
-      splitDescendants((thumbedImageSlugs, images, galleries), rest);
     }
   };
 
@@ -77,9 +60,8 @@ let make =
       ~name="",
       ~path=[||],
       ~slug="",
-      ~descendants=[||],
-      ~loadNextPage: Js.Array.t(string) => unit,
-      ~submitRating,
+      ~descendants: GalleryQueries.completeDescendants=[||],
+      ~loadNextPage: array(string) => unit,
       _children,
     ) => {
   ...component,
@@ -112,9 +94,7 @@ let make =
             | Some(_) => ()
             | None =>
               state.loadingTimeout :=
-                Some(
-                  Js.Global.setTimeout(self.reduce((_) => LoadImages), 200),
-                );
+                Some(Js.Global.setTimeout(self.reduce(_ => LoadImages), 200));
               ();
             }
         ),
@@ -130,7 +110,13 @@ let make =
         newState,
         (
           _self =>
-            List.iter(chunk => loadNextPage(Array.of_list(chunk)), chunks)
+            List.iter(
+              chunk => {
+                let someChunk = chunk |> Array.of_list;
+                loadNextPage(someChunk);
+              },
+              chunks,
+            )
         ),
       );
     },
@@ -144,7 +130,7 @@ let make =
       );
     let renderedImages =
       List.mapi(
-        (index, image) =>
+        (index, image: GalleryQueries.completeImage) =>
           <GalleryImage
             key=image##id
             slug=image##slug
@@ -161,10 +147,9 @@ let make =
                 }
             )
             handleOpen=(self.reduce(_event => OpenLightbox(index)))
-            thumbnail=(Js.Nullable.toOption(image##thumbnail))
+            thumbnail=image##thumbnail
             name=image##name
-            rating=(Js.Nullable.toOption(image##rating))
-            submitRating
+            rating=image##rating
           />,
         images,
       );
@@ -172,9 +157,9 @@ let make =
       List.concat([renderedGalleries, renderedImages]);
     let swipeImages =
       List.map(
-        (image: image) => {
-          "src": image##large_url,
-          "msrc": image##small_url,
+        (image: GalleryQueries.completeImage) => {
+          "src": image##largeUrl,
+          "msrc": image##smallUrl,
           "w": image##width,
           "h": image##height,
           "title": image##name,
