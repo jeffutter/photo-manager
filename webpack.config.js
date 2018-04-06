@@ -3,6 +3,7 @@ const BrotliPlugin = require('brotli-webpack-plugin');
 const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 const CompressionPlugin = require("compression-webpack-plugin");
+const CleanWebpackPlugin = require("clean-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const ManifestPlugin = require("webpack-manifest-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
@@ -236,6 +237,7 @@ module.exports = {
     extensions: [".web.js", ".mjs", ".js", ".json", ".web.jsx", ".jsx"]
   },
   plugins: [
+    new CleanWebpackPlugin(["build"]),
     new webpack.DefinePlugin(process.env.NODE_ENV || "development"),
     isProd ? new MiniCssExtractPlugin({
       // Options similar to the same options in webpackOptions.output
