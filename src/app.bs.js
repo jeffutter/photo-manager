@@ -69,27 +69,49 @@ var component$1 = ReasonReact.reducerComponent("App");
 function mapUrlToRoute(url) {
   var match = url[/* path */0];
   var match$1 = Cookies$PhotoManager.loggedIn(/* () */0);
-  if (match$1 !== 0) {
-    if (match) {
-      if (match[0] === "gallery") {
-        var rest = match[1];
-        if (rest) {
-          return /* Gallery */Block.__(1, [rest]);
-        } else {
-          return /* Gallery */Block.__(1, [/* :: */[
-                      "root",
-                      /* [] */0
-                    ]]);
-        }
-      } else {
-        return /* LoginForm */0;
-      }
-    } else {
-      return /* Redirect */Block.__(0, ["/gallery"]);
+  var exit = 0;
+  if (match) {
+    switch (match[0]) {
+      case "gallery" : 
+          var rest = match[1];
+          if (rest) {
+            if (match$1 !== 0) {
+              return /* Gallery */Block.__(1, [rest]);
+            } else {
+              exit = 1;
+            }
+          } else if (match$1 !== 0) {
+            return /* Gallery */Block.__(1, [/* :: */[
+                        "root",
+                        /* [] */0
+                      ]]);
+          } else {
+            exit = 1;
+          }
+          break;
+      case "login" : 
+          if (match[1]) {
+            exit = 1;
+          } else {
+            return /* LoginForm */0;
+          }
+          break;
+      default:
+        exit = 1;
     }
+  } else if (match$1 !== 0) {
+    return /* Redirect */Block.__(0, ["/gallery"]);
   } else {
-    return /* LoginForm */0;
+    exit = 1;
   }
+  if (exit === 1) {
+    if (match$1 !== 0) {
+      return /* LoginForm */0;
+    } else {
+      return /* Redirect */Block.__(0, ["/login"]);
+    }
+  }
+  
 }
 
 function make$1() {

@@ -10,6 +10,8 @@ let cls =
     height(`percent(100.0)),
   ]);
 
+type retainedProps = {path: string};
+
 module Redirect = {
   let component = ReasonReact.statelessComponent("Redirect");
   let make = (~path, _children) => {
@@ -41,7 +43,8 @@ let component = ReasonReact.reducerComponent("App");
 
 let mapUrlToRoute = (url: ReasonReact.Router.url) =>
   switch (url.path, Cookies.loggedIn()) {
-  | (_, false) => LoginForm
+  | (["login"], false) => LoginForm
+  | (_, false) => Redirect("/login")
   | (["gallery"], true) => Gallery(["root"])
   | (["gallery", ...rest], true) => Gallery(rest)
   | ([], true) => Redirect("/gallery")

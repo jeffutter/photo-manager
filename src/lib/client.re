@@ -29,17 +29,21 @@ let context =
     };
   });
 
-let errorHandler = _errorResponse => ();
+external sketcyConvertErrorResponse :
+  ReasonApolloTypes.apolloLinkErrorResponse =>
+  {. "networkError": ReasonApolloTypes.networkError} =
+  "%identity";
 
-/* switch (errorResponse##networkError) {
-   | Some(error) =>
-     if (error##statusCode == 401) {
-       Cookies.logOut(~setWarning=true, ());
-     } else {
-       ();
-     }
-   | None => ()
-   }; */
+let errorHandler = errorResponse => {
+  let error = sketcyConvertErrorResponse(errorResponse);
+  if (error##networkError##statusCode == 401) {
+    Cookies.logOut(~setWarning=true, ());
+    ReasonReact.Router.push("/login");
+  } else {
+    ();
+  };
+};
+
 let errorLink = ApolloLinks.createErrorLink(errorHandler);
 
 /* Create an HTTP Link */
