@@ -9,16 +9,12 @@ let cls =
     padding2(~h=px(2), ~v=zero),
   ]);
 
+let star = filled => ReasonReact.stringToElement(filled ? {|★|} : {|☆|});
+
 let make = (~filled=false, ~index: int, ~handleClick, _children) => {
   ...component,
   render: _self => {
     let handleClickWithI = handleClick(index);
-    filled ?
-      <span className=cls onClick=handleClickWithI>
-        (ReasonReact.stringToElement({j|★|j}))
-      </span> :
-      <span className=cls onClick=handleClickWithI>
-        (ReasonReact.stringToElement({j|☆|j}))
-      </span>;
+    <span className=cls onClick=handleClickWithI> (star(filled)) </span>;
   },
 };
