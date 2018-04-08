@@ -25,12 +25,17 @@
   },
   "scripts": {
     "build": "bsb -make-world",
-    "start": "concurrently \"bsb -make-world -w\" \"NODE_ENV=development webpack-dev-server --open\"",
-    "start:hot": "concurrently \"bsb -make-world -w\" \"NODE_ENV=development webpack-dev-server --hot --open\"",
+    "schema":
+      "mix absinthe.schema.json --schema PhotoManagementApi.Web.Schema graphql_schema.json",
+    "start":
+      "concurrently \"bsb -make-world -w\" \"NODE_ENV=development webpack-dev-server --open\"",
+    "start:hot":
+      "concurrently \"bsb -make-world -w\" \"NODE_ENV=development webpack-dev-server --hot --open\"",
     "clean": "bsb -clean-world",
     "test": "echo \"Error: no test specified\" && exit 1",
     "webpack": "NODE_ENV=development webpack -w",
-    "webpack:production": "bsb -clean-world && bsb -make-world && NODE_ENV=production webpack && rm -rf apps/photo_management_api_web/priv/static/* && cp -Rp build/* apps/photo_management_api_web/priv/static"
+    "webpack:production":
+      "bsb -clean-world && bsb -make-world && NODE_ENV=production webpack && rm -rf apps/photo_management_api_web/priv/static/* && cp -Rp build/* apps/photo_management_api_web/priv/static"
   },
   "devDependencies": {
     "@glennsl/bs-jest": "^0.4.2",
@@ -74,11 +79,6 @@
       "last 2 firefox versions",
       "last 2 edge versions"
     ],
-    "production": [
-      ">1%",
-      "last 4 versions",
-      "Firefox ESR",
-      "not ie < 11"
-    ]
+    "production": [">1%", "last 4 versions", "Firefox ESR", "not ie < 11"]
   }
 }
