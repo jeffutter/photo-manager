@@ -20,9 +20,9 @@ var cls = Css.style(/* :: */[
 
 function star(filled) {
   if (filled !== 0) {
-    return "\xe2\x98\x85";
+    return "★";
   } else {
-    return "\xe2\x98\x86";
+    return "☆";
   }
 }
 
