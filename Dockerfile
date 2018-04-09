@@ -11,6 +11,7 @@ RUN yarn install
 
 ADD webpack.config.js /src
 ADD bsconfig.json /src/bsconfig.json
+ADD graphql_schema.json /src/graphql_schema.json
 ADD src/ /src/src
 ADD __tests__/ /src/__tests__
 ADD public/ /src/public
