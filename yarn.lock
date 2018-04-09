@@ -7729,8 +7729,8 @@ range-parser@^1.0.3, range-parser@~1.2.0:
   resolved "https://registry.yarnpkg.com/range-parser/-/range-parser-1.2.0.tgz#f49be6b487894ddc40dcc94a322f611092e00d5e"
 
 raven-js@^3.24.0:
-  version "3.24.0"
-  resolved "https://registry.yarnpkg.com/raven-js/-/raven-js-3.24.0.tgz#59464d8bc4b3812ae87a282e9bb98ecad5b4b047"
+  version "3.24.1"
+  resolved "https://registry.yarnpkg.com/raven-js/-/raven-js-3.24.1.tgz#7327e08786248517eedd36205bf50f1047821ffa"
 
 raw-body@2.3.2:
   version "2.3.2"
@@ -9701,11 +9701,12 @@ webpack-log@^1.0.1, webpack-log@^1.1.2:
     uuid "^3.1.0"
 
 webpack-manifest-plugin@^2.0.0-rc.2:
-  version "2.0.0-rc.2"
-  resolved "https://registry.yarnpkg.com/webpack-manifest-plugin/-/webpack-manifest-plugin-2.0.0-rc.2.tgz#7e12abb805795fe256b085a214a15d9568f0e692"
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/webpack-manifest-plugin/-/webpack-manifest-plugin-2.0.0.tgz#691a0209e12083c375f6f22732ebc0e660437529"
   dependencies:
     fs-extra "^0.30.0"
     lodash ">=3.5 <5"
+    tapable "^1.0.0"
 
 webpack-null-plugin@^0.0.2:
   version "0.0.2"
