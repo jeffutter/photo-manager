@@ -5,6 +5,7 @@ const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 const CompressionPlugin = require("compression-webpack-plugin");
 const CleanWebpackPlugin = require("clean-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+//const InterpolateHtmlPlugin = require('react-dev-utils/InterpolateHtmlPlugin');
 const ManifestPlugin = require("webpack-manifest-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
@@ -19,6 +20,40 @@ const shouldUseSourceMap = process.env.GENERATE_SOURCEMAP !== "false";
 const isDev = () => process.env.NODE_ENV === "development";
 const isProd = () => process.env.NODE_ENV === "production";
 const only = (predicate, plugin) => (predicate() ? plugin() : new WebpackNullPlugin());
+
+const REACT_APP = /^REACT_APP_/i;
+
+function getClientEnvironment(publicUrl) {
+  const raw = Object.keys(process.env)
+    .filter(key => REACT_APP.test(key))
+    .reduce(
+      (env, key) => {
+        env[key] = process.env[key];
+        return env;
+      },
+      {
+        // Useful for determining whether we’re running in production mode.
+        // Most importantly, it switches React into the correct mode.
+        NODE_ENV: process.env.NODE_ENV || 'development',
+        // Useful for resolving the correct path to static assets in `public`.
+        // For example, <img src={process.env.PUBLIC_URL + '/img/logo.png'} />.
+        // This should only be used as an escape hatch. Normally you would put
+        // images into the `src` and `import` them in code to get their paths.
+        PUBLIC_URL: publicUrl,
+      }
+    );
+  // Stringify all values so we can feed into Webpack DefinePlugin
+  const stringified = {
+    'process.env': Object.keys(raw).reduce((env, key) => {
+      env[key] = JSON.stringify(raw[key]);
+      return env;
+    }, {}),
+  };
+
+  return { raw, stringified };
+}
+
+const env = getClientEnvironment("/");
 
 const postCSSLoaderOptions = {
   // Necessary for external CSS imports to work
@@ -241,7 +276,8 @@ module.exports = {
   },
   plugins: [
     new CleanWebpackPlugin(["build"]),
-    new webpack.DefinePlugin(process.env.NODE_ENV || "development"),
+    // new InterpolateHtmlPlugin(env.raw),
+    new webpack.DefinePlugin(env.stringified),
     only(isProd, () =>
       new MiniCssExtractPlugin({
         // Options similar to the same options in webpackOptions.output
@@ -252,8 +288,8 @@ module.exports = {
     only(isDev, () => new webpack.NamedModulesPlugin()),
     only(isDev, () => new CaseSensitivePathsPlugin()),
     only(isProd, () => new ManifestPlugin({
-      fileName: "asset-manifest.json"
-      // publicPath: publicPath
+      fileName: "asset-manifest.json",
+      publicPath: "/"
     })),
     only(isProd, () => new BundleAnalyzerPlugin({
       analyzerMode: "static",
@@ -298,8 +334,11 @@ module.exports = {
       minify: true,
       // Don't precache sourcemaps (they're large) and build asset manifest:
       staticFileGlobsIgnorePatterns: [/\.map$/, /asset-manifest\.json$/],
+      stripPrefix: path.join(__dirname, 'build').replace(/\\/g, "/"),
       // `navigateFallback` and `navigateFallbackWhitelist` are disabled by default; see
       // https://github.com/facebook/create-react-app/blob/master/packages/react-scripts/template/README.md#service-worker-considerations
+      navigateFallback: '/index.html',
+      navigateFallbackWhitelist: [/^(?!\/__).*/],
       // navigateFallback: publicUrl + '/index.html',
       // navigateFallbackWhitelist: [/^(?!\/__).*/],
     })),
