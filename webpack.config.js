@@ -33,9 +33,9 @@ const postCSSLoaderOptions = {
 };
 
 module.exports = {
-  entry: isProd() ? "./src/index.bs.js" : [
+  entry: isProd() ? "./src/Index.bs.js" : [
     require.resolve('react-dev-utils/webpackHotDevClient'),
-    "./src/index.bs.js"
+    "./src/Index.bs.js"
   ],
   output: {
     path: outputDir,
