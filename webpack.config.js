@@ -256,6 +256,7 @@ module.exports = {
       openAnalyzer: false
     }) : null,
     new HtmlWebpackPlugin({
+      title: "Jeffery Utter Gallery",
       inject: true,
       template: "./src/index.html",
       minify: {
