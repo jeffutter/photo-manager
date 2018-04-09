@@ -2595,6 +2595,10 @@ bs-css@^6.6.0:
   dependencies:
     glamor "^2.0.0"
 
+bs-dynamic-import@^0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/bs-dynamic-import/-/bs-dynamic-import-0.3.0.tgz#538f6452774ffaf67471511ec971cc6b9ccb2ca0"
+
 bs-fetch@^0.2.1:
   version "0.2.1"
   resolved "https://registry.yarnpkg.com/bs-fetch/-/bs-fetch-0.2.1.tgz#165bed867009f2e91efb959ca1c0ff940d8cd19a"

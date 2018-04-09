@@ -23,7 +23,7 @@
   "suffix": ".bs.js",
   "namespace": true,
   "bsc-flags": ["-bs-super-errors"],
-  "bs-dependencies": ["bs-css", "reason-react", "reason-apollo", "bs-fetch", "bs-json"],
+  "bs-dependencies": ["bs-css", "reason-react", "reason-apollo", "bs-fetch", "bs-json", "bs-dynamic-import"],
   "bs-dev-dependencies": ["@glennsl/bs-jest"],
   "refmt": 3,
   "warnings": {

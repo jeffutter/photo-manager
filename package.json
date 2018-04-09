@@ -10,6 +10,7 @@
     "apollo-link-error": "^1.0.0",
     "apollo-link-http": "^1.0.0",
     "bricks.js": "^1.8.0",
+    "bs-dynamic-import": "^0.3.0",
     "bs-fetch": "^0.2.1",
     "bs-json": "^1.0.1",
     "glamor": "^2.20.40",

@@ -2,10 +2,11 @@
 
 import * as Css from "../node_modules/bs-css/src/Css.js";
 import * as Json from "../node_modules/bs-json/src/Json.js";
-import * as RavenJs from "raven-js";
+import * as Curry from "../node_modules/bs-platform/lib/es6/curry.js";
 import * as ReactDOMRe from "../node_modules/reason-react/src/ReactDOMRe.js";
 import * as Json_decode from "../node_modules/bs-json/src/Json_decode.js";
 import * as ReasonReact from "../node_modules/reason-react/src/ReasonReact.js";
+import * as DynamicImport from "../node_modules/bs-dynamic-import/src/DynamicImport.bs.js";
 import * as App$PhotoManager from "./app.bs.js";
 import * as RegisterServiceWorker from "./registerServiceWorker";
 
@@ -15,17 +16,22 @@ function config(json) {
 
 var Decode = /* module */[/* config */config];
 
-fetch("/config").then((function (prim) {
-              return prim.text();
-            })).then((function (text) {
-            return Promise.resolve(config(Json.parseOrRaise(text)));
-          })).then((function (config) {
-          var ravenConfig = RavenJs.config(config[/* sentry_dsn */0]);
-          ravenConfig.install();
-          return Promise.resolve(/* () */0);
-        })).catch((function (err) {
-        console.log("Error loading Raven. Bad response from server", err);
-        return Promise.resolve(/* () */0);
+DynamicImport.$less$$bang$great(DynamicImport.$less$$great(DynamicImport.resolve(import("./raven.bs.js")), (function (Raven) {
+            fetch("/config").then((function (prim) {
+                          return prim.text();
+                        })).then((function (text) {
+                        return Promise.resolve(config(Json.parseOrRaise(text)));
+                      })).then((function (config) {
+                      Curry._1(Raven[/* setup */0], config[/* sentry_dsn */0]);
+                      return Promise.resolve(/* () */0);
+                    })).catch((function (err) {
+                    console.log("Error loading Raven. Bad response from server", err);
+                    return Promise.resolve(/* () */0);
+                  }));
+            return /* () */0;
+          })), (function (error) {
+        console.log(error);
+        return /* () */0;
       }));
 
 Css.$$global("body, html", /* :: */[

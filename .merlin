@@ -18,6 +18,8 @@ S /Users/jutter/src/photo-manager/node_modules/bs-fetch/lib/ocaml
 B /Users/jutter/src/photo-manager/node_modules/bs-fetch/lib/ocaml
 S /Users/jutter/src/photo-manager/node_modules/bs-json/lib/ocaml
 B /Users/jutter/src/photo-manager/node_modules/bs-json/lib/ocaml
+S /Users/jutter/src/photo-manager/node_modules/bs-dynamic-import/lib/ocaml
+B /Users/jutter/src/photo-manager/node_modules/bs-dynamic-import/lib/ocaml
 S /Users/jutter/src/photo-manager/node_modules/@glennsl/bs-jest/lib/ocaml
 B /Users/jutter/src/photo-manager/node_modules/@glennsl/bs-jest/lib/ocaml
 S __tests__
