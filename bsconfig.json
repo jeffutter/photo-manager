@@ -15,15 +15,15 @@
   ],
   "package-specs": [
     {
-      /*"module": "commonjs",*/
       "module": "es6-global",
       "in-source": true
     }
   ],
+  "ppx-flags": ["graphql_ppx/ppx"],
   "suffix": ".bs.js",
   "namespace": true,
   "bsc-flags": ["-bs-super-errors"],
-  "bs-dependencies": ["bs-css", "reason-react"],
+  "bs-dependencies": ["bs-css", "reason-react", "reason-apollo", "bs-fetch", "bs-json", "bs-dynamic-import"],
   "bs-dev-dependencies": ["@glennsl/bs-jest"],
   "refmt": 3,
   "warnings": {

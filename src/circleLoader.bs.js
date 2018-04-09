@@ -77,16 +77,10 @@ function make() {
   return newrecord;
 }
 
-var $$default = ReasonReact.wrapReasonForJs(component, (function () {
-        return make(/* array */[]);
-      }));
-
 export {
   component ,
   cls ,
   make ,
-  $$default ,
-  $$default as default,
   
 }
 /* component Not a pure module */

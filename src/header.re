@@ -219,5 +219,3 @@ let make = _children => {
     </header>;
   },
 };
-
-let default = ReasonReact.wrapReasonForJs(~component, (_) => make([||]));

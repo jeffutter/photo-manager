@@ -6,7 +6,6 @@ import * as Block from "../node_modules/bs-platform/lib/es6/block.js";
 import * as Curry from "../node_modules/bs-platform/lib/es6/curry.js";
 import * as React from "react";
 import * as ReasonReact from "../node_modules/reason-react/src/ReasonReact.js";
-import * as Js_primitive from "../node_modules/bs-platform/lib/es6/js_primitive.js";
 import * as Utils$PhotoManager from "./utils.bs.js";
 import * as PhotoSwipe$PhotoManager from "./photoSwipe.bs.js";
 import * as BreadCrumbs$PhotoManager from "./breadCrumbs.bs.js";
@@ -24,60 +23,50 @@ function splitDescendants(_param, _descendants) {
     var images = param[1];
     var thumbedImageSlugs = param[0];
     if (descendants) {
-      var rest = descendants[1];
       var descendant = descendants[0];
-      var type_ = descendant.__typename;
-      switch (type_) {
-        case "Gallery" : 
-            _descendants = rest;
-            _param = /* tuple */[
-              thumbedImageSlugs,
-              images,
-              /* :: */[
-                descendant,
-                galleries
-              ]
-            ];
-            continue ;
-            case "Image" : 
-            var match = descendant.thumbnail;
-            _descendants = rest;
-            if (match == null) {
-              _param = /* tuple */[
-                thumbedImageSlugs,
-                /* :: */[
-                  descendant,
-                  images
-                ],
-                galleries
-              ];
-              continue ;
-              
-            } else {
-              _param = /* tuple */[
-                /* :: */[
-                  descendant.slug,
-                  thumbedImageSlugs
-                ],
-                /* :: */[
-                  descendant,
-                  images
-                ],
-                galleries
-              ];
-              continue ;
-              
-            }
-        default:
-          console.log("Unknown Type: " + type_);
-          _descendants = rest;
+      var rest = descendants[1];
+      if (descendant[0] >= 121710777) {
+        _descendants = rest;
+        _param = /* tuple */[
+          thumbedImageSlugs,
+          images,
+          /* :: */[
+            descendant[1],
+            galleries
+          ]
+        ];
+        continue ;
+        
+      } else {
+        var image = descendant[1];
+        var match = image.thumbnail;
+        _descendants = rest;
+        if (match) {
           _param = /* tuple */[
-            thumbedImageSlugs,
-            images,
+            /* :: */[
+              image.slug,
+              thumbedImageSlugs
+            ],
+            /* :: */[
+              image,
+              images
+            ],
             galleries
           ];
           continue ;
           
+        } else {
+          _param = /* tuple */[
+            thumbedImageSlugs,
+            /* :: */[
+              image,
+              images
+            ],
+            galleries
+          ];
+          continue ;
+          
+        }
       }
     } else {
       return /* tuple */[
@@ -89,7 +78,7 @@ function splitDescendants(_param, _descendants) {
   };
 }
 
-function make($staropt$star, $staropt$star$1, $staropt$star$2, $staropt$star$3, loadNextPage, submitRating, _) {
+function make($staropt$star, $staropt$star$1, $staropt$star$2, $staropt$star$3, loadNextPage, _) {
   var name = $staropt$star ? $staropt$star[0] : "";
   var path = $staropt$star$1 ? $staropt$star$1[0] : /* array */[];
   var slug = $staropt$star$2 ? $staropt$star$2[0] : "";
@@ -104,23 +93,23 @@ function make($staropt$star, $staropt$star$1, $staropt$star$2, $staropt$star$3, 
       var images = match[1];
       var thumbedImageSlugs = match[0];
       var renderedGalleries = List.map((function (item) {
-              return ReasonReact.element(/* Some */[item.id], /* None */0, Curry._3(GalleryThumb$PhotoManager.make(item.name, item.slug)(/* None */0), /* None */0, /* None */0, /* array */[]));
+              return ReasonReact.element(/* Some */[item.id], /* None */0, GalleryThumb$PhotoManager.make(item.name, item.slug, /* array */[]));
             }), match[2]);
       var renderedImages = List.mapi((function (index, image) {
               return ReasonReact.element(/* Some */[image.id], /* None */0, GalleryImage$PhotoManager.make(/* Some */[(function () {
-                                    var match = List.exists((function (imageSlug) {
-                                            return +(image.slug === imageSlug);
-                                          }), thumbedImageSlugs);
-                                    if (match !== 0) {
-                                      return /* () */0;
-                                    } else {
-                                      return Curry._2(self[/* reduce */1], (function () {
-                                                    return /* AddImage */Block.__(1, [image.slug]);
-                                                  }), /* () */0);
-                                    }
-                                  })], image.name, image.slug, Js_primitive.null_undefined_to_opt(image.thumbnail), Js_primitive.null_undefined_to_opt(image.rating), Curry._1(self[/* reduce */1], (function () {
-                                      return /* OpenLightbox */Block.__(0, [index]);
-                                    })), submitRating)(/* array */[]));
+                                  var match = List.exists((function (imageSlug) {
+                                          return +(image.slug === imageSlug);
+                                        }), thumbedImageSlugs);
+                                  if (match !== 0) {
+                                    return /* () */0;
+                                  } else {
+                                    return Curry._2(self[/* reduce */1], (function () {
+                                                  return /* AddImage */Block.__(1, [image.slug]);
+                                                }), /* () */0);
+                                  }
+                                })], image.name, image.slug, image.thumbnail, image.rating, Curry._1(self[/* reduce */1], (function () {
+                                    return /* OpenLightbox */Block.__(0, [index]);
+                                  })), /* array */[]));
             }), images);
       var renderedDescendants = List.concat(/* :: */[
             renderedGalleries,
@@ -131,8 +120,8 @@ function make($staropt$star, $staropt$star$1, $staropt$star$2, $staropt$star$3, 
           ]);
       var swipeImages = List.map((function (image) {
               return {
-                      src: image.large_url,
-                      msrc: image.small_url,
+                      src: image.largeUrl,
+                      msrc: image.smallUrl,
                       w: image.width,
                       h: image.height,
                       title: image.name

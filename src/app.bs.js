@@ -6,12 +6,14 @@ import * as Block from "../node_modules/bs-platform/lib/es6/block.js";
 import * as Curry from "../node_modules/bs-platform/lib/es6/curry.js";
 import * as React from "react";
 import * as ReasonReact from "../node_modules/reason-react/src/ReasonReact.js";
-import * as ClientJs from "./lib/client.js";
+import * as Client$PhotoManager from "./lib/client.bs.js";
 import * as Header$PhotoManager from "./header.bs.js";
 import * as Cookies$PhotoManager from "./cookies.bs.js";
 import * as LoginForm$PhotoManager from "./loginForm.bs.js";
-import * as GalleryRoute$PhotoManager from "./galleryRoute.bs.js";
-import * as ApolloProvider$PhotoManager from "./apolloProvider.bs.js";
+import * as GalleryQueries$PhotoManager from "./routes/gallery/galleryQueries.bs.js";
+import * as FullPageSpinner$PhotoManager from "./fullPageSpinner.bs.js";
+import * as LoadMoreWrapper$PhotoManager from "./loadMoreWrapper.bs.js";
+import * as GalleryContainer$PhotoManager from "./galleryContainer.bs.js";
 
 var cls = Css.style(/* :: */[
       Css.transition(/* Some */[400], /* None */0, /* Some */[/* ease */-1022587922], "all"),
@@ -65,30 +67,51 @@ function reducer(action, _) {
 var component$1 = ReasonReact.reducerComponent("App");
 
 function mapUrlToRoute(url) {
-  console.log(url[/* path */0]);
   var match = url[/* path */0];
   var match$1 = Cookies$PhotoManager.loggedIn(/* () */0);
-  if (match$1 !== 0) {
-    if (match) {
-      if (match[0] === "gallery") {
-        var rest = match[1];
-        if (rest) {
-          return /* Gallery */Block.__(1, [rest]);
-        } else {
-          return /* Gallery */Block.__(1, [/* :: */[
-                      "",
-                      /* [] */0
-                    ]]);
-        }
-      } else {
-        return /* LoginForm */0;
-      }
-    } else {
-      return /* Redirect */Block.__(0, ["/gallery"]);
+  var exit = 0;
+  if (match) {
+    switch (match[0]) {
+      case "gallery" : 
+          var rest = match[1];
+          if (rest) {
+            if (match$1 !== 0) {
+              return /* Gallery */Block.__(1, [rest]);
+            } else {
+              exit = 1;
+            }
+          } else if (match$1 !== 0) {
+            return /* Gallery */Block.__(1, [/* :: */[
+                        "root",
+                        /* [] */0
+                      ]]);
+          } else {
+            exit = 1;
+          }
+          break;
+      case "login" : 
+          if (match[1]) {
+            exit = 1;
+          } else {
+            return /* LoginForm */0;
+          }
+          break;
+      default:
+        exit = 1;
     }
+  } else if (match$1 !== 0) {
+    return /* Redirect */Block.__(0, ["/gallery"]);
   } else {
-    return /* LoginForm */0;
+    exit = 1;
   }
+  if (exit === 1) {
+    if (match$1 !== 0) {
+      return /* LoginForm */0;
+    } else {
+      return /* Redirect */Block.__(0, ["/login"]);
+    }
+  }
+  
 }
 
 function make$1() {
@@ -96,17 +119,30 @@ function make$1() {
   newrecord[/* render */9] = (function (self) {
       var match = self[/* state */2][/* route */0];
       var tmp;
-      tmp = typeof match === "number" ? ReasonReact.element(/* None */0, /* None */0, LoginForm$PhotoManager.make(/* array */[])) : (
-          match.tag ? React.createElement("div", undefined, ReasonReact.element(/* None */0, /* None */0, Header$PhotoManager.make(/* array */[])), ReasonReact.element(/* None */0, /* None */0, GalleryRoute$PhotoManager.make({
-                          params: {
-                            slug: $$Array.of_list(match[0]).join("/")
-                          }
-                        }, /* None */0, /* array */[])), React.createElement("div", undefined, "Gallery")) : ReasonReact.element(/* None */0, /* None */0, make(match[0], /* array */[]))
-        );
+      if (typeof match === "number") {
+        tmp = ReasonReact.element(/* None */0, /* None */0, LoginForm$PhotoManager.make(/* array */[]));
+      } else if (match.tag) {
+        var slug = $$Array.of_list(match[0]).join("/");
+        var galleryQuery = GalleryQueries$PhotoManager.GalleryQuery[/* make */6](slug, /* () */0);
+        tmp = React.createElement("div", undefined, ReasonReact.element(/* None */0, /* None */0, Header$PhotoManager.make(/* array */[])), ReasonReact.element(/* None */0, /* None */0, Curry._2(Client$PhotoManager.Instance[/* Query */1][/* make */2], galleryQuery, (function (response, parse) {
+                        if (typeof response === "number") {
+                          return ReasonReact.element(/* None */0, /* None */0, FullPageSpinner$PhotoManager.make(/* array */[]));
+                        } else if (response.tag) {
+                          return React.createElement("div", undefined, response[0]);
+                        } else {
+                          var data = Curry._1(parse, response[0]);
+                          return ReasonReact.element(/* None */0, /* None */0, LoadMoreWrapper$PhotoManager.make(slug, (function (moreGallery, loadMore) {
+                                            return ReasonReact.element(/* None */0, /* None */0, GalleryContainer$PhotoManager.make(data.gallery, moreGallery, loadMore, /* array */[]));
+                                          })));
+                        }
+                      }))));
+      } else {
+        tmp = ReasonReact.element(/* None */0, /* None */0, make(match[0], /* array */[]));
+      }
       return React.createElement("div", {
                   className: cls,
                   id: "app"
-                }, ReasonReact.element(/* None */0, /* None */0, ApolloProvider$PhotoManager.make(ClientJs.default, /* array */[tmp])));
+                }, tmp);
     });
   newrecord[/* initialState */10] = (function () {
       return /* record */[/* route : LoginForm */0];
@@ -128,12 +164,15 @@ function make$1() {
   return newrecord;
 }
 
+var Query = 0;
+
 export {
   cls ,
   Redirect ,
   reducer ,
   component$1 as component,
   mapUrlToRoute ,
+  Query ,
   make$1 as make,
   
 }

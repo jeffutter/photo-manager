@@ -7,9 +7,11 @@ import * as Curry from "../node_modules/bs-platform/lib/es6/curry.js";
 import * as React from "react";
 import * as ReasonReact from "../node_modules/reason-react/src/ReasonReact.js";
 import * as Star$PhotoManager from "./star.bs.js";
+import * as Client$PhotoManager from "./lib/client.bs.js";
 import * as GalleryItem$PhotoManager from "./galleryItem.bs.js";
 import * as CircleLoader$PhotoManager from "./circleLoader.bs.js";
 import * as WaypointItem$PhotoManager from "./waypointItem.bs.js";
+import * as GalleryQueries$PhotoManager from "./routes/gallery/galleryQueries.bs.js";
 
 function stars(_filled, _total, _index, handleClick, _acc) {
   while(true) {
@@ -46,55 +48,77 @@ function stars(_filled, _total, _index, handleClick, _acc) {
   };
 }
 
-function handleClickStar(submitRating, slug, i, $$event) {
+function handleClickStar(ratingMutation, mutate, i, $$event) {
   $$event.stopPropagation();
-  return Curry._1(submitRating, {
-              slug: slug,
-              rating: i
-            });
+  return Curry._1(mutate, Curry._2(ratingMutation, i, /* () */0));
 }
 
-function make(onEnter, name, slug, thumbnail, rating, handleOpen, submitRating) {
-  return (function (param) {
-      return WaypointItem$PhotoManager.make(onEnter, name, slug, thumbnail, rating, 320, 295, (function () {
-                    return GalleryItem$PhotoManager.make(/* Some */[/* true */1], (function (wrapClass, detailsClass) {
-                                  var stars$1 = rating ? stars(rating[0], 5, 1, (function (param, param$1) {
-                                            return handleClickStar(submitRating, slug, param, param$1);
-                                          }), /* [] */0) : stars(0, 5, 1, (function (param, param$1) {
-                                            return handleClickStar(submitRating, slug, param, param$1);
-                                          }), /* [] */0);
-                                  return React.createElement("div", {
-                                              className: wrapClass,
-                                              onClick: handleOpen
-                                            }, thumbnail ? React.createElement("img", {
-                                                    className: Css.style(/* :: */[
-                                                          /* `declaration */[
-                                                            -434952966,
-                                                            /* tuple */[
-                                                              "objectFit",
-                                                              "cover"
-                                                            ]
-                                                          ],
-                                                          /* :: */[
-                                                            Css.display(Css.block),
-                                                            /* [] */0
-                                                          ]
-                                                        ]),
-                                                    height: "225",
-                                                    src: thumbnail[0],
-                                                    width: "300"
-                                                  }) : ReasonReact.element(/* None */0, /* None */0, CircleLoader$PhotoManager.make(/* array */[])), React.createElement("div", {
-                                                  className: detailsClass
-                                                }, React.createElement("div", undefined, name), ReasonReact.createDomElement("div", { }, $$Array.of_list(stars$1))));
-                                }));
-                  }), param);
+var component = ReasonReact.statelessComponent("GalleryItem");
+
+var imgCls = Css.style(/* :: */[
+      /* `declaration */[
+        -434952966,
+        /* tuple */[
+          "objectFit",
+          "cover"
+        ]
+      ],
+      /* :: */[
+        Css.display(Css.block),
+        /* [] */0
+      ]
+    ]);
+
+function make(onEnter, name, slug, thumbnail, rating, handleOpen, _) {
+  var newrecord = component.slice();
+  newrecord[/* render */9] = (function () {
+      return ReasonReact.element(/* None */0, /* None */0, WaypointItem$PhotoManager.make(onEnter, name, slug, thumbnail, rating, 320, 295, (function () {
+                        return ReasonReact.element(/* None */0, /* None */0, GalleryItem$PhotoManager.make(/* Some */[/* true */1], (function (wrapClass, detailsClass) {
+                                          return React.createElement("div", {
+                                                      className: wrapClass,
+                                                      onClick: handleOpen
+                                                    }, thumbnail ? React.createElement("img", {
+                                                            className: imgCls,
+                                                            height: "225",
+                                                            src: thumbnail[0],
+                                                            width: "300"
+                                                          }) : ReasonReact.element(/* None */0, /* None */0, CircleLoader$PhotoManager.make(/* array */[])), React.createElement("div", {
+                                                          className: detailsClass
+                                                        }, React.createElement("div", undefined, name), ReasonReact.element(/* None */0, /* None */0, Curry._1(Client$PhotoManager.Instance[/* Mutation */2][/* make */2], (function (mutate, result) {
+                                                                    var partial_arg = GalleryQueries$PhotoManager.RateImage[/* make */7];
+                                                                    var ratingMutation = function (param, param$1) {
+                                                                      return partial_arg(slug, param, param$1);
+                                                                    };
+                                                                    var rating$1;
+                                                                    if (typeof result === "number" || result.tag) {
+                                                                      rating$1 = rating;
+                                                                    } else {
+                                                                      var parse = Curry._2(ratingMutation, 0, /* () */0).parse;
+                                                                      var match = Curry._1(parse, result[0]).rateImage;
+                                                                      rating$1 = match ? match[0].rating : rating;
+                                                                    }
+                                                                    var stars$1 = rating$1 ? stars(rating$1[0], 5, 1, (function (param, param$1) {
+                                                                              return handleClickStar(ratingMutation, mutate, param, param$1);
+                                                                            }), /* [] */0) : stars(0, 5, 1, (function (param, param$1) {
+                                                                              return handleClickStar(ratingMutation, mutate, param, param$1);
+                                                                            }), /* [] */0);
+                                                                    return ReasonReact.createDomElement("div", { }, $$Array.of_list(stars$1));
+                                                                  })))));
+                                        })));
+                      })));
     });
+  return newrecord;
 }
+
+var Mutation = 0;
 
 export {
   stars ,
   handleClickStar ,
+  Mutation ,
+  component ,
+  imgCls ,
   make ,
   
 }
-/* Css Not a pure module */
+/* component Not a pure module */

@@ -12,10 +12,13 @@ const path = require("path");
 const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
 const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
 const webpack = require("webpack");
+const WebpackNullPlugin = require("webpack-null-plugin");
 
 const outputDir = path.join(__dirname, "build/");
-const isProd = process.env.NODE_ENV === "production";
 const shouldUseSourceMap = process.env.GENERATE_SOURCEMAP !== "false";
+const isDev = () => process.env.NODE_ENV === "development";
+const isProd = () => process.env.NODE_ENV === "production";
+const only = (predicate, plugin) => (predicate() ? plugin() : new WebpackNullPlugin());
 
 const postCSSLoaderOptions = {
   // Necessary for external CSS imports to work
@@ -30,7 +33,7 @@ const postCSSLoaderOptions = {
 };
 
 module.exports = {
-  entry: isProd ? "./src/index.bs.js" : [
+  entry: isProd() ? "./src/index.bs.js" : [
     require.resolve('react-dev-utils/webpackHotDevClient'),
     "./src/index.bs.js"
   ],
@@ -38,11 +41,11 @@ module.exports = {
     path: outputDir,
     // publicPath: outputDir,
     publicPath: "/",
-    filename: isProd ? "static/js/[name].[chunkhash:8].js" : 'static/js/bundle.js',
-    chunkFilename: isProd ? "static/js/[name].[chunkhash:8].chunk.js" : "static/js/[name].chunk.js"
+    filename: isProd() ? "static/js/[name].[chunkhash:8].js" : 'static/js/bundle.js',
+    chunkFilename: isProd() ? "static/js/[name].[chunkhash:8].chunk.js" : "static/js/[name].chunk.js"
   },
-  mode: isProd ? "production" : "development",
-  devtool: shouldUseSourceMap ? (isProd ? "source-map" : 'cheap-module-source-map') : false,
+  mode: isProd() ? "production" : "development",
+  devtool: shouldUseSourceMap ? (isProd() ? "source-map" : 'cheap-module-source-map') : false,
   devServer: {
     index: 'index.html',
     historyApiFallback: true,
@@ -73,7 +76,7 @@ module.exports = {
             test: /\.css$/,
             exclude: /\.module\.css$/,
             use: [
-              isProd ? MiniCssExtractPlugin.loader : require.resolve('style-loader'),
+              isProd() ? MiniCssExtractPlugin.loader : require.resolve('style-loader'),
               {
                 loader: require.resolve("css-loader"),
                 options: {
@@ -123,8 +126,8 @@ module.exports = {
                       }
                     ]
                   ],
-                  compact: isProd ? true : false,
-                  cacheDirectory: isProd ? false : true,
+                  compact: isProd() ? true : false,
+                  cacheDirectory: isProd() ? false : true,
                   highlightCode: true
                 }
               }
@@ -239,23 +242,25 @@ module.exports = {
   plugins: [
     new CleanWebpackPlugin(["build"]),
     new webpack.DefinePlugin(process.env.NODE_ENV || "development"),
-    isProd ? new MiniCssExtractPlugin({
-      // Options similar to the same options in webpackOptions.output
-      // both options are optional
-      filename: "static/css/[name].[contenthash:8].css",
-      chunkFilename: "static/css/[name].[contenthash:8].chunk.css"
-    }) : null,
-    isProd ? null : new webpack.NamedModulesPlugin(),
-    isProd ? null : new CaseSensitivePathsPlugin(),
-    isProd ? new ManifestPlugin({
+    only(isProd, () =>
+      new MiniCssExtractPlugin({
+        // Options similar to the same options in webpackOptions.output
+        // both options are optional
+        filename: "static/css/[name].[contenthash:8].css",
+        chunkFilename: "static/css/[name].[contenthash:8].chunk.css"
+      })),
+    only(isDev, () => new webpack.NamedModulesPlugin()),
+    only(isDev, () => new CaseSensitivePathsPlugin()),
+    only(isProd, () => new ManifestPlugin({
       fileName: "asset-manifest.json"
       // publicPath: publicPath
-    }) : null,
-    isProd ? new BundleAnalyzerPlugin({
+    })),
+    only(isProd, () => new BundleAnalyzerPlugin({
       analyzerMode: "static",
       openAnalyzer: false
-    }) : null,
+    })),
     new HtmlWebpackPlugin({
+      title: "Jeffery Utter Gallery",
       inject: true,
       template: "./src/index.html",
       minify: {
@@ -271,7 +276,7 @@ module.exports = {
         minifyURLs: true
       }
     }),
-    isProd ? new SWPrecacheWebpackPlugin({
+    only(isProd, () => new SWPrecacheWebpackPlugin({
       // By default, a cache-busting query parameter is appended to requests
       // used to populate the caches, to ensure the responses are fresh.
       // If a URL is already hashed by Webpack, then there is no concern
@@ -297,21 +302,21 @@ module.exports = {
       // https://github.com/facebook/create-react-app/blob/master/packages/react-scripts/template/README.md#service-worker-considerations
       // navigateFallback: publicUrl + '/index.html',
       // navigateFallbackWhitelist: [/^(?!\/__).*/],
-    }) : null,
-    isProd ? new CompressionPlugin({
+    })),
+    only(isProd, () => new CompressionPlugin({
       asset: "[path].gz[query]",
       algorithm: "gzip",
       test: /\.(js|css|html|svg)$/,
       threshold: 0,
       minRatio: 0.8
-    }) : null,
-    isProd ? new BrotliPlugin({
+    })),
+    only(isProd, () => new BrotliPlugin({
       asset: '[path].br[query]',
       test: /\.(js|css|html|svg)$/,
       threshold: 0,
       minRatio: 0.8
-    }) : null
-  ].filter((plugin) => plugin),
+    }))
+  ],
   node: {
     dgram: "empty",
     fs: "empty",

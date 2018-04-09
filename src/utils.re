@@ -8,25 +8,25 @@ let sortBy = (func, array) => {
       | (a, b) when a < b => (-1)
       | (a, b) when b < a => 1
       | _ => 0
-      }
+      };
     },
-    copy
-  )
+    copy,
+  );
 };
 
 let chunkList = (size, list) =>
   List.fold_left(
     (acc, item) => {
       let (lastChunk, rest) =
-        switch acc {
+        switch (acc) {
         | [] => ([], [])
         | [lastChunk, ...rest] => (lastChunk, rest)
         };
       switch (List.length(lastChunk)) {
       | length when length < size => [[item, ...lastChunk], ...rest]
       | _ => [[item], ...acc]
-      }
+      };
     },
     [],
-    list
+    list,
   );

@@ -6,9 +6,8 @@ type document;
 
 [@bs.set] external setCookie : (document, string) => unit = "cookie";
 
-[@bs.scope "default"] [@bs.module "./lib/client.js"]
-external resetStore : unit => unit = "resetStore";
-
+/* [@bs.scope "default"] [@bs.module "./lib/client.js"]
+   external resetStore : unit => unit = "resetStore"; */
 let createCookie =
     (~name: string, ~value: string, ~days: option(int)=?, ())
     : unit =>
@@ -59,5 +58,5 @@ let logOut = (~setWarning: bool=false, ()) : unit => {
     );
   };
   eraseCookie("access_token");
-  resetStore();
+  /* resetStore(); */
 };

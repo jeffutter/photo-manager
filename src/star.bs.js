@@ -18,22 +18,23 @@ var cls = Css.style(/* :: */[
       ]
     ]);
 
+function star(filled) {
+  if (filled !== 0) {
+    return "★";
+  } else {
+    return "☆";
+  }
+}
+
 function make($staropt$star, index, handleClick, _) {
   var filled = $staropt$star ? $staropt$star[0] : /* false */0;
   var newrecord = component.slice();
   newrecord[/* render */9] = (function () {
       var handleClickWithI = Curry._1(handleClick, index);
-      if (filled !== 0) {
-        return React.createElement("span", {
-                    className: cls,
-                    onClick: handleClickWithI
-                  }, "★");
-      } else {
-        return React.createElement("span", {
-                    className: cls,
-                    onClick: handleClickWithI
-                  }, "☆");
-      }
+      return React.createElement("span", {
+                  className: cls,
+                  onClick: handleClickWithI
+                }, star(filled));
     });
   return newrecord;
 }
@@ -41,6 +42,7 @@ function make($staropt$star, index, handleClick, _) {
 export {
   component ,
   cls ,
+  star ,
   make ,
   
 }

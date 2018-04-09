@@ -1,6 +1,7 @@
 ####{BSB GENERATED: NO EDIT
 B lib/bs
 FLG -open PhotoManager
+FLG -ppx /Users/jutter/src/photo-manager/node_modules/graphql_ppx/ppx
 FLG -ppx '/Users/jutter/src/photo-manager/node_modules/bs-platform/lib/reactjs_jsx_ppx_2.exe'
 FLG -ppx /Users/jutter/src/photo-manager/node_modules/bs-platform/lib/bsppx.exe
 S /Users/jutter/src/photo-manager/node_modules/bs-platform/lib/ocaml
@@ -11,10 +12,22 @@ S /Users/jutter/src/photo-manager/node_modules/bs-css/lib/ocaml
 B /Users/jutter/src/photo-manager/node_modules/bs-css/lib/ocaml
 S /Users/jutter/src/photo-manager/node_modules/reason-react/lib/ocaml
 B /Users/jutter/src/photo-manager/node_modules/reason-react/lib/ocaml
+S /Users/jutter/src/photo-manager/node_modules/reason-apollo/lib/ocaml
+B /Users/jutter/src/photo-manager/node_modules/reason-apollo/lib/ocaml
+S /Users/jutter/src/photo-manager/node_modules/bs-fetch/lib/ocaml
+B /Users/jutter/src/photo-manager/node_modules/bs-fetch/lib/ocaml
+S /Users/jutter/src/photo-manager/node_modules/bs-json/lib/ocaml
+B /Users/jutter/src/photo-manager/node_modules/bs-json/lib/ocaml
+S /Users/jutter/src/photo-manager/node_modules/bs-dynamic-import/lib/ocaml
+B /Users/jutter/src/photo-manager/node_modules/bs-dynamic-import/lib/ocaml
 S /Users/jutter/src/photo-manager/node_modules/@glennsl/bs-jest/lib/ocaml
 B /Users/jutter/src/photo-manager/node_modules/@glennsl/bs-jest/lib/ocaml
 S __tests__
 B lib/bs/__tests__
 S src
 B lib/bs/src
+S src/routes/gallery
+B lib/bs/src/routes/gallery
+S src/lib
+B lib/bs/src/lib
 ####BSB GENERATED: NO EDIT}

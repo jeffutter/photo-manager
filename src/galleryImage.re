@@ -19,10 +19,17 @@ let rec stars = (filled, total, index, handleClick, acc) =>
       ) :
       List.rev(acc);
 
-let handleClickStar = (submitRating, slug, i, event) => {
+let handleClickStar = (ratingMutation, mutate, i, event) => {
   ReactEventRe.Mouse.stopPropagation(event);
-  submitRating({"slug": slug, "rating": i});
+  let mutation = ratingMutation(~rating=i, ());
+  mutate(mutation);
 };
+
+module Mutation = Client.Instance.Mutation;
+
+let component = ReasonReact.statelessComponent("GalleryItem");
+
+let imgCls = style([`declaration(("objectFit", "cover")), display(block)]);
 
 let make =
     (
@@ -32,48 +39,88 @@ let make =
       ~thumbnail: option(string),
       ~rating: option(int),
       ~handleOpen,
-      ~submitRating,
-    ) =>
-  WaypointItem.make(
-    ~w=320, ~h=295, ~onEnter?, ~name, ~slug, ~thumbnail?, ~rating?, ~render=() =>
-    GalleryItem.make(
-      ~lightBG=true,
-      ~render=(wrapClass, detailsClass) => {
-        let stars =
-          switch (rating) {
-          | Some(i) =>
-            stars(i, 5, 1, handleClickStar(submitRating, slug), [])
-          | None => stars(0, 5, 1, handleClickStar(submitRating, slug), [])
-          };
-        <div onClick=handleOpen className=wrapClass>
-          (
-            switch (thumbnail) {
-            | Some(thumb) =>
-              <img
-                src=thumb
-                className=(
-                  style([
-                    `declaration(("objectFit", "cover")),
-                    display(block),
-                  ])
-                )
-                width="300"
-                height="225"
-              />
-            | None => <CircleLoader />
-            }
-          )
-          <div className=detailsClass>
-            <div> (ReasonReact.stringToElement(name)) </div>
-            (
-              ReasonReact.createDomElement(
-                "div",
-                ~props=Js.Obj.empty(),
-                Array.of_list(stars),
-              )
-            )
-          </div>
-        </div>;
-      },
-    )
-  );
+      _children,
+    ) => {
+  ...component,
+  render: _ =>
+    <WaypointItem w=320 h=295 ?onEnter name slug ?thumbnail ?rating>
+      ...(
+           () =>
+             <GalleryItem lightBG=true>
+               ...(
+                    (wrapClass, detailsClass) =>
+                      <div onClick=handleOpen className=wrapClass>
+                        (
+                          switch (thumbnail) {
+                          | Some(thumb) =>
+                            <img
+                              src=thumb
+                              className=imgCls
+                              width="300"
+                              height="225"
+                            />
+                          | None => <CircleLoader />
+                          }
+                        )
+                        <div className=detailsClass>
+                          <div> (ReasonReact.stringToElement(name)) </div>
+                          <Mutation>
+                            ...(
+                                 (mutate, result) => {
+                                   let ratingMutation =
+                                     GalleryQueries.RateImage.make(~slug);
+                                   let rating =
+                                     switch (result) {
+                                     | NotCalled => rating
+                                     | Loading => rating
+                                     | Loaded(response) =>
+                                       let parse = ratingMutation(
+                                                     ~rating=0,
+                                                     (),
+                                                   )##parse;
+                                       switch (parse(response)##rateImage) {
+                                       | Some(img) => img##rating
+                                       | None => rating
+                                       };
+                                     | Failed(error) => rating
+                                     };
+                                   let stars =
+                                     switch (rating) {
+                                     | Some(rating) =>
+                                       stars(
+                                         rating,
+                                         5,
+                                         1,
+                                         handleClickStar(
+                                           ratingMutation,
+                                           mutate,
+                                         ),
+                                         [],
+                                       )
+                                     | None =>
+                                       stars(
+                                         0,
+                                         5,
+                                         1,
+                                         handleClickStar(
+                                           ratingMutation,
+                                           mutate,
+                                         ),
+                                         [],
+                                       )
+                                     };
+                                   ReasonReact.createDomElement(
+                                     "div",
+                                     ~props=Js.Obj.empty(),
+                                     Array.of_list(stars),
+                                   );
+                                 }
+                               )
+                          </Mutation>
+                        </div>
+                      </div>
+                  )
+             </GalleryItem>
+         )
+    </WaypointItem>,
+};

@@ -371,10 +371,6 @@ function make() {
   return newrecord;
 }
 
-var $$default = ReasonReact.wrapReasonForJs(component, (function () {
-        return make(/* array */[]);
-      }));
-
 export {
   setLocationHref ,
   headerCls ,
@@ -386,8 +382,6 @@ export {
   openNavMobileToggle ,
   component ,
   make ,
-  $$default ,
-  $$default as default,
   
 }
 /* setLocationHref Not a pure module */
