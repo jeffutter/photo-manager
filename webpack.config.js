@@ -252,8 +252,8 @@ module.exports = {
     only(isDev, () => new webpack.NamedModulesPlugin()),
     only(isDev, () => new CaseSensitivePathsPlugin()),
     only(isProd, () => new ManifestPlugin({
-      fileName: "asset-manifest.json"
-      // publicPath: publicPath
+      fileName: "asset-manifest.json",
+      publicPath: "/"
     })),
     only(isProd, () => new BundleAnalyzerPlugin({
       analyzerMode: "static",
@@ -298,8 +298,11 @@ module.exports = {
       minify: true,
       // Don't precache sourcemaps (they're large) and build asset manifest:
       staticFileGlobsIgnorePatterns: [/\.map$/, /asset-manifest\.json$/],
+      stripPrefix: path.join(__dirname, 'build').replace(/\\/g, "/"),
       // `navigateFallback` and `navigateFallbackWhitelist` are disabled by default; see
       // https://github.com/facebook/create-react-app/blob/master/packages/react-scripts/template/README.md#service-worker-considerations
+      navigateFallback: '/index.html',
+      navigateFallbackWhitelist: [/^(?!\/__).*/],
       // navigateFallback: publicUrl + '/index.html',
       // navigateFallbackWhitelist: [/^(?!\/__).*/],
     })),
