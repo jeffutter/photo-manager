@@ -3,9 +3,9 @@
 import * as Css from "../node_modules/bs-css/src/Css.js";
 import * as React from "react";
 import * as ReasonReact from "../node_modules/reason-react/src/ReasonReact.js";
-import * as NavLink$PhotoManager from "./navLink.bs.js";
-import * as GalleryItem$PhotoManager from "./galleryItem.bs.js";
-import * as WaypointItem$PhotoManager from "./waypointItem.bs.js";
+import * as NavLink$PhotoManager from "./NavLink.bs.js";
+import * as GalleryItem$PhotoManager from "./GalleryItem.bs.js";
+import * as WaypointItem$PhotoManager from "./WaypointItem.bs.js";
 
 var component = ReasonReact.statelessComponent("GalleryThumb");
 

@@ -5,7 +5,7 @@ import * as $$Array from "../node_modules/bs-platform/lib/es6/array.js";
 import * as React from "react";
 import * as Caml_array from "../node_modules/bs-platform/lib/es6/caml_array.js";
 import * as ReasonReact from "../node_modules/reason-react/src/ReasonReact.js";
-import * as NavLink$PhotoManager from "./navLink.bs.js";
+import * as NavLink$PhotoManager from "./NavLink.bs.js";
 
 var component = ReasonReact.statelessComponent("BreadCrumbs");
 

@@ -7,7 +7,7 @@ import * as ReactDOMRe from "../node_modules/reason-react/src/ReactDOMRe.js";
 import * as Json_decode from "../node_modules/bs-json/src/Json_decode.js";
 import * as ReasonReact from "../node_modules/reason-react/src/ReasonReact.js";
 import * as DynamicImport from "../node_modules/bs-dynamic-import/src/DynamicImport.bs.js";
-import * as App$PhotoManager from "./app.bs.js";
+import * as App$PhotoManager from "./App.bs.js";
 import * as RegisterServiceWorker from "./registerServiceWorker";
 
 function config(json) {
@@ -16,7 +16,7 @@ function config(json) {
 
 var Decode = /* module */[/* config */config];
 
-DynamicImport.$less$$bang$great(DynamicImport.$less$$great(DynamicImport.resolve(import("./raven.bs.js")), (function (Raven) {
+DynamicImport.$less$$bang$great(DynamicImport.$less$$great(DynamicImport.resolve(import("./Raven.bs.js")), (function (Raven) {
             fetch("/config").then((function (prim) {
                           return prim.text();
                         })).then((function (text) {

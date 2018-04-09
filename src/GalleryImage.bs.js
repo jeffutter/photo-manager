@@ -6,12 +6,12 @@ import * as $$Array from "../node_modules/bs-platform/lib/es6/array.js";
 import * as Curry from "../node_modules/bs-platform/lib/es6/curry.js";
 import * as React from "react";
 import * as ReasonReact from "../node_modules/reason-react/src/ReasonReact.js";
-import * as Star$PhotoManager from "./star.bs.js";
-import * as Client$PhotoManager from "./lib/client.bs.js";
-import * as GalleryItem$PhotoManager from "./galleryItem.bs.js";
-import * as CircleLoader$PhotoManager from "./circleLoader.bs.js";
-import * as WaypointItem$PhotoManager from "./waypointItem.bs.js";
-import * as GalleryQueries$PhotoManager from "./routes/gallery/galleryQueries.bs.js";
+import * as Star$PhotoManager from "./Star.bs.js";
+import * as Client$PhotoManager from "./Client.bs.js";
+import * as GalleryItem$PhotoManager from "./GalleryItem.bs.js";
+import * as CircleLoader$PhotoManager from "./CircleLoader.bs.js";
+import * as WaypointItem$PhotoManager from "./WaypointItem.bs.js";
+import * as GalleryQueries$PhotoManager from "./GalleryQueries.bs.js";
 
 function stars(_filled, _total, _index, handleClick, _acc) {
   while(true) {

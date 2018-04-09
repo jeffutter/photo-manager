@@ -2,7 +2,7 @@
 
 import * as Css from "../node_modules/bs-css/src/Css.js";
 import * as ReasonReact from "../node_modules/reason-react/src/ReasonReact.js";
-import * as InfiniteScroll$PhotoManager from "./infiniteScroll.bs.js";
+import * as InfiniteScroll$PhotoManager from "./InfiniteScroll.bs.js";
 
 var component = ReasonReact.statelessComponent("GalleryBody");
 

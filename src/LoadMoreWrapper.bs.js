@@ -4,8 +4,8 @@ import * as $$Array from "../node_modules/bs-platform/lib/es6/array.js";
 import * as Block from "../node_modules/bs-platform/lib/es6/block.js";
 import * as Curry from "../node_modules/bs-platform/lib/es6/curry.js";
 import * as ReasonReact from "../node_modules/reason-react/src/ReasonReact.js";
-import * as Client$PhotoManager from "./lib/client.bs.js";
-import * as GalleryQueries$PhotoManager from "./routes/gallery/galleryQueries.bs.js";
+import * as Client$PhotoManager from "./Client.bs.js";
+import * as GalleryQueries$PhotoManager from "./GalleryQueries.bs.js";
 
 var component = ReasonReact.reducerComponent("LoadMoreWrapper");
 

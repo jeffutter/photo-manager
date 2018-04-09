@@ -5,8 +5,8 @@ import * as Block from "../node_modules/bs-platform/lib/es6/block.js";
 import * as Curry from "../node_modules/bs-platform/lib/es6/curry.js";
 import * as React from "react";
 import * as ReasonReact from "../node_modules/reason-react/src/ReasonReact.js";
-import * as Cookies$PhotoManager from "./cookies.bs.js";
-import * as NavLink$PhotoManager from "./navLink.bs.js";
+import * as Cookies$PhotoManager from "./Cookies.bs.js";
+import * as NavLink$PhotoManager from "./NavLink.bs.js";
 
 var setLocationHref = (
     function (val) {

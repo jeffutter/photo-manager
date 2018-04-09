@@ -6,12 +6,12 @@ import * as Block from "../node_modules/bs-platform/lib/es6/block.js";
 import * as Curry from "../node_modules/bs-platform/lib/es6/curry.js";
 import * as React from "react";
 import * as ReasonReact from "../node_modules/reason-react/src/ReasonReact.js";
-import * as Utils$PhotoManager from "./utils.bs.js";
-import * as PhotoSwipe$PhotoManager from "./photoSwipe.bs.js";
-import * as BreadCrumbs$PhotoManager from "./breadCrumbs.bs.js";
-import * as GalleryBody$PhotoManager from "./galleryBody.bs.js";
-import * as GalleryImage$PhotoManager from "./galleryImage.bs.js";
-import * as GalleryThumb$PhotoManager from "./galleryThumb.bs.js";
+import * as Utils$PhotoManager from "./Utils.bs.js";
+import * as PhotoSwipe$PhotoManager from "./PhotoSwipe.bs.js";
+import * as BreadCrumbs$PhotoManager from "./BreadCrumbs.bs.js";
+import * as GalleryBody$PhotoManager from "./GalleryBody.bs.js";
+import * as GalleryImage$PhotoManager from "./GalleryImage.bs.js";
+import * as GalleryThumb$PhotoManager from "./GalleryThumb.bs.js";
 
 var component = ReasonReact.reducerComponent("Gallery");
 

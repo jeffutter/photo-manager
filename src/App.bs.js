@@ -6,14 +6,14 @@ import * as Block from "../node_modules/bs-platform/lib/es6/block.js";
 import * as Curry from "../node_modules/bs-platform/lib/es6/curry.js";
 import * as React from "react";
 import * as ReasonReact from "../node_modules/reason-react/src/ReasonReact.js";
-import * as Client$PhotoManager from "./lib/client.bs.js";
-import * as Header$PhotoManager from "./header.bs.js";
-import * as Cookies$PhotoManager from "./cookies.bs.js";
-import * as LoginForm$PhotoManager from "./loginForm.bs.js";
-import * as GalleryQueries$PhotoManager from "./routes/gallery/galleryQueries.bs.js";
-import * as FullPageSpinner$PhotoManager from "./fullPageSpinner.bs.js";
-import * as LoadMoreWrapper$PhotoManager from "./loadMoreWrapper.bs.js";
-import * as GalleryContainer$PhotoManager from "./galleryContainer.bs.js";
+import * as Client$PhotoManager from "./Client.bs.js";
+import * as Header$PhotoManager from "./Header.bs.js";
+import * as Cookies$PhotoManager from "./Cookies.bs.js";
+import * as LoginForm$PhotoManager from "./LoginForm.bs.js";
+import * as GalleryQueries$PhotoManager from "./GalleryQueries.bs.js";
+import * as FullPageSpinner$PhotoManager from "./FullPageSpinner.bs.js";
+import * as LoadMoreWrapper$PhotoManager from "./LoadMoreWrapper.bs.js";
+import * as GalleryContainer$PhotoManager from "./GalleryContainer.bs.js";
 
 var cls = Css.style(/* :: */[
       Css.transition(/* Some */[400], /* None */0, /* Some */[/* ease */-1022587922], "all"),

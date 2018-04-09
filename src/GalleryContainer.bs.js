@@ -6,8 +6,8 @@ import * as React from "react";
 import * as Caml_obj from "../node_modules/bs-platform/lib/es6/caml_obj.js";
 import * as Caml_array from "../node_modules/bs-platform/lib/es6/caml_array.js";
 import * as ReasonReact from "../node_modules/reason-react/src/ReasonReact.js";
-import * as Gallery$PhotoManager from "./gallery.bs.js";
-import * as FullPageSpinner$PhotoManager from "./fullPageSpinner.bs.js";
+import * as Gallery$PhotoManager from "./Gallery.bs.js";
+import * as FullPageSpinner$PhotoManager from "./FullPageSpinner.bs.js";
 
 var component = ReasonReact.statelessComponent("GalleryContainer");
 

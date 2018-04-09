@@ -5,7 +5,7 @@ import * as Curry from "../node_modules/bs-platform/lib/es6/curry.js";
 import * as React from "react";
 import * as Caml_obj from "../node_modules/bs-platform/lib/es6/caml_obj.js";
 import * as ReasonReact from "../node_modules/reason-react/src/ReasonReact.js";
-import * as Waypoint$PhotoManager from "./waypoint.bs.js";
+import * as Waypoint$PhotoManager from "./Waypoint.bs.js";
 
 function cls(w, h) {
   return Css.style(/* :: */[

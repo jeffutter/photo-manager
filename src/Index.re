@@ -11,7 +11,7 @@ module Decode = {
 module type RavenType = (module type of Raven);
 
 DynamicImport.(
-  import("./raven.bs.js")
+  import("./Raven.bs.js")
   |> resolve
   <$> (
     ((module Raven): (module RavenType)) => {
