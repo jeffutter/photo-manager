@@ -66,7 +66,7 @@ ReactDOMRe.renderToElementWithId(ReasonReact.element(/* None */0, /* None */0, A
 
 ReasonReact.Router[/* push */0]("");
 
-RegisterServiceWorker.default();
+RegisterServiceWorker.register();
 
 export {
   Decode ,
