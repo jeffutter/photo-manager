@@ -13,7 +13,7 @@ import * as CircleLoader$PhotoManager from "./CircleLoader.bs.js";
 import * as WaypointItem$PhotoManager from "./WaypointItem.bs.js";
 import * as GalleryQueries$PhotoManager from "./GalleryQueries.bs.js";
 
-function stars(_filled, _total, _index, handleClick, _acc) {
+function stars5(_filled, _total, _index, handleClick, _acc) {
   while(true) {
     var acc = _acc;
     var index = _index;
@@ -51,6 +51,14 @@ function stars(_filled, _total, _index, handleClick, _acc) {
 function handleClickStar(ratingMutation, mutate, i, $$event) {
   $$event.stopPropagation();
   return Curry._1(mutate, Curry._2(ratingMutation, i, /* () */0));
+}
+
+function stars(rating, handleClick) {
+  if (rating) {
+    return stars5(rating[0], 5, 1, handleClick, /* [] */0);
+  } else {
+    return stars5(0, 5, 1, handleClick, /* [] */0);
+  }
 }
 
 var component = ReasonReact.statelessComponent("GalleryItem");
@@ -97,12 +105,9 @@ function make(onEnter, name, slug, thumbnail, rating, handleOpen, _) {
                                                                       var match = Curry._1(parse, result[0]).rateImage;
                                                                       rating$1 = match ? match[0].rating : rating;
                                                                     }
-                                                                    var stars$1 = rating$1 ? stars(rating$1[0], 5, 1, (function (param, param$1) {
-                                                                              return handleClickStar(ratingMutation, mutate, param, param$1);
-                                                                            }), /* [] */0) : stars(0, 5, 1, (function (param, param$1) {
-                                                                              return handleClickStar(ratingMutation, mutate, param, param$1);
-                                                                            }), /* [] */0);
-                                                                    return ReasonReact.createDomElement("div", { }, $$Array.of_list(stars$1));
+                                                                    return ReasonReact.createDomElement("div", { }, $$Array.of_list(stars(rating$1, (function (param, param$1) {
+                                                                                          return handleClickStar(ratingMutation, mutate, param, param$1);
+                                                                                        }))));
                                                                   })))));
                                         })));
                       })));
@@ -113,8 +118,9 @@ function make(onEnter, name, slug, thumbnail, rating, handleOpen, _) {
 var Mutation = 0;
 
 export {
-  stars ,
+  stars5 ,
   handleClickStar ,
+  stars ,
   Mutation ,
   component ,
   imgCls ,

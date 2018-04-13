@@ -1,9 +1,5 @@
 open Css;
 
-[@bs.val]
-external assign3 : (Js.t({..}), Js.t({..}), Js.t({..})) => Js.t({..}) =
-  "Object.assign";
-
 let component = ReasonReact.statelessComponent("GalleryContainer");
 
 let contains = (~value: 'a, theList: array('a)) => {

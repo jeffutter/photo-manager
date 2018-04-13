@@ -1,8 +1,8 @@
 open Css;
 
-let rec stars = (filled, total, index, handleClick, acc) =>
+let rec stars5 = (filled, total, index, handleClick, acc) =>
   filled > 0 ?
-    stars(
+    stars5(
       filled - 1,
       total - 1,
       index + 1,
@@ -10,7 +10,7 @@ let rec stars = (filled, total, index, handleClick, acc) =>
       [<Star filled=true index handleClick />, ...acc],
     ) :
     total > 0 ?
-      stars(
+      stars5(
         filled,
         total - 1,
         index + 1,
@@ -24,6 +24,12 @@ let handleClickStar = (ratingMutation, mutate, i, event) => {
   let mutation = ratingMutation(~rating=i, ());
   mutate(mutation);
 };
+
+let stars = (rating, handleClick) =>
+  switch (rating) {
+  | Some(rating) => stars5(rating, 5, 1, handleClick, [])
+  | None => stars5(0, 5, 1, handleClick, [])
+  };
 
 module Mutation = Client.Instance.Mutation;
 
@@ -42,7 +48,7 @@ let make =
       _children,
     ) => {
   ...component,
-  render: _ =>
+  render: (_) =>
     <WaypointItem w=320 h=295 ?onEnter name slug ?thumbnail ?rating>
       ...(
            () =>
@@ -73,6 +79,7 @@ let make =
                                      switch (result) {
                                      | NotCalled => rating
                                      | Loading => rating
+                                     | Failed(_error) => rating
                                      | Loaded(response) =>
                                        let parse = ratingMutation(
                                                      ~rating=0,
@@ -82,37 +89,19 @@ let make =
                                        | Some(img) => img##rating
                                        | None => rating
                                        };
-                                     | Failed(error) => rating
-                                     };
-                                   let stars =
-                                     switch (rating) {
-                                     | Some(rating) =>
-                                       stars(
-                                         rating,
-                                         5,
-                                         1,
-                                         handleClickStar(
-                                           ratingMutation,
-                                           mutate,
-                                         ),
-                                         [],
-                                       )
-                                     | None =>
-                                       stars(
-                                         0,
-                                         5,
-                                         1,
-                                         handleClickStar(
-                                           ratingMutation,
-                                           mutate,
-                                         ),
-                                         [],
-                                       )
                                      };
                                    ReasonReact.createDomElement(
                                      "div",
                                      ~props=Js.Obj.empty(),
-                                     Array.of_list(stars),
+                                     Array.of_list(
+                                       stars(
+                                         rating,
+                                         handleClickStar(
+                                           ratingMutation,
+                                           mutate,
+                                         ),
+                                       ),
+                                     ),
                                    );
                                  }
                                )
