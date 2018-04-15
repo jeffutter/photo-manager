@@ -45,7 +45,7 @@
     "babel-preset-react-app": "^4.0.0-next.b2fd8db8",
     "brotli-webpack-plugin": "^0.5.0",
     "bs-css": "^6.6.0",
-    "bs-platform": "^2.2.3",
+    "bs-platform": "^3.0.0",
     "case-sensitive-paths-webpack-plugin": "^2.1.2",
     "clean-webpack-plugin": "^0.1.19",
     "compression-webpack-plugin": "^1.1.11",
