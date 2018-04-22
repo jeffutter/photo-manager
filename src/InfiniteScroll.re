@@ -76,7 +76,7 @@ let make =
         newState,
         (
           self => {
-            Brick.resize(instance, Js.true_);
+            Brick.resize(instance, true);
             Brick.pack(instance);
             self.reduce(() => ChildrenUpdated, ());
           }
@@ -90,7 +90,7 @@ let make =
   willUnmount: ({state}) =>
     switch (state.instance) {
     | None => ()
-    | Some(i) => Brick.resize(i, Js.false_)
+    | Some(i) => Brick.resize(i, false)
     },
   render: self =>
     ReasonReact.createDomElement(

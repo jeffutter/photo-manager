@@ -15,7 +15,7 @@ let make =
       "onEnter": Js.Nullable.fromOption(onEnter),
       "bottomOffset": bottomOffset,
       "topOffset": topOffset,
-      "fireOnRapidScroll": Js.Boolean.to_js_boolean(fireOnRapidScroll),
+      "fireOnRapidScroll": fireOnRapidScroll,
     },
     children,
   );

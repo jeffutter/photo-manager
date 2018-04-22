@@ -41,8 +41,8 @@
     "babel-eslint": "^8.2.2",
     "babel-loader": "^8.0.0-beta.2",
     "babel-plugin-graphql-tag": "^1.5.0",
-    "babel-plugin-named-asset-import": "^1.0.0-next.b2fd8db8",
-    "babel-preset-react-app": "^4.0.0-next.b2fd8db8",
+    "babel-plugin-named-asset-import": "^1.0.0-next.66cc7a90",
+    "babel-preset-react-app": "^4.0.0-next.66cc7a90",
     "brotli-webpack-plugin": "^0.5.0",
     "bs-css": "^6.6.0",
     "bs-platform": "^3.0.0",
@@ -60,7 +60,7 @@
     "postcss-flexbugs-fixes": "^3.3.0",
     "postcss-loader": "^2.1.3",
     "react-dev-utils": "^5.0.1",
-    "style-loader": "^0.20.3",
+    "style-loader": "^0.21.0",
     "sw-precache-webpack-plugin": "^0.11.5",
     "thread-loader": "^1.1.5",
     "uglifyjs-webpack-plugin": "^1.2.4",
@@ -69,7 +69,7 @@
     "webpack-bundle-analyzer": "^2.11.1",
     "webpack-cli": "^2.0.10",
     "webpack-dev-server": "^3.1.3",
-    "webpack-manifest-plugin": "^2.0.0-rc.2",
+    "webpack-manifest-plugin": "^2.0.1",
     "webpack-null-plugin": "^0.0.2"
   },
   "browserslist": {
