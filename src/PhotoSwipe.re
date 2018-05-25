@@ -12,7 +12,7 @@ let make =
   ReasonReact.wrapJsForReason(
     ~reactClass=photoSwipe,
     ~props={
-      "isOpen": Js.Boolean.to_js_boolean(isOpen),
+      "isOpen": isOpen,
       "items": items,
       "onClose": onClose,
       "options": options,
