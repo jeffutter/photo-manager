@@ -10,7 +10,7 @@ let make = (~name: string, ~slug: string, _children) => {
   render: (_) =>
     <WaypointItem w=320 h=275 name slug>
       ...(
-           () =>
+           (~visible as _) =>
              <GalleryItem lightBG=false>
                ...(
                     (wrapClass, detailsClass) => {

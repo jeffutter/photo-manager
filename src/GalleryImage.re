@@ -18,30 +18,32 @@ let make =
   render: (_) =>
     <WaypointItem w=320 h=295 ?onEnter name slug ?thumbnail ?rating>
       ...(
-           () =>
-             <GalleryItem lightBG=true>
-               ...(
-                    (wrapClass, detailsClass) =>
-                      <div onClick=handleOpen className=wrapClass>
-                        (
-                          switch (thumbnail) {
-                          | Some(thumb) =>
-                            <img
-                              src=thumb
-                              className=imgCls
-                              width="300"
-                              height="225"
-                            />
-                          | None => <CircleLoader />
-                          }
-                        )
-                        <div className=detailsClass>
-                          <div> (ReasonReact.stringToElement(name)) </div>
-                          <Stars slug rating />
+           (~visible) =>
+             visible ?
+               <GalleryItem lightBG=true>
+                 ...(
+                      (wrapClass, detailsClass) =>
+                        <div onClick=handleOpen className=wrapClass>
+                          (
+                            switch (thumbnail) {
+                            | Some(thumb) =>
+                              <img
+                                src=thumb
+                                className=imgCls
+                                width="300"
+                                height="225"
+                              />
+                            | None => <CircleLoader />
+                            }
+                          )
+                          <div className=detailsClass>
+                            <div> (ReasonReact.stringToElement(name)) </div>
+                            <Stars slug rating />
+                          </div>
                         </div>
-                      </div>
-                  )
-             </GalleryItem>
+                    )
+               </GalleryItem> :
+               <div />
          )
     </WaypointItem>,
 };

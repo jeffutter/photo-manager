@@ -32,7 +32,7 @@ function make(name, slug, _) {
           /* willUpdate */component[/* willUpdate */7],
           /* shouldUpdate */component[/* shouldUpdate */8],
           /* render */(function () {
-              return ReasonReact.element(/* None */0, /* None */0, WaypointItem$PhotoManager.make(/* None */0, name, slug, /* None */0, /* None */0, 320, 275, (function () {
+              return ReasonReact.element(/* None */0, /* None */0, WaypointItem$PhotoManager.make(/* None */0, /* None */0, name, slug, /* None */0, /* None */0, 320, 275, (function () {
                                 return ReasonReact.element(/* None */0, /* None */0, GalleryItem$PhotoManager.make(/* Some */[false], (function (wrapClass, detailsClass) {
                                                   var link = "/gallery/" + slug;
                                                   return ReasonReact.element(/* None */0, /* None */0, NavLink$PhotoManager.make(link, /* Some */[wrapClass], /* None */0, /* array */[
