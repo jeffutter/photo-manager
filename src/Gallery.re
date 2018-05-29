@@ -55,6 +55,19 @@ let rec splitDescendants =
     }
   };
 
+let addFunc = (thumbedImageSlugs, slug, reduce) => {
+  let slugHasThumb = 
+    List.exists(
+      imageSlug => slug == imageSlug,
+      thumbedImageSlugs,
+    );
+
+  switch (slugHasThumb) {
+  | false => reduce(_event => AddImage(slug), ())
+  | _ => ()
+  };
+};
+
 let make =
     (
       ~name="",
@@ -130,27 +143,18 @@ let make =
       );
     let renderedImages =
       List.mapi(
-        (index, image: GalleryQueries.completeImage) =>
+        (index, image: GalleryQueries.completeImage) => {
+          let slug = image##slug;
           <GalleryImage
             key=image##id
-            slug=image##slug
-            onEnter=(
-              () =>
-                switch (
-                  List.exists(
-                    imageSlug => image##slug == imageSlug,
-                    thumbedImageSlugs,
-                  )
-                ) {
-                | false => self.reduce(_event => AddImage(image##slug), ())
-                | _ => ()
-                }
-            )
+            slug=slug
+            onEnter=(() => addFunc(thumbedImageSlugs, slug, self.reduce))
             handleOpen=(self.reduce(_event => OpenLightbox(index)))
             thumbnail=image##thumbnail
             name=image##name
             rating=image##rating
-          />,
+          />
+        },
         images,
       );
     let renderedDescendants =

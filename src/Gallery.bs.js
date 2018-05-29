@@ -75,6 +75,19 @@ function splitDescendants(_param, _descendants) {
   };
 }
 
+function addFunc(thumbedImageSlugs, slug, reduce) {
+  var slugHasThumb = List.exists((function (imageSlug) {
+          return slug === imageSlug;
+        }), thumbedImageSlugs);
+  if (slugHasThumb) {
+    return /* () */0;
+  } else {
+    return Curry._2(reduce, (function () {
+                  return /* AddImage */Block.__(1, [slug]);
+                }), /* () */0);
+  }
+}
+
 function make($staropt$star, $staropt$star$1, $staropt$star$2, $staropt$star$3, loadNextPage, _) {
   var name = $staropt$star ? $staropt$star[0] : "";
   var path = $staropt$star$1 ? $staropt$star$1[0] : /* array */[];
@@ -102,18 +115,10 @@ function make($staropt$star, $staropt$star$1, $staropt$star$2, $staropt$star$3, 
                       return ReasonReact.element(/* Some */[item.id], /* None */0, GalleryThumb$PhotoManager.make(item.name, item.slug, /* array */[]));
                     }), match[2]);
               var renderedImages = List.mapi((function (index, image) {
+                      var slug = image.slug;
                       return ReasonReact.element(/* Some */[image.id], /* None */0, GalleryImage$PhotoManager.make(/* Some */[(function () {
-                                          var match = List.exists((function (imageSlug) {
-                                                  return image.slug === imageSlug;
-                                                }), thumbedImageSlugs);
-                                          if (match) {
-                                            return /* () */0;
-                                          } else {
-                                            return Curry._2(self[/* reduce */1], (function () {
-                                                          return /* AddImage */Block.__(1, [image.slug]);
-                                                        }), /* () */0);
-                                          }
-                                        })], image.name, image.slug, image.thumbnail, image.rating, Curry._1(self[/* reduce */1], (function () {
+                                          return addFunc(thumbedImageSlugs, slug, self[/* reduce */1]);
+                                        })], image.name, slug, image.thumbnail, image.rating, Curry._1(self[/* reduce */1], (function () {
                                             return /* OpenLightbox */Block.__(0, [index]);
                                           })), /* array */[]));
                     }), images);
@@ -225,6 +230,7 @@ function make($staropt$star, $staropt$star$1, $staropt$star$2, $staropt$star$3, 
 export {
   component ,
   splitDescendants ,
+  addFunc ,
   make ,
   
 }
