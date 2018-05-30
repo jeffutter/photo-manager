@@ -6,7 +6,7 @@ import * as Block from "../node_modules/bs-platform/lib/es6/block.js";
 import * as Curry from "../node_modules/bs-platform/lib/es6/curry.js";
 import * as React from "react";
 import * as ReasonReact from "../node_modules/reason-react/src/ReasonReact.js";
-import * as Client$PhotoManager from "./Client.bs.js";
+import * as ReasonApollo from "../node_modules/reason-apollo/src/ReasonApollo.bs.js";
 import * as Header$PhotoManager from "./Header.bs.js";
 import * as Cookies$PhotoManager from "./Cookies.bs.js";
 import * as LoginForm$PhotoManager from "./LoginForm.bs.js";
@@ -50,8 +50,7 @@ function make(path, _) {
           /* handedOffState */component[/* handedOffState */2],
           /* willReceiveProps */component[/* willReceiveProps */3],
           /* didMount */(function () {
-              ReasonReact.Router[/* push */0](path);
-              return /* NoUpdate */0;
+              return ReasonReact.Router[/* push */0](path);
             }),
           /* didUpdate */component[/* didUpdate */5],
           /* willUnmount */component[/* willUnmount */6],
@@ -126,6 +125,11 @@ function mapUrlToRoute(url) {
   }
 }
 
+var Query = ReasonApollo.CreateQuery([
+      GalleryQueries$PhotoManager.GalleryQuery[2],
+      GalleryQueries$PhotoManager.GalleryQuery[3]
+    ]);
+
 function make$1() {
   return /* record */[
           /* debugName */component$1[/* debugName */0],
@@ -138,25 +142,43 @@ function make$1() {
           /* willUpdate */component$1[/* willUpdate */7],
           /* shouldUpdate */component$1[/* shouldUpdate */8],
           /* render */(function (self) {
-              var match = self[/* state */2][/* route */0];
+              var match = self[/* state */1][/* route */0];
               var tmp;
               if (typeof match === "number") {
                 tmp = ReasonReact.element(/* None */0, /* None */0, LoginForm$PhotoManager.make(/* array */[]));
               } else if (match.tag) {
                 var slug = $$Array.of_list(match[0]).join("/");
                 var galleryQuery = GalleryQueries$PhotoManager.GalleryQuery[/* make */7](slug, /* () */0);
-                tmp = React.createElement("div", undefined, ReasonReact.element(/* None */0, /* None */0, Header$PhotoManager.make(/* array */[])), ReasonReact.element(/* None */0, /* None */0, Curry._2(Client$PhotoManager.Instance[/* Query */1][/* make */2], galleryQuery, (function (response, parse) {
-                                if (typeof response === "number") {
-                                  return ReasonReact.element(/* None */0, /* None */0, FullPageSpinner$PhotoManager.make(/* array */[]));
-                                } else if (response.tag) {
-                                  return React.createElement("div", undefined, response[0]);
-                                } else {
-                                  var data = Curry._1(parse, response[0]);
-                                  return ReasonReact.element(/* None */0, /* None */0, LoadMoreWrapper$PhotoManager.make(slug, (function (moreGallery, loadMore) {
-                                                    return ReasonReact.element(/* None */0, /* None */0, GalleryContainer$PhotoManager.make(data.gallery, moreGallery, loadMore, /* array */[]));
-                                                  })));
-                                }
-                              }))));
+                tmp = React.createElement("div", undefined, ReasonReact.element(/* None */0, /* None */0, Header$PhotoManager.make(/* array */[])), ReasonReact.element(/* None */0, /* None */0, Curry.app(Query[/* make */3], [
+                              /* Some */[galleryQuery.variables],
+                              /* None */0,
+                              /* None */0,
+                              /* None */0,
+                              /* None */0,
+                              /* None */0,
+                              /* None */0,
+                              /* None */0,
+                              /* None */0,
+                              (function (param) {
+                                  var result = param[/* result */0];
+                                  if (typeof result === "number") {
+                                    return ReasonReact.element(/* None */0, /* None */0, FullPageSpinner$PhotoManager.make(/* array */[]));
+                                  } else if (result.tag) {
+                                    var result$1 = result[0];
+                                    return ReasonReact.element(/* None */0, /* None */0, LoadMoreWrapper$PhotoManager.make(slug, (function (moreGallery, loadMore) {
+                                                      var loadNextPage = function (slugs) {
+                                                        console.log("load next");
+                                                        var loadMoreQuery = GalleryQueries$PhotoManager.MoreQuery[/* make */7](slug, slugs, /* () */0);
+                                                        Curry._1(loadMore, loadMoreQuery.variables);
+                                                        return /* () */0;
+                                                      };
+                                                      return ReasonReact.element(/* None */0, /* None */0, GalleryContainer$PhotoManager.make(result$1.gallery, moreGallery, loadNextPage, /* array */[]));
+                                                    })));
+                                  } else {
+                                    return React.createElement("div", undefined, "Error Loading Gallery");
+                                  }
+                                })
+                            ])));
               } else {
                 tmp = ReasonReact.element(/* None */0, /* None */0, make(match[0], /* array */[]));
               }
@@ -175,7 +197,7 @@ function make$1() {
                       /* Sub */[
                         (function () {
                             return ReasonReact.Router[/* watchUrl */1]((function (url) {
-                                          return Curry._1(self[/* send */4], /* ChangeRoute */[mapUrlToRoute(url)]);
+                                          return Curry._1(self[/* send */3], /* ChangeRoute */[mapUrlToRoute(url)]);
                                         }));
                           }),
                         ReasonReact.Router[/* unwatchUrl */2]
@@ -186,8 +208,6 @@ function make$1() {
           /* jsElementWrapped */component$1[/* jsElementWrapped */14]
         ];
 }
-
-var Query = 0;
 
 export {
   cls ,

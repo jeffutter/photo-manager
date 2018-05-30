@@ -1,71 +1,84 @@
-module Query = Client.Instance.Query;
+module Query = ReasonApollo.CreateQuery(GalleryQueries.MoreQuery);
 
-external castResponse : string => {. "data": Js.Json.t} =
-  "GalleryQueries.MoreQuery.t";
+let component = ReasonReact.statelessComponent("LoadMoreWrapper");
 
-type state = {gallery: option(GalleryQueries.moreGallery)};
+type responseJS = {
+  .
+  "gallery":
+    Js.Nullable.t(
+      {
+        .
+        "id": string,
+        "name": string,
+        "path": Js.Array.t(string),
+        "slug": string,
+        "descendants": Js.Nullable.t(Js.Array.t(Js.t({.}))),
+        "__typename": string,
+      },
+    ),
+};
 
-type action =
-  | Fetch(array(string))
-  | AddResults(option(GalleryQueries.moreGallery));
+external unsafeFromJson : Js.Json.t => responseJS = "%identity";
 
-let component = ReasonReact.reducerComponent("LoadMoreWrapper");
+external unsafeToJson : responseJS => Js.Json.t = "%identity";
+
+let updateQuery = (previousResult, newResults: Query.updateQueryOptions) => {
+  let previousResult = unsafeFromJson(previousResult);
+  (
+    switch (newResults |. Query.fetchMoreResult) {
+    | Some(fetchMoreResult) =>
+      let fetchMoreResult = unsafeFromJson(fetchMoreResult);
+      let combinedGallery =
+        switch (
+          previousResult##gallery |> Js.Nullable.toOption,
+          fetchMoreResult##gallery |> Js.Nullable.toOption,
+        ) {
+        | (Some(previousGallery), Some(moreGallery)) =>
+          let combinedDescendants =
+            switch (
+              previousGallery##descendants |> Js.Nullable.toOption,
+              moreGallery##descendants |> Js.Nullable.toOption,
+            ) {
+            | (Some(previousDescendants), Some(moreDescendants)) =>
+              Some(Array.append(previousDescendants, moreDescendants))
+            | (Some(previousDescendants), None) => Some(previousDescendants)
+            | (None, Some(moreDescendants)) => Some(moreDescendants)
+            | (None, None) => Some([||])
+            };
+          Some({
+            "id": previousGallery##id,
+            "name": previousGallery##name,
+            "path": previousGallery##path,
+            "slug": previousGallery##slug,
+            "descendants": combinedDescendants |> Js.Nullable.fromOption,
+            "__typename": previousGallery##__typename,
+          });
+        | (Some(previousGallery), None) => Some(previousGallery)
+        | (None, Some(moreGallery)) => Some(moreGallery)
+        | (None, None) => None
+        };
+      {"gallery": combinedGallery |> Js.Nullable.fromOption};
+    | None => {"gallery": Js.Nullable.null}
+    }
+  )
+  |> unsafeToJson;
+};
 
 let make = (~slug: string, children) => {
   ...component,
-  initialState: () => {gallery: None},
-  reducer: (action, state) =>
-    switch (action) {
-    | Fetch(slugs) =>
-      ReasonReact.SideEffects(
-        (
-          ({send}) => {
-            let moreQuery = GalleryQueries.MoreQuery.make(~slug, ~slugs, ());
-            Query.sendQuery(
-              ~query=moreQuery,
-              ~reduce=(rd: unit => Query.action, ()) => {
-                let action = rd();
-                switch (action) {
-                | Query.Result(result) =>
-                  let response = Query.castResponse(result)##data;
-                  let parse = moreQuery##parse;
-                  let parsed = parse(response);
-                  send(AddResults(parsed##gallery));
-                  ();
-                | Query.Error(_string) => ()
-                };
-              },
-            );
-          }
-        ),
-      )
-    | AddResults(Some(moreGallery)) =>
-      switch (state.gallery) {
-      | None => ReasonReact.Update({gallery: Some(moreGallery)})
-      | Some(gallery) =>
-        let newDescendants =
-          switch (gallery##descendants, moreGallery##descendants) {
-          | (None, None) => None
-          | (Some(descendants), None) => Some(descendants)
-          | (None, Some(descendants)) => Some(descendants)
-          | (Some(oldDescendants), Some(newDescendants)) =>
-            Some(Array.append(oldDescendants, newDescendants))
-          };
-        let newGallery = {
-          "id": gallery##id,
-          "name": gallery##name,
-          "path": gallery##path,
-          "slug": gallery##slug,
-          "descendants": newDescendants,
-        };
-        ReasonReact.Update({gallery: Some(newGallery)});
-      }
-    | AddResults(None) => ReasonReact.NoUpdate
-    },
-  didMount: self => {
-    self.send(Fetch([||]));
-    ReasonReact.NoUpdate;
+  render: _self => {
+    Js.log("Render load more wrapper");
+    let loadMoreQuery = GalleryQueries.MoreQuery.make(~slug, ~slugs=[||], ());
+    <Query variables=loadMoreQuery##variables>
+      ...(
+           ({result, fetchMore}) =>
+             switch (result) {
+             | Loading => children(None, fetchMore(~updateQuery))
+             | Error(_error) => children(None, fetchMore(~updateQuery))
+             | Data(response) =>
+               children(response##gallery, fetchMore(~updateQuery))
+             }
+         )
+    </Query>;
   },
-  render: self =>
-    children(self.state.gallery, slugs => self.send(Fetch(slugs))),
 };

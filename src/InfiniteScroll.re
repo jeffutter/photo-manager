@@ -8,7 +8,8 @@ type state = {
 };
 
 type action =
-  | ChildrenUpdated;
+  | ChildrenUpdated
+  | InitialMount(Dom.element);
 
 let component = ReasonReact.reducerComponent("InfiniteScroll");
 
@@ -36,6 +37,25 @@ let make =
   },
   reducer: (action, state) =>
     switch (action) {
+    | InitialMount(c) =>
+      let instance =
+        Brick.brick({
+          "container": c,
+          "packed": packed,
+          "sizes": sizes,
+          "position": position,
+        });
+      let newState = {...state, instance: Some(instance)};
+      ReasonReact.UpdateWithSideEffects(
+        newState,
+        (
+          self => {
+            Brick.resize(instance, true);
+            Brick.pack(instance);
+            self.send(ChildrenUpdated);
+          }
+        ),
+      );
     | ChildrenUpdated =>
       let currCount = count(children);
       let prevCount = state.childrenCount;
@@ -61,32 +81,14 @@ let make =
         ReasonReact.NoUpdate;
       };
     },
-  didMount: ({reduce: _reduce, state}) =>
+  didMount: ({send, state}) =>
     switch (state.container^) {
-    | Some(c) =>
-      let instance =
-        Brick.brick({
-          "container": c,
-          "packed": packed,
-          "sizes": sizes,
-          "position": position,
-        });
-      let newState = {...state, instance: Some(instance)};
-      ReasonReact.UpdateWithSideEffects(
-        newState,
-        (
-          self => {
-            Brick.resize(instance, true);
-            Brick.pack(instance);
-            self.reduce(() => ChildrenUpdated, ());
-          }
-        ),
-      );
+    | Some(c) => send(InitialMount(c))
     | None =>
       ignore(Js.Exn.raiseError("Bricks Container Missing"));
-      ReasonReact.NoUpdate;
+      ();
     },
-  didUpdate: ({newSelf}) => newSelf.reduce(() => ChildrenUpdated, ()),
+  didUpdate: ({newSelf}) => newSelf.send(ChildrenUpdated),
   willUnmount: ({state}) =>
     switch (state.instance) {
     | None => ()

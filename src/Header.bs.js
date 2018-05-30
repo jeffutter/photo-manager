@@ -341,7 +341,7 @@ function make() {
           /* render */(function (self) {
               var headerClasses = /* array */[headerCls];
               var mobileToggleClasses = /* array */[mobileToggleCls];
-              if (self[/* state */2][/* _open */0]) {
+              if (self[/* state */1][/* _open */0]) {
                 headerClasses.push(openNavCls);
                 mobileToggleClasses.push(openNavMobileToggle);
               }
@@ -352,18 +352,18 @@ function make() {
                               href: "#"
                             }, "Photo Gallery"), React.createElement("div", {
                               className: mobileToggleClasses.join(" "),
-                              onClick: Curry._1(self[/* reduce */1], (function () {
-                                      return /* ToggleNav */0;
-                                    }))
+                              onClick: (function () {
+                                  return Curry._1(self[/* send */3], /* ToggleNav */0);
+                                })
                             }, React.createElement("span", undefined), React.createElement("span", undefined), React.createElement("span", undefined)), React.createElement("nav", {
                               className: navCls
-                            }, React.createElement("ul", undefined, React.createElement("li", undefined, ReasonReact.element(/* None */0, /* None */0, NavLink$PhotoManager.make("/", /* Some */[activeCls], /* Some */[Curry._1(self[/* reduce */1], (function () {
-                                                      return /* ToggleNav */0;
-                                                    }))], /* array */["Home"]))), React.createElement("li", undefined, ReasonReact.element(/* None */0, /* None */0, NavLink$PhotoManager.make("/gallery", /* Some */[activeCls], /* Some */[Curry._1(self[/* reduce */1], (function () {
-                                                      return /* ToggleNav */0;
-                                                    }))], /* array */["Gallery"]))), React.createElement("li", undefined, ReasonReact.element(/* None */0, /* None */0, NavLink$PhotoManager.make("/", /* Some */[activeCls], /* Some */[Curry._1(self[/* reduce */1], (function () {
-                                                      return /* LogOut */1;
-                                                    }))], /* array */["Logout"]))))));
+                            }, React.createElement("ul", undefined, React.createElement("li", undefined, ReasonReact.element(/* None */0, /* None */0, NavLink$PhotoManager.make("/", /* Some */[activeCls], /* Some */[(function () {
+                                                  return Curry._1(self[/* send */3], /* ToggleNav */0);
+                                                })], /* array */["Home"]))), React.createElement("li", undefined, ReasonReact.element(/* None */0, /* None */0, NavLink$PhotoManager.make("/gallery", /* Some */[activeCls], /* Some */[(function () {
+                                                  return Curry._1(self[/* send */3], /* ToggleNav */0);
+                                                })], /* array */["Gallery"]))), React.createElement("li", undefined, ReasonReact.element(/* None */0, /* None */0, NavLink$PhotoManager.make("/", /* Some */[activeCls], /* Some */[(function () {
+                                                  return Curry._1(self[/* send */3], /* LogOut */1);
+                                                })], /* array */["Logout"]))))));
             }),
           /* initialState */(function () {
               return /* record */[/* _open */false];

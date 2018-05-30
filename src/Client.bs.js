@@ -53,13 +53,11 @@ var errorLink = ApolloLinks.createErrorLink(errorHandler);
 
 var httpLink = ApolloLinks.createHttpLink("/graphiql", /* None */0, /* None */0, /* None */0, /* None */0, /* None */0, /* () */0);
 
-var apolloClient = ReasonApollo.createApolloClient(inMemoryCache, ApolloLink.from(/* array */[
+var instance = ReasonApollo.createApolloClient(ApolloLink.from(/* array */[
           context,
           errorLink,
           httpLink
-        ]), /* None */0, /* None */0, /* None */0, /* None */0, /* () */0);
-
-var Instance = ReasonApollo.CreateClient(/* module */[/* apolloClient */apolloClient]);
+        ]), inMemoryCache, /* None */0, /* None */0, /* None */0, /* None */0, /* () */0);
 
 export {
   fragmentMatcher ,
@@ -68,7 +66,7 @@ export {
   errorHandler ,
   errorLink ,
   httpLink ,
-  Instance ,
+  instance ,
   
 }
 /* fragmentMatcher Not a pure module */

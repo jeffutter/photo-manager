@@ -165,7 +165,7 @@ let loginWarning = () =>
           d="M1024 1375v-190q0-14-9.5-23.5t-22.5-9.5h-192q-13 0-22.5 9.5t-9.5 23.5v190q0 14 9.5 23.5t22.5 9.5h192q13 0 22.5-9.5t9.5-23.5zm-2-374l18-459q0-12-10-19-13-11-24-11h-220q-11 0-24 11-10 7-10 21l17 457q0 10 10 16.5t24 6.5h185q14 0 23.5-6.5t10.5-16.5zm-14-934l768 1408q35 63-2 126-17 29-46.5 46t-63.5 17h-1536q-34 0-63.5-17t-46.5-46q-37-63-2-126l768-1408q17-31 47-49t65-18 65 18 47 49z"
         />
       </svg>
-      (ReasonReact.stringToElement(message))
+      (ReasonReact.string(message))
     </div>;
   | None => <span />
   };
@@ -186,7 +186,7 @@ let make = _children => {
               d="M1343 12v264h-157q-86 0-116 36t-30 108v189h293l-39 296h-254v759h-306v-759h-255v-296h255v-218q0-186 104-288.5t277-102.5q147 0 228 12z"
             />
           </svg>
-          <span> (ReasonReact.stringToElement("Login with Facebook")) </span>
+          <span> (ReasonReact.string("Login with Facebook")) </span>
         </a>
       </div>
       <div>
@@ -197,7 +197,7 @@ let make = _children => {
               d="M896 786h725q12 67 12 128 0 217-91 387.5t-259.5 266.5-386.5 96q-157 0-299-60.5t-245-163.5-163.5-245-60.5-299 60.5-299 163.5-245 245-163.5 299-60.5q300 0 515 201l-209 201q-123-119-306-119-129 0-238.5 65t-173.5 176.5-64 243.5 64 243.5 173.5 176.5 238.5 65q87 0 160-24t120-60 82-82 51.5-87 22.5-78h-436v-264z"
             />
           </svg>
-          <span> (ReasonReact.stringToElement("Login with Google")) </span>
+          <span> (ReasonReact.string("Login with Google")) </span>
         </a>
       </div>
     </div>,

@@ -5,6 +5,7 @@ import * as $$Array from "../node_modules/bs-platform/lib/es6/array.js";
 import * as Block from "../node_modules/bs-platform/lib/es6/block.js";
 import * as Curry from "../node_modules/bs-platform/lib/es6/curry.js";
 import * as React from "react";
+import * as Caml_obj from "../node_modules/bs-platform/lib/es6/caml_obj.js";
 import * as ReasonReact from "../node_modules/reason-react/src/ReasonReact.js";
 import * as Utils$PhotoManager from "./Utils.bs.js";
 import * as PhotoSwipe$PhotoManager from "./PhotoSwipe.bs.js";
@@ -75,16 +76,14 @@ function splitDescendants(_param, _descendants) {
   };
 }
 
-function addFunc(thumbedImageSlugs, slug, reduce) {
+function addFunc(thumbedImageSlugs, slug, send) {
   var slugHasThumb = List.exists((function (imageSlug) {
           return slug === imageSlug;
         }), thumbedImageSlugs);
   if (slugHasThumb) {
     return /* () */0;
   } else {
-    return Curry._2(reduce, (function () {
-                  return /* AddImage */Block.__(1, [slug]);
-                }), /* () */0);
+    return Curry._1(send, /* AddImage */Block.__(1, [slug]));
   }
 }
 
@@ -97,31 +96,56 @@ function make($staropt$star, $staropt$star$1, $staropt$star$2, $staropt$star$3, 
           /* debugName */component[/* debugName */0],
           /* reactClassInternal */component[/* reactClassInternal */1],
           /* handedOffState */component[/* handedOffState */2],
-          /* willReceiveProps */component[/* willReceiveProps */3],
+          /* willReceiveProps */(function (param) {
+              var state = param[/* state */1];
+              return /* record */[
+                      /* lightboxIsOpen */state[/* lightboxIsOpen */0],
+                      /* currentImage */state[/* currentImage */1],
+                      /* pendingImages */state[/* pendingImages */2],
+                      /* loadingTimeout */state[/* loadingTimeout */3],
+                      /* descendants */descendants
+                    ];
+            }),
           /* didMount */component[/* didMount */4],
           /* didUpdate */component[/* didUpdate */5],
           /* willUnmount */component[/* willUnmount */6],
           /* willUpdate */component[/* willUpdate */7],
-          /* shouldUpdate */component[/* shouldUpdate */8],
+          /* shouldUpdate */(function (param) {
+              var newState = param[/* newSelf */1][/* state */1];
+              var oldState = param[/* oldSelf */0][/* state */1];
+              if (Caml_obj.caml_notequal(oldState[/* descendants */4], newState[/* descendants */4]) || oldState[/* lightboxIsOpen */0] !== newState[/* lightboxIsOpen */0]) {
+                return true;
+              } else {
+                return oldState[/* currentImage */1] !== newState[/* currentImage */1];
+              }
+            }),
           /* render */(function (self) {
+              console.time("gallery");
+              console.time("gallery-split");
               var match = splitDescendants(/* tuple */[
                     /* [] */0,
                     /* [] */0,
                     /* [] */0
-                  ], $$Array.to_list(descendants));
+                  ], $$Array.to_list(self[/* state */1][/* descendants */4]));
               var images = match[1];
               var thumbedImageSlugs = match[0];
+              console.timeEnd("gallery-split");
+              console.time("gallery-render-galleries");
               var renderedGalleries = List.map((function (item) {
                       return ReasonReact.element(/* Some */[item.id], /* None */0, GalleryThumb$PhotoManager.make(item.name, item.slug, /* array */[]));
                     }), match[2]);
+              console.timeEnd("gallery-render-galleries");
+              console.time("gallery-render-images");
               var renderedImages = List.mapi((function (index, image) {
                       var slug = image.slug;
                       return ReasonReact.element(/* Some */[image.id], /* None */0, GalleryImage$PhotoManager.make(/* Some */[(function () {
-                                          return addFunc(thumbedImageSlugs, slug, self[/* reduce */1]);
-                                        })], image.name, slug, image.thumbnail, image.rating, Curry._1(self[/* reduce */1], (function () {
-                                            return /* OpenLightbox */Block.__(0, [index]);
-                                          })), /* array */[]));
+                                          return addFunc(thumbedImageSlugs, slug, self[/* send */3]);
+                                        })], image.name, slug, image.thumbnail, image.rating, (function () {
+                                        return Curry._1(self[/* send */3], /* OpenLightbox */Block.__(0, [index]));
+                                      }), /* array */[]));
                     }), images);
+              console.timeEnd("gallery-render-images");
+              console.time("gallery-render-concat");
               var renderedDescendants = List.concat(/* :: */[
                     renderedGalleries,
                     /* :: */[
@@ -129,6 +153,8 @@ function make($staropt$star, $staropt$star$1, $staropt$star$2, $staropt$star$3, 
                       /* [] */0
                     ]
                   ]);
+              console.timeEnd("gallery-render-concat");
+              console.time("gallery-swipe");
               var swipeImages = List.map((function (image) {
                       return {
                               src: image.largeUrl,
@@ -138,21 +164,24 @@ function make($staropt$star, $staropt$star$1, $staropt$star$2, $staropt$star$3, 
                               title: image.name
                             };
                     }), images);
+              console.timeEnd("gallery-swipe");
+              console.timeEnd("gallery");
               var swipeOptions = {
-                index: self[/* state */2][/* currentImage */1]
+                index: self[/* state */1][/* currentImage */1]
               };
               return React.createElement("div", {
                           className: "gallery"
-                        }, ReasonReact.element(/* None */0, /* None */0, BreadCrumbs$PhotoManager.make(path, slug, name, /* array */[])), ReasonReact.element(/* None */0, /* None */0, GalleryBody$PhotoManager.make($$Array.of_list(renderedDescendants))), ReasonReact.element(/* None */0, /* None */0, PhotoSwipe$PhotoManager.make(/* Some */[self[/* state */2][/* lightboxIsOpen */0]], $$Array.of_list(swipeImages), Curry._1(self[/* reduce */1], (function () {
-                                        return /* CloseLightbox */0;
-                                      })), swipeOptions, /* array */[])));
+                        }, ReasonReact.element(/* None */0, /* None */0, BreadCrumbs$PhotoManager.make(path, slug, name, /* array */[])), ReasonReact.element(/* None */0, /* None */0, GalleryBody$PhotoManager.make($$Array.of_list(renderedDescendants))), ReasonReact.element(/* None */0, /* None */0, PhotoSwipe$PhotoManager.make(/* Some */[self[/* state */1][/* lightboxIsOpen */0]], $$Array.of_list(swipeImages), (function () {
+                                    return Curry._1(self[/* send */3], /* CloseLightbox */0);
+                                  }), swipeOptions, /* array */[])));
             }),
           /* initialState */(function () {
               return /* record */[
                       /* lightboxIsOpen */false,
                       /* currentImage */0,
                       /* pendingImages : [] */0,
-                      /* loadingTimeout */[/* None */0]
+                      /* loadingTimeout */[/* None */0],
+                      /* descendants */descendants
                     ];
             }),
           /* retainedProps */component[/* retainedProps */11],
@@ -163,20 +192,23 @@ function make($staropt$star, $staropt$star$1, $staropt$star$2, $staropt$star$3, 
                               /* lightboxIsOpen */false,
                               /* currentImage */0,
                               /* pendingImages */state[/* pendingImages */2],
-                              /* loadingTimeout */state[/* loadingTimeout */3]
+                              /* loadingTimeout */state[/* loadingTimeout */3],
+                              /* descendants */state[/* descendants */4]
                             ]]);
                 } else {
                   var chunks = Utils$PhotoManager.chunkList(20, state[/* pendingImages */2]);
                   var newState_000 = /* lightboxIsOpen */state[/* lightboxIsOpen */0];
                   var newState_001 = /* currentImage */state[/* currentImage */1];
                   var newState_003 = /* loadingTimeout */[/* None */0];
+                  var newState_004 = /* descendants */state[/* descendants */4];
                   var newState = /* record */[
                     newState_000,
                     newState_001,
                     /* pendingImages : [] */0,
-                    newState_003
+                    newState_003,
+                    newState_004
                   ];
-                  return /* UpdateWithSideEffects */Block.__(3, [
+                  return /* UpdateWithSideEffects */Block.__(2, [
                             newState,
                             (function () {
                                 return List.iter((function (chunk) {
@@ -193,22 +225,24 @@ function make($staropt$star, $staropt$star$1, $staropt$star$2, $staropt$star$3, 
                   state[/* pendingImages */2]
                 ];
                 var new_state_003 = /* loadingTimeout */state[/* loadingTimeout */3];
+                var new_state_004 = /* descendants */state[/* descendants */4];
                 var new_state = /* record */[
                   new_state_000,
                   new_state_001,
                   new_state_002,
-                  new_state_003
+                  new_state_003,
+                  new_state_004
                 ];
-                return /* UpdateWithSideEffects */Block.__(3, [
+                return /* UpdateWithSideEffects */Block.__(2, [
                           new_state,
                           (function (self) {
                               var match = state[/* loadingTimeout */3][0];
                               if (match) {
                                 return /* () */0;
                               } else {
-                                state[/* loadingTimeout */3][0] = /* Some */[setTimeout(Curry._1(self[/* reduce */1], (function () {
-                                              return /* LoadImages */1;
-                                            })), 200)];
+                                state[/* loadingTimeout */3][0] = /* Some */[setTimeout((function () {
+                                          return Curry._1(self[/* send */3], /* LoadImages */1);
+                                        }), 200)];
                                 return /* () */0;
                               }
                             })
@@ -218,7 +252,8 @@ function make($staropt$star, $staropt$star$1, $staropt$star$2, $staropt$star$3, 
                             /* lightboxIsOpen */true,
                             /* currentImage */action[0],
                             /* pendingImages */state[/* pendingImages */2],
-                            /* loadingTimeout */state[/* loadingTimeout */3]
+                            /* loadingTimeout */state[/* loadingTimeout */3],
+                            /* descendants */state[/* descendants */4]
                           ]]);
               }
             }),

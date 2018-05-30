@@ -7,7 +7,7 @@ import * as Caml_exceptions from "../node_modules/bs-platform/lib/es6/caml_excep
 
 var Graphql_error = Caml_exceptions.create("GalleryQueries-PhotoManager.GalleryQuery.Graphql_error");
 
-var ppx_printed_query = "query gallery($slug: String!)  {\ngallery(slug: $slug)  {\nid  \nname  \npath  \nslug  \ntotalDescendants  \ndescendants  {\n__typename\n...on Gallery   {\nid  \nname  \npath  \nslug  \n}\n...on Image   {\nid  \nname  \npath  \nslug  \nsize  \nwidth  \nheight  \nrating  \nsmallUrl  \nmediumUrl  \nlargeUrl  \n}\n}\n}\n}";
+var ppx_printed_query = "query gallery($slug: String!)  {\ngallery(slug: $slug)  {\nid  \n__typename  \nname  \npath  \nslug  \ntotalDescendants  \ndescendants  {\n__typename\n...on Gallery   {\nid  \n__typename  \nname  \npath  \nslug  \n}\n...on Image   {\nid  \n__typename  \nname  \npath  \nslug  \nsize  \nwidth  \nheight  \nrating  \nsmallUrl  \nmediumUrl  \nlargeUrl  \n}\n}\n}\n}";
 
 function parse(value) {
   var match = Js_json.decodeObject(value);
@@ -30,7 +30,7 @@ function parse(value) {
         } else {
           throw Graphql_error;
         }
-        var value$4 = value$2["name"];
+        var value$4 = value$2["__typename"];
         var match$4 = Js_json.decodeString(value$4);
         var tmp$3;
         if (match$4) {
@@ -38,11 +38,19 @@ function parse(value) {
         } else {
           throw Graphql_error;
         }
-        var value$5 = value$2["path"];
-        var match$5 = Js_json.decodeArray(value$5);
+        var value$5 = value$2["name"];
+        var match$5 = Js_json.decodeString(value$5);
         var tmp$4;
         if (match$5) {
-          tmp$4 = match$5[0].map((function (value) {
+          tmp$4 = match$5[0];
+        } else {
+          throw Graphql_error;
+        }
+        var value$6 = value$2["path"];
+        var match$6 = Js_json.decodeArray(value$6);
+        var tmp$5;
+        if (match$6) {
+          tmp$5 = match$6[0].map((function (value) {
                   var match = Js_json.decodeString(value);
                   if (match) {
                     return match[0];
@@ -53,39 +61,39 @@ function parse(value) {
         } else {
           throw Graphql_error;
         }
-        var value$6 = value$2["slug"];
-        var match$6 = Js_json.decodeString(value$6);
-        var tmp$5;
-        if (match$6) {
-          tmp$5 = match$6[0];
+        var value$7 = value$2["slug"];
+        var match$7 = Js_json.decodeString(value$7);
+        var tmp$6;
+        if (match$7) {
+          tmp$6 = match$7[0];
         } else {
           throw Graphql_error;
         }
-        var value$7 = value$2["totalDescendants"];
-        var match$7 = Js_json.decodeNull(value$7);
-        var tmp$6;
-        if (match$7) {
-          tmp$6 = /* None */0;
+        var value$8 = value$2["totalDescendants"];
+        var match$8 = Js_json.decodeNull(value$8);
+        var tmp$7;
+        if (match$8) {
+          tmp$7 = /* None */0;
         } else {
-          var match$8 = Js_json.decodeNumber(value$7);
-          var tmp$7;
-          if (match$8) {
-            tmp$7 = match$8[0] | 0;
+          var match$9 = Js_json.decodeNumber(value$8);
+          var tmp$8;
+          if (match$9) {
+            tmp$8 = match$9[0] | 0;
           } else {
             throw Graphql_error;
           }
-          tmp$6 = /* Some */[tmp$7];
+          tmp$7 = /* Some */[tmp$8];
         }
-        var value$8 = value$2["descendants"];
-        var match$9 = Js_json.decodeNull(value$8);
-        var tmp$8;
-        if (match$9) {
-          tmp$8 = /* None */0;
+        var value$9 = value$2["descendants"];
+        var match$10 = Js_json.decodeNull(value$9);
+        var tmp$9;
+        if (match$10) {
+          tmp$9 = /* None */0;
         } else {
-          var match$10 = Js_json.decodeArray(value$8);
-          var tmp$9;
-          if (match$10) {
-            tmp$9 = match$10[0].map((function (value) {
+          var match$11 = Js_json.decodeArray(value$9);
+          var tmp$10;
+          if (match$11) {
+            tmp$10 = match$11[0].map((function (value) {
                     var match = Js_json.decodeObject(value);
                     if (match) {
                       var match$1 = Js_json.decodeString(match[0]["__typename"]);
@@ -104,7 +112,7 @@ function parse(value) {
                                 } else {
                                   throw Graphql_error;
                                 }
-                                var value$3 = value$1["name"];
+                                var value$3 = value$1["__typename"];
                                 var match$4 = Js_json.decodeString(value$3);
                                 var tmp$2;
                                 if (match$4) {
@@ -112,11 +120,19 @@ function parse(value) {
                                 } else {
                                   throw Graphql_error;
                                 }
-                                var value$4 = value$1["path"];
-                                var match$5 = Js_json.decodeArray(value$4);
+                                var value$4 = value$1["name"];
+                                var match$5 = Js_json.decodeString(value$4);
                                 var tmp$3;
                                 if (match$5) {
-                                  tmp$3 = match$5[0].map((function (value) {
+                                  tmp$3 = match$5[0];
+                                } else {
+                                  throw Graphql_error;
+                                }
+                                var value$5 = value$1["path"];
+                                var match$6 = Js_json.decodeArray(value$5);
+                                var tmp$4;
+                                if (match$6) {
+                                  tmp$4 = match$6[0].map((function (value) {
                                           var match = Js_json.decodeString(value);
                                           if (match) {
                                             return match[0];
@@ -127,19 +143,20 @@ function parse(value) {
                                 } else {
                                   throw Graphql_error;
                                 }
-                                var value$5 = value$1["slug"];
-                                var match$6 = Js_json.decodeString(value$5);
-                                var tmp$4;
-                                if (match$6) {
-                                  tmp$4 = match$6[0];
+                                var value$6 = value$1["slug"];
+                                var match$7 = Js_json.decodeString(value$6);
+                                var tmp$5;
+                                if (match$7) {
+                                  tmp$5 = match$7[0];
                                 } else {
                                   throw Graphql_error;
                                 }
                                 tmp = {
                                   id: tmp$1,
-                                  name: tmp$2,
-                                  path: tmp$3,
-                                  slug: tmp$4
+                                  __typename: tmp$2,
+                                  name: tmp$3,
+                                  path: tmp$4,
+                                  slug: tmp$5
                                 };
                               } else {
                                 throw Graphql_error;
@@ -149,19 +166,11 @@ function parse(value) {
                                       tmp
                                     ];
                           case "Image" : 
-                              var match$7 = Js_json.decodeObject(value);
-                              var tmp$5;
-                              if (match$7) {
-                                var value$6 = match$7[0];
-                                var value$7 = value$6["id"];
-                                var match$8 = Js_json.decodeString(value$7);
-                                var tmp$6;
-                                if (match$8) {
-                                  tmp$6 = match$8[0];
-                                } else {
-                                  throw Graphql_error;
-                                }
-                                var value$8 = value$6["name"];
+                              var match$8 = Js_json.decodeObject(value);
+                              var tmp$6;
+                              if (match$8) {
+                                var value$7 = match$8[0];
+                                var value$8 = value$7["id"];
                                 var match$9 = Js_json.decodeString(value$8);
                                 var tmp$7;
                                 if (match$9) {
@@ -169,11 +178,27 @@ function parse(value) {
                                 } else {
                                   throw Graphql_error;
                                 }
-                                var value$9 = value$6["path"];
-                                var match$10 = Js_json.decodeArray(value$9);
+                                var value$9 = value$7["__typename"];
+                                var match$10 = Js_json.decodeString(value$9);
                                 var tmp$8;
                                 if (match$10) {
-                                  tmp$8 = match$10[0].map((function (value) {
+                                  tmp$8 = match$10[0];
+                                } else {
+                                  throw Graphql_error;
+                                }
+                                var value$10 = value$7["name"];
+                                var match$11 = Js_json.decodeString(value$10);
+                                var tmp$9;
+                                if (match$11) {
+                                  tmp$9 = match$11[0];
+                                } else {
+                                  throw Graphql_error;
+                                }
+                                var value$11 = value$7["path"];
+                                var match$12 = Js_json.decodeArray(value$11);
+                                var tmp$10;
+                                if (match$12) {
+                                  tmp$10 = match$12[0].map((function (value) {
                                           var match = Js_json.decodeString(value);
                                           if (match) {
                                             return match[0];
@@ -184,51 +209,36 @@ function parse(value) {
                                 } else {
                                   throw Graphql_error;
                                 }
-                                var value$10 = value$6["slug"];
-                                var match$11 = Js_json.decodeString(value$10);
-                                var tmp$9;
-                                if (match$11) {
-                                  tmp$9 = match$11[0];
+                                var value$12 = value$7["slug"];
+                                var match$13 = Js_json.decodeString(value$12);
+                                var tmp$11;
+                                if (match$13) {
+                                  tmp$11 = match$13[0];
                                 } else {
                                   throw Graphql_error;
                                 }
-                                var value$11 = value$6["size"];
-                                var match$12 = Js_json.decodeNull(value$11);
-                                var tmp$10;
-                                if (match$12) {
-                                  tmp$10 = /* None */0;
-                                } else {
-                                  var match$13 = Js_json.decodeString(value$11);
-                                  var tmp$11;
-                                  if (match$13) {
-                                    tmp$11 = match$13[0];
-                                  } else {
-                                    throw Graphql_error;
-                                  }
-                                  tmp$10 = /* Some */[tmp$11];
-                                }
-                                var value$12 = value$6["width"];
-                                var match$14 = Js_json.decodeNull(value$12);
+                                var value$13 = value$7["size"];
+                                var match$14 = Js_json.decodeNull(value$13);
                                 var tmp$12;
                                 if (match$14) {
                                   tmp$12 = /* None */0;
                                 } else {
-                                  var match$15 = Js_json.decodeNumber(value$12);
+                                  var match$15 = Js_json.decodeString(value$13);
                                   var tmp$13;
                                   if (match$15) {
-                                    tmp$13 = match$15[0] | 0;
+                                    tmp$13 = match$15[0];
                                   } else {
                                     throw Graphql_error;
                                   }
                                   tmp$12 = /* Some */[tmp$13];
                                 }
-                                var value$13 = value$6["height"];
-                                var match$16 = Js_json.decodeNull(value$13);
+                                var value$14 = value$7["width"];
+                                var match$16 = Js_json.decodeNull(value$14);
                                 var tmp$14;
                                 if (match$16) {
                                   tmp$14 = /* None */0;
                                 } else {
-                                  var match$17 = Js_json.decodeNumber(value$13);
+                                  var match$17 = Js_json.decodeNumber(value$14);
                                   var tmp$15;
                                   if (match$17) {
                                     tmp$15 = match$17[0] | 0;
@@ -237,13 +247,13 @@ function parse(value) {
                                   }
                                   tmp$14 = /* Some */[tmp$15];
                                 }
-                                var value$14 = value$6["rating"];
-                                var match$18 = Js_json.decodeNull(value$14);
+                                var value$15 = value$7["height"];
+                                var match$18 = Js_json.decodeNull(value$15);
                                 var tmp$16;
                                 if (match$18) {
                                   tmp$16 = /* None */0;
                                 } else {
-                                  var match$19 = Js_json.decodeNumber(value$14);
+                                  var match$19 = Js_json.decodeNumber(value$15);
                                   var tmp$17;
                                   if (match$19) {
                                     tmp$17 = match$19[0] | 0;
@@ -252,28 +262,28 @@ function parse(value) {
                                   }
                                   tmp$16 = /* Some */[tmp$17];
                                 }
-                                var value$15 = value$6["smallUrl"];
-                                var match$20 = Js_json.decodeNull(value$15);
+                                var value$16 = value$7["rating"];
+                                var match$20 = Js_json.decodeNull(value$16);
                                 var tmp$18;
                                 if (match$20) {
                                   tmp$18 = /* None */0;
                                 } else {
-                                  var match$21 = Js_json.decodeString(value$15);
+                                  var match$21 = Js_json.decodeNumber(value$16);
                                   var tmp$19;
                                   if (match$21) {
-                                    tmp$19 = match$21[0];
+                                    tmp$19 = match$21[0] | 0;
                                   } else {
                                     throw Graphql_error;
                                   }
                                   tmp$18 = /* Some */[tmp$19];
                                 }
-                                var value$16 = value$6["mediumUrl"];
-                                var match$22 = Js_json.decodeNull(value$16);
+                                var value$17 = value$7["smallUrl"];
+                                var match$22 = Js_json.decodeNull(value$17);
                                 var tmp$20;
                                 if (match$22) {
                                   tmp$20 = /* None */0;
                                 } else {
-                                  var match$23 = Js_json.decodeString(value$16);
+                                  var match$23 = Js_json.decodeString(value$17);
                                   var tmp$21;
                                   if (match$23) {
                                     tmp$21 = match$23[0];
@@ -282,13 +292,13 @@ function parse(value) {
                                   }
                                   tmp$20 = /* Some */[tmp$21];
                                 }
-                                var value$17 = value$6["largeUrl"];
-                                var match$24 = Js_json.decodeNull(value$17);
+                                var value$18 = value$7["mediumUrl"];
+                                var match$24 = Js_json.decodeNull(value$18);
                                 var tmp$22;
                                 if (match$24) {
                                   tmp$22 = /* None */0;
                                 } else {
-                                  var match$25 = Js_json.decodeString(value$17);
+                                  var match$25 = Js_json.decodeString(value$18);
                                   var tmp$23;
                                   if (match$25) {
                                     tmp$23 = match$25[0];
@@ -297,25 +307,41 @@ function parse(value) {
                                   }
                                   tmp$22 = /* Some */[tmp$23];
                                 }
-                                tmp$5 = {
-                                  id: tmp$6,
-                                  name: tmp$7,
-                                  path: tmp$8,
-                                  slug: tmp$9,
-                                  size: tmp$10,
-                                  width: tmp$12,
-                                  height: tmp$14,
-                                  rating: tmp$16,
-                                  smallUrl: tmp$18,
-                                  mediumUrl: tmp$20,
-                                  largeUrl: tmp$22
+                                var value$19 = value$7["largeUrl"];
+                                var match$26 = Js_json.decodeNull(value$19);
+                                var tmp$24;
+                                if (match$26) {
+                                  tmp$24 = /* None */0;
+                                } else {
+                                  var match$27 = Js_json.decodeString(value$19);
+                                  var tmp$25;
+                                  if (match$27) {
+                                    tmp$25 = match$27[0];
+                                  } else {
+                                    throw Graphql_error;
+                                  }
+                                  tmp$24 = /* Some */[tmp$25];
+                                }
+                                tmp$6 = {
+                                  id: tmp$7,
+                                  __typename: tmp$8,
+                                  name: tmp$9,
+                                  path: tmp$10,
+                                  slug: tmp$11,
+                                  size: tmp$12,
+                                  width: tmp$14,
+                                  height: tmp$16,
+                                  rating: tmp$18,
+                                  smallUrl: tmp$20,
+                                  mediumUrl: tmp$22,
+                                  largeUrl: tmp$24
                                 };
                               } else {
                                 throw Graphql_error;
                               }
                               return /* `Image */[
                                       -795439301,
-                                      tmp$5
+                                      tmp$6
                                     ];
                           default:
                             throw Graphql_error;
@@ -330,15 +356,16 @@ function parse(value) {
           } else {
             throw Graphql_error;
           }
-          tmp$8 = /* Some */[tmp$9];
+          tmp$9 = /* Some */[tmp$10];
         }
         tmp$1 = {
           id: tmp$2,
-          name: tmp$3,
-          path: tmp$4,
-          slug: tmp$5,
-          totalDescendants: tmp$6,
-          descendants: tmp$8
+          __typename: tmp$3,
+          name: tmp$4,
+          path: tmp$5,
+          slug: tmp$6,
+          totalDescendants: tmp$7,
+          descendants: tmp$9
         };
       } else {
         throw Graphql_error;
@@ -420,7 +447,7 @@ var GalleryQuery = /* module */[
 
 var Graphql_error$1 = Caml_exceptions.create("GalleryQueries-PhotoManager.MoreQuery.Graphql_error");
 
-var ppx_printed_query$1 = "query gallery($slug: String!, $slugs: [String!]!)  {\ngallery(slug: $slug)  {\nid  \nname  \npath  \nslug  \ndescendants(slugs: $slugs)  {\n__typename\n...on Gallery   {\nid  \nname  \npath  \nslug  \n}\n...on Image   {\nid  \nname  \npath  \nslug  \nthumbnail  \n}\n}\n}\n}";
+var ppx_printed_query$1 = "query gallery($slug: String!, $slugs: [String!]!)  {\ngallery(slug: $slug)  {\nid  \n__typename  \nname  \npath  \nslug  \ndescendants(slugs: $slugs)  {\n__typename\n...on Gallery   {\nid  \n__typename  \nname  \npath  \nslug  \n}\n...on Image   {\nid  \n__typename  \nname  \npath  \nslug  \nthumbnail  \n}\n}\n}\n}";
 
 function parse$1(value) {
   var match = Js_json.decodeObject(value);
@@ -443,7 +470,7 @@ function parse$1(value) {
         } else {
           throw Graphql_error$1;
         }
-        var value$4 = value$2["name"];
+        var value$4 = value$2["__typename"];
         var match$4 = Js_json.decodeString(value$4);
         var tmp$3;
         if (match$4) {
@@ -451,11 +478,19 @@ function parse$1(value) {
         } else {
           throw Graphql_error$1;
         }
-        var value$5 = value$2["path"];
-        var match$5 = Js_json.decodeArray(value$5);
+        var value$5 = value$2["name"];
+        var match$5 = Js_json.decodeString(value$5);
         var tmp$4;
         if (match$5) {
-          tmp$4 = match$5[0].map((function (value) {
+          tmp$4 = match$5[0];
+        } else {
+          throw Graphql_error$1;
+        }
+        var value$6 = value$2["path"];
+        var match$6 = Js_json.decodeArray(value$6);
+        var tmp$5;
+        if (match$6) {
+          tmp$5 = match$6[0].map((function (value) {
                   var match = Js_json.decodeString(value);
                   if (match) {
                     return match[0];
@@ -466,24 +501,24 @@ function parse$1(value) {
         } else {
           throw Graphql_error$1;
         }
-        var value$6 = value$2["slug"];
-        var match$6 = Js_json.decodeString(value$6);
-        var tmp$5;
-        if (match$6) {
-          tmp$5 = match$6[0];
+        var value$7 = value$2["slug"];
+        var match$7 = Js_json.decodeString(value$7);
+        var tmp$6;
+        if (match$7) {
+          tmp$6 = match$7[0];
         } else {
           throw Graphql_error$1;
         }
-        var value$7 = value$2["descendants"];
-        var match$7 = Js_json.decodeNull(value$7);
-        var tmp$6;
-        if (match$7) {
-          tmp$6 = /* None */0;
+        var value$8 = value$2["descendants"];
+        var match$8 = Js_json.decodeNull(value$8);
+        var tmp$7;
+        if (match$8) {
+          tmp$7 = /* None */0;
         } else {
-          var match$8 = Js_json.decodeArray(value$7);
-          var tmp$7;
-          if (match$8) {
-            tmp$7 = match$8[0].map((function (value) {
+          var match$9 = Js_json.decodeArray(value$8);
+          var tmp$8;
+          if (match$9) {
+            tmp$8 = match$9[0].map((function (value) {
                     var match = Js_json.decodeObject(value);
                     if (match) {
                       var match$1 = Js_json.decodeString(match[0]["__typename"]);
@@ -502,7 +537,7 @@ function parse$1(value) {
                                 } else {
                                   throw Graphql_error$1;
                                 }
-                                var value$3 = value$1["name"];
+                                var value$3 = value$1["__typename"];
                                 var match$4 = Js_json.decodeString(value$3);
                                 var tmp$2;
                                 if (match$4) {
@@ -510,11 +545,19 @@ function parse$1(value) {
                                 } else {
                                   throw Graphql_error$1;
                                 }
-                                var value$4 = value$1["path"];
-                                var match$5 = Js_json.decodeArray(value$4);
+                                var value$4 = value$1["name"];
+                                var match$5 = Js_json.decodeString(value$4);
                                 var tmp$3;
                                 if (match$5) {
-                                  tmp$3 = match$5[0].map((function (value) {
+                                  tmp$3 = match$5[0];
+                                } else {
+                                  throw Graphql_error$1;
+                                }
+                                var value$5 = value$1["path"];
+                                var match$6 = Js_json.decodeArray(value$5);
+                                var tmp$4;
+                                if (match$6) {
+                                  tmp$4 = match$6[0].map((function (value) {
                                           var match = Js_json.decodeString(value);
                                           if (match) {
                                             return match[0];
@@ -525,19 +568,20 @@ function parse$1(value) {
                                 } else {
                                   throw Graphql_error$1;
                                 }
-                                var value$5 = value$1["slug"];
-                                var match$6 = Js_json.decodeString(value$5);
-                                var tmp$4;
-                                if (match$6) {
-                                  tmp$4 = match$6[0];
+                                var value$6 = value$1["slug"];
+                                var match$7 = Js_json.decodeString(value$6);
+                                var tmp$5;
+                                if (match$7) {
+                                  tmp$5 = match$7[0];
                                 } else {
                                   throw Graphql_error$1;
                                 }
                                 tmp = {
                                   id: tmp$1,
-                                  name: tmp$2,
-                                  path: tmp$3,
-                                  slug: tmp$4
+                                  __typename: tmp$2,
+                                  name: tmp$3,
+                                  path: tmp$4,
+                                  slug: tmp$5
                                 };
                               } else {
                                 throw Graphql_error$1;
@@ -547,19 +591,11 @@ function parse$1(value) {
                                       tmp
                                     ];
                           case "Image" : 
-                              var match$7 = Js_json.decodeObject(value);
-                              var tmp$5;
-                              if (match$7) {
-                                var value$6 = match$7[0];
-                                var value$7 = value$6["id"];
-                                var match$8 = Js_json.decodeString(value$7);
-                                var tmp$6;
-                                if (match$8) {
-                                  tmp$6 = match$8[0];
-                                } else {
-                                  throw Graphql_error$1;
-                                }
-                                var value$8 = value$6["name"];
+                              var match$8 = Js_json.decodeObject(value);
+                              var tmp$6;
+                              if (match$8) {
+                                var value$7 = match$8[0];
+                                var value$8 = value$7["id"];
                                 var match$9 = Js_json.decodeString(value$8);
                                 var tmp$7;
                                 if (match$9) {
@@ -567,11 +603,27 @@ function parse$1(value) {
                                 } else {
                                   throw Graphql_error$1;
                                 }
-                                var value$9 = value$6["path"];
-                                var match$10 = Js_json.decodeArray(value$9);
+                                var value$9 = value$7["__typename"];
+                                var match$10 = Js_json.decodeString(value$9);
                                 var tmp$8;
                                 if (match$10) {
-                                  tmp$8 = match$10[0].map((function (value) {
+                                  tmp$8 = match$10[0];
+                                } else {
+                                  throw Graphql_error$1;
+                                }
+                                var value$10 = value$7["name"];
+                                var match$11 = Js_json.decodeString(value$10);
+                                var tmp$9;
+                                if (match$11) {
+                                  tmp$9 = match$11[0];
+                                } else {
+                                  throw Graphql_error$1;
+                                }
+                                var value$11 = value$7["path"];
+                                var match$12 = Js_json.decodeArray(value$11);
+                                var tmp$10;
+                                if (match$12) {
+                                  tmp$10 = match$12[0].map((function (value) {
                                           var match = Js_json.decodeString(value);
                                           if (match) {
                                             return match[0];
@@ -582,42 +634,43 @@ function parse$1(value) {
                                 } else {
                                   throw Graphql_error$1;
                                 }
-                                var value$10 = value$6["slug"];
-                                var match$11 = Js_json.decodeString(value$10);
-                                var tmp$9;
-                                if (match$11) {
-                                  tmp$9 = match$11[0];
+                                var value$12 = value$7["slug"];
+                                var match$13 = Js_json.decodeString(value$12);
+                                var tmp$11;
+                                if (match$13) {
+                                  tmp$11 = match$13[0];
                                 } else {
                                   throw Graphql_error$1;
                                 }
-                                var value$11 = value$6["thumbnail"];
-                                var match$12 = Js_json.decodeNull(value$11);
-                                var tmp$10;
-                                if (match$12) {
-                                  tmp$10 = /* None */0;
+                                var value$13 = value$7["thumbnail"];
+                                var match$14 = Js_json.decodeNull(value$13);
+                                var tmp$12;
+                                if (match$14) {
+                                  tmp$12 = /* None */0;
                                 } else {
-                                  var match$13 = Js_json.decodeString(value$11);
-                                  var tmp$11;
-                                  if (match$13) {
-                                    tmp$11 = match$13[0];
+                                  var match$15 = Js_json.decodeString(value$13);
+                                  var tmp$13;
+                                  if (match$15) {
+                                    tmp$13 = match$15[0];
                                   } else {
                                     throw Graphql_error$1;
                                   }
-                                  tmp$10 = /* Some */[tmp$11];
+                                  tmp$12 = /* Some */[tmp$13];
                                 }
-                                tmp$5 = {
-                                  id: tmp$6,
-                                  name: tmp$7,
-                                  path: tmp$8,
-                                  slug: tmp$9,
-                                  thumbnail: tmp$10
+                                tmp$6 = {
+                                  id: tmp$7,
+                                  __typename: tmp$8,
+                                  name: tmp$9,
+                                  path: tmp$10,
+                                  slug: tmp$11,
+                                  thumbnail: tmp$12
                                 };
                               } else {
                                 throw Graphql_error$1;
                               }
                               return /* `Image */[
                                       -795439301,
-                                      tmp$5
+                                      tmp$6
                                     ];
                           default:
                             throw Graphql_error$1;
@@ -632,14 +685,15 @@ function parse$1(value) {
           } else {
             throw Graphql_error$1;
           }
-          tmp$6 = /* Some */[tmp$7];
+          tmp$7 = /* Some */[tmp$8];
         }
         tmp$1 = {
           id: tmp$2,
-          name: tmp$3,
-          path: tmp$4,
-          slug: tmp$5,
-          descendants: tmp$6
+          __typename: tmp$3,
+          name: tmp$4,
+          path: tmp$5,
+          slug: tmp$6,
+          descendants: tmp$7
         };
       } else {
         throw Graphql_error$1;
@@ -734,7 +788,7 @@ var MoreQuery = /* module */[
 
 var Graphql_error$2 = Caml_exceptions.create("GalleryQueries-PhotoManager.RateImage.Graphql_error");
 
-var ppx_printed_query$2 = "mutation rateImage($slug: String!, $rating: Int!)  {\nrateImage(slug: $slug, rating: $rating)  {\nid  \nname  \npath  \nslug  \nrating  \n}\n}";
+var ppx_printed_query$2 = "mutation rateImage($slug: String!, $rating: Int!)  {\nrateImage(slug: $slug, rating: $rating)  {\nid  \n__typename  \nname  \npath  \nslug  \nrating  \n}\n}";
 
 function parse$2(value) {
   var match = Js_json.decodeObject(value);
@@ -757,7 +811,7 @@ function parse$2(value) {
         } else {
           throw Graphql_error$2;
         }
-        var value$4 = value$2["name"];
+        var value$4 = value$2["__typename"];
         var match$4 = Js_json.decodeString(value$4);
         var tmp$3;
         if (match$4) {
@@ -765,11 +819,19 @@ function parse$2(value) {
         } else {
           throw Graphql_error$2;
         }
-        var value$5 = value$2["path"];
-        var match$5 = Js_json.decodeArray(value$5);
+        var value$5 = value$2["name"];
+        var match$5 = Js_json.decodeString(value$5);
         var tmp$4;
         if (match$5) {
-          tmp$4 = match$5[0].map((function (value) {
+          tmp$4 = match$5[0];
+        } else {
+          throw Graphql_error$2;
+        }
+        var value$6 = value$2["path"];
+        var match$6 = Js_json.decodeArray(value$6);
+        var tmp$5;
+        if (match$6) {
+          tmp$5 = match$6[0].map((function (value) {
                   var match = Js_json.decodeString(value);
                   if (match) {
                     return match[0];
@@ -780,35 +842,36 @@ function parse$2(value) {
         } else {
           throw Graphql_error$2;
         }
-        var value$6 = value$2["slug"];
-        var match$6 = Js_json.decodeString(value$6);
-        var tmp$5;
-        if (match$6) {
-          tmp$5 = match$6[0];
+        var value$7 = value$2["slug"];
+        var match$7 = Js_json.decodeString(value$7);
+        var tmp$6;
+        if (match$7) {
+          tmp$6 = match$7[0];
         } else {
           throw Graphql_error$2;
         }
-        var value$7 = value$2["rating"];
-        var match$7 = Js_json.decodeNull(value$7);
-        var tmp$6;
-        if (match$7) {
-          tmp$6 = /* None */0;
+        var value$8 = value$2["rating"];
+        var match$8 = Js_json.decodeNull(value$8);
+        var tmp$7;
+        if (match$8) {
+          tmp$7 = /* None */0;
         } else {
-          var match$8 = Js_json.decodeNumber(value$7);
-          var tmp$7;
-          if (match$8) {
-            tmp$7 = match$8[0] | 0;
+          var match$9 = Js_json.decodeNumber(value$8);
+          var tmp$8;
+          if (match$9) {
+            tmp$8 = match$9[0] | 0;
           } else {
             throw Graphql_error$2;
           }
-          tmp$6 = /* Some */[tmp$7];
+          tmp$7 = /* Some */[tmp$8];
         }
         tmp$1 = {
           id: tmp$2,
-          name: tmp$3,
-          path: tmp$4,
-          slug: tmp$5,
-          rating: tmp$6
+          __typename: tmp$3,
+          name: tmp$4,
+          path: tmp$5,
+          slug: tmp$6,
+          rating: tmp$7
         };
       } else {
         throw Graphql_error$2;

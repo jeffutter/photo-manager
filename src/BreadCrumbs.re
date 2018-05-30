@@ -33,7 +33,7 @@ let make = (~path: 'a, ~slug: string, ~name: string, _children) => {
     | "root" =>
       <div className=cls>
         <NavLink className=activeCls _to="/gallery">
-          (ReasonReact.stringToElement("Gallery"))
+          (ReasonReact.string("Gallery"))
         </NavLink>
       </div>
     | _ =>
@@ -57,23 +57,23 @@ let make = (~path: 'a, ~slug: string, ~name: string, _children) => {
           ({name: n, path: p}, idx) =>
             <span key=(Js.Int.toString(idx))>
               <NavLink className=activeCls _to=p>
-                (ReasonReact.stringToElement(n))
+                (ReasonReact.string(n))
               </NavLink>
-              (ReasonReact.stringToElement(" / "))
+              (ReasonReact.string(" / "))
             </span>,
           pathObjs,
         );
       let rootNavLink =
         <NavLink className=activeCls _to="/gallery">
-          (ReasonReact.stringToElement("Gallery"))
+          (ReasonReact.string("Gallery"))
         </NavLink>;
       ReasonReact.createDomElement(
         "div",
         ~props={"className": cls},
         Array.concat([
-          [|rootNavLink, ReasonReact.stringToElement(" / ")|],
+          [|rootNavLink, ReasonReact.string(" / ")|],
           links,
-          [|ReasonReact.stringToElement(name)|],
+          [|ReasonReact.string(name)|],
         ]),
       );
     },
