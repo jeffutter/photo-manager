@@ -75,16 +75,14 @@ function splitDescendants(_param, _descendants) {
   };
 }
 
-function addFunc(thumbedImageSlugs, slug, reduce) {
+function addFunc(thumbedImageSlugs, slug, send) {
   var slugHasThumb = List.exists((function (imageSlug) {
           return slug === imageSlug;
         }), thumbedImageSlugs);
   if (slugHasThumb) {
     return /* () */0;
   } else {
-    return Curry._2(reduce, (function () {
-                  return /* AddImage */Block.__(1, [slug]);
-                }), /* () */0);
+    return Curry._1(send, /* AddImage */Block.__(1, [slug]));
   }
 }
 
@@ -117,10 +115,10 @@ function make($staropt$star, $staropt$star$1, $staropt$star$2, $staropt$star$3, 
               var renderedImages = List.mapi((function (index, image) {
                       var slug = image.slug;
                       return ReasonReact.element(/* Some */[image.id], /* None */0, GalleryImage$PhotoManager.make(/* Some */[(function () {
-                                          return addFunc(thumbedImageSlugs, slug, self[/* reduce */1]);
-                                        })], image.name, slug, image.thumbnail, image.rating, Curry._1(self[/* reduce */1], (function () {
-                                            return /* OpenLightbox */Block.__(0, [index]);
-                                          })), /* array */[]));
+                                          return addFunc(thumbedImageSlugs, slug, self[/* send */3]);
+                                        })], image.name, slug, image.thumbnail, image.rating, (function () {
+                                        return Curry._1(self[/* send */3], /* OpenLightbox */Block.__(0, [index]));
+                                      }), /* array */[]));
                     }), images);
               var renderedDescendants = List.concat(/* :: */[
                     renderedGalleries,
@@ -139,13 +137,13 @@ function make($staropt$star, $staropt$star$1, $staropt$star$2, $staropt$star$3, 
                             };
                     }), images);
               var swipeOptions = {
-                index: self[/* state */2][/* currentImage */1]
+                index: self[/* state */1][/* currentImage */1]
               };
               return React.createElement("div", {
                           className: "gallery"
-                        }, ReasonReact.element(/* None */0, /* None */0, BreadCrumbs$PhotoManager.make(path, slug, name, /* array */[])), ReasonReact.element(/* None */0, /* None */0, GalleryBody$PhotoManager.make($$Array.of_list(renderedDescendants))), ReasonReact.element(/* None */0, /* None */0, PhotoSwipe$PhotoManager.make(/* Some */[self[/* state */2][/* lightboxIsOpen */0]], $$Array.of_list(swipeImages), Curry._1(self[/* reduce */1], (function () {
-                                        return /* CloseLightbox */0;
-                                      })), swipeOptions, /* array */[])));
+                        }, ReasonReact.element(/* None */0, /* None */0, BreadCrumbs$PhotoManager.make(path, slug, name, /* array */[])), ReasonReact.element(/* None */0, /* None */0, GalleryBody$PhotoManager.make($$Array.of_list(renderedDescendants))), ReasonReact.element(/* None */0, /* None */0, PhotoSwipe$PhotoManager.make(/* Some */[self[/* state */1][/* lightboxIsOpen */0]], $$Array.of_list(swipeImages), (function () {
+                                    return Curry._1(self[/* send */3], /* CloseLightbox */0);
+                                  }), swipeOptions, /* array */[])));
             }),
           /* initialState */(function () {
               return /* record */[
@@ -176,7 +174,7 @@ function make($staropt$star, $staropt$star$1, $staropt$star$2, $staropt$star$3, 
                     /* pendingImages : [] */0,
                     newState_003
                   ];
-                  return /* UpdateWithSideEffects */Block.__(3, [
+                  return /* UpdateWithSideEffects */Block.__(2, [
                             newState,
                             (function () {
                                 return List.iter((function (chunk) {
@@ -199,16 +197,16 @@ function make($staropt$star, $staropt$star$1, $staropt$star$2, $staropt$star$3, 
                   new_state_002,
                   new_state_003
                 ];
-                return /* UpdateWithSideEffects */Block.__(3, [
+                return /* UpdateWithSideEffects */Block.__(2, [
                           new_state,
                           (function (self) {
                               var match = state[/* loadingTimeout */3][0];
                               if (match) {
                                 return /* () */0;
                               } else {
-                                state[/* loadingTimeout */3][0] = /* Some */[setTimeout(Curry._1(self[/* reduce */1], (function () {
-                                              return /* LoadImages */1;
-                                            })), 200)];
+                                state[/* loadingTimeout */3][0] = /* Some */[setTimeout((function () {
+                                          return Curry._1(self[/* send */3], /* LoadImages */1);
+                                        }), 200)];
                                 return /* () */0;
                               }
                             })

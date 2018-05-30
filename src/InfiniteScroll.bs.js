@@ -10,7 +10,7 @@ import * as ReasonReact from "../node_modules/reason-react/src/ReasonReact.js";
 var component = ReasonReact.reducerComponent("InfiniteScroll");
 
 function setContainerRef(r, param) {
-  param[/* state */2][/* container */2][0] = (r == null) ? /* None */0 : [r];
+  param[/* state */1][/* container */2][0] = (r == null) ? /* None */0 : [r];
   return /* () */0;
 }
 
@@ -42,45 +42,19 @@ function make($staropt$star, $staropt$star$1, $staropt$star$2, $staropt$star$3, 
           /* handedOffState */component[/* handedOffState */2],
           /* willReceiveProps */component[/* willReceiveProps */3],
           /* didMount */(function (param) {
-              var state = param[/* state */2];
-              var match = state[/* container */2][0];
+              var match = param[/* state */1][/* container */2][0];
               if (match) {
-                var instance = BricksJs.default({
-                      container: match[0],
-                      packed: packed,
-                      sizes: sizes,
-                      position: position
-                    });
-                var newState_000 = /* instance : Some */[instance];
-                var newState_001 = /* childrenCount */state[/* childrenCount */1];
-                var newState_002 = /* container */state[/* container */2];
-                var newState = /* record */[
-                  newState_000,
-                  newState_001,
-                  newState_002
-                ];
-                return /* UpdateWithSideEffects */Block.__(3, [
-                          newState,
-                          (function (self) {
-                              instance.resize(true);
-                              instance.pack();
-                              return Curry._2(self[/* reduce */1], (function () {
-                                            return /* ChildrenUpdated */0;
-                                          }), /* () */0);
-                            })
-                        ]);
+                return Curry._1(param[/* send */3], /* InitialMount */[match[0]]);
               } else {
                 Js_exn.raiseError("Bricks Container Missing");
-                return /* NoUpdate */0;
+                return /* () */0;
               }
             }),
           /* didUpdate */(function (param) {
-              return Curry._2(param[/* newSelf */1][/* reduce */1], (function () {
-                            return /* ChildrenUpdated */0;
-                          }), /* () */0);
+              return Curry._1(param[/* newSelf */1][/* send */3], /* ChildrenUpdated */0);
             }),
           /* willUnmount */(function (param) {
-              var match = param[/* state */2][/* instance */0];
+              var match = param[/* state */1][/* instance */0];
               if (match) {
                 match[0].resize(false);
                 return /* () */0;
@@ -104,37 +78,62 @@ function make($staropt$star, $staropt$star$1, $staropt$star$2, $staropt$star$3, 
                     ];
             }),
           /* retainedProps */component[/* retainedProps */11],
-          /* reducer */(function (_, state) {
-              var currCount = React.Children.count(children);
-              var prevCount = state[/* childrenCount */1];
-              if (currCount !== prevCount) {
-                var newState_000 = /* instance */state[/* instance */0];
+          /* reducer */(function (action, state) {
+              if (action) {
+                var instance = BricksJs.default({
+                      container: action[0],
+                      packed: packed,
+                      sizes: sizes,
+                      position: position
+                    });
+                var newState_000 = /* instance : Some */[instance];
+                var newState_001 = /* childrenCount */state[/* childrenCount */1];
                 var newState_002 = /* container */state[/* container */2];
                 var newState = /* record */[
                   newState_000,
-                  /* childrenCount */currCount,
+                  newState_001,
                   newState_002
                 ];
-                return /* UpdateWithSideEffects */Block.__(3, [
+                return /* UpdateWithSideEffects */Block.__(2, [
                           newState,
-                          (function () {
-                              var match = state[/* instance */0];
-                              if (match) {
-                                var i = match[0];
-                                if (pack) {
-                                  i.pack();
-                                  return /* () */0;
-                                } else {
-                                  i.update();
-                                  return /* () */0;
-                                }
-                              } else {
-                                return /* () */0;
-                              }
+                          (function (self) {
+                              instance.resize(true);
+                              instance.pack();
+                              return Curry._1(self[/* send */3], /* ChildrenUpdated */0);
                             })
                         ]);
               } else {
-                return /* NoUpdate */0;
+                var currCount = React.Children.count(children);
+                var prevCount = state[/* childrenCount */1];
+                if (currCount !== prevCount) {
+                  var newState_000$1 = /* instance */state[/* instance */0];
+                  var newState_002$1 = /* container */state[/* container */2];
+                  var newState$1 = /* record */[
+                    newState_000$1,
+                    /* childrenCount */currCount,
+                    newState_002$1
+                  ];
+                  return /* UpdateWithSideEffects */Block.__(2, [
+                            newState$1,
+                            (function () {
+                                var match = state[/* instance */0];
+                                if (match) {
+                                  var i = match[0];
+                                  if (pack) {
+                                    i.pack();
+                                    return /* () */0;
+                                  } else {
+                                    i.update();
+                                    return /* () */0;
+                                  }
+                                } else {
+                                  return /* () */0;
+                                }
+                              })
+                          ]);
+                } else {
+                  return /* NoUpdate */0;
+                }
               }
             }),
           /* subscriptions */component[/* subscriptions */13],

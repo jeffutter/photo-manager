@@ -4,9 +4,14 @@ import * as List from "../node_modules/bs-platform/lib/es6/list.js";
 import * as $$Array from "../node_modules/bs-platform/lib/es6/array.js";
 import * as Curry from "../node_modules/bs-platform/lib/es6/curry.js";
 import * as ReasonReact from "../node_modules/reason-react/src/ReasonReact.js";
+import * as ReasonApollo from "../node_modules/reason-apollo/src/ReasonApollo.bs.js";
 import * as Star$PhotoManager from "./Star.bs.js";
-import * as Client$PhotoManager from "./Client.bs.js";
 import * as GalleryQueries$PhotoManager from "./GalleryQueries.bs.js";
+
+var Mutation = ReasonApollo.CreateMutation([
+      GalleryQueries$PhotoManager.RateImage[2],
+      GalleryQueries$PhotoManager.RateImage[3]
+    ]);
 
 function stars5(_filled, _total, _index, handleClick, _acc) {
   while(true) {
@@ -41,9 +46,11 @@ function stars5(_filled, _total, _index, handleClick, _acc) {
   };
 }
 
-function handleClickStar(ratingMutation, mutate, i, $$event) {
+function handleClickStar(mutation, slug, i, $$event) {
   $$event.stopPropagation();
-  return Curry._1(mutate, Curry._2(ratingMutation, i, /* () */0));
+  var ratingMutation = GalleryQueries$PhotoManager.RateImage[/* make */8](slug, i, /* () */0);
+  Curry._3(mutation, /* Some */[ratingMutation.variables], /* None */0, /* () */0);
+  return /* () */0;
 }
 
 function stars(rating, handleClick) {
@@ -68,21 +75,17 @@ function make(slug, rating, _) {
           /* willUpdate */component[/* willUpdate */7],
           /* shouldUpdate */component[/* shouldUpdate */8],
           /* render */(function () {
-              return ReasonReact.element(/* None */0, /* None */0, Curry._1(Client$PhotoManager.Instance[/* Mutation */2][/* make */2], (function (mutate, result) {
-                                var partial_arg = GalleryQueries$PhotoManager.RateImage[/* make */8];
-                                var ratingMutation = function (param, param$1) {
-                                  return partial_arg(slug, param, param$1);
-                                };
+              return ReasonReact.element(/* None */0, /* None */0, Curry._4(Mutation[/* make */4], /* None */0, /* None */0, /* None */0, (function (mutation, param) {
+                                var result = param[/* result */0];
                                 var rating$1;
-                                if (typeof result === "number" || result.tag) {
+                                if (typeof result === "number" || result.tag !== 1) {
                                   rating$1 = rating;
                                 } else {
-                                  var parse = Curry._2(ratingMutation, 0, /* () */0).parse;
-                                  var match = Curry._1(parse, result[0]).rateImage;
+                                  var match = result[0].rateImage;
                                   rating$1 = match ? match[0].rating : rating;
                                 }
                                 return ReasonReact.createDomElement("div", { }, $$Array.of_list(stars(rating$1, (function (param, param$1) {
-                                                      return handleClickStar(ratingMutation, mutate, param, param$1);
+                                                      return handleClickStar(mutation, slug, param, param$1);
                                                     }))));
                               })));
             }),
@@ -94,15 +97,13 @@ function make(slug, rating, _) {
         ];
 }
 
-var Mutation = 0;
-
 export {
+  Mutation ,
   stars5 ,
   handleClickStar ,
   stars ,
-  Mutation ,
   component ,
   make ,
   
 }
-/* component Not a pure module */
+/* Mutation Not a pure module */

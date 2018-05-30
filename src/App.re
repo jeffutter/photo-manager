@@ -16,10 +16,7 @@ module Redirect = {
   let component = ReasonReact.statelessComponent("Redirect");
   let make = (~path, _children) => {
     ...component,
-    didMount: _self => {
-      ReasonReact.Router.push(path);
-      ReasonReact.NoUpdate;
-    },
+    didMount: _self => ReasonReact.Router.push(path),
     render: _self => <div />,
   };
 };
@@ -51,7 +48,7 @@ let mapUrlToRoute = (url: ReasonReact.Router.url) =>
   | _ => LoginForm
   };
 
-module Query = Client.Instance.Query;
+module Query = ReasonApollo.CreateQuery(GalleryQueries.GalleryQuery);
 
 let make = _children => {
   ...component,
@@ -77,25 +74,26 @@ let make = _children => {
           let galleryQuery = GalleryQueries.GalleryQuery.make(~slug, ());
           <div>
             <Header />
-            <Query query=galleryQuery>
+            <Query variables=galleryQuery##variables>
               ...(
-                   (response, parse) =>
-                     switch (response) {
+                   ({result}) =>
+                     switch (result) {
                      | Loading => <FullPageSpinner />
-                     | Failed(error) =>
-                       <div> (ReasonReact.stringToElement(error)) </div>
-                     | Loaded(result) =>
-                       let data = parse(result);
+                     | Error(_error) =>
+                       <div>
+                         (ReasonReact.string("Error Loading Gallery"))
+                       </div>
+                     | Data(result) =>
                        <LoadMoreWrapper slug>
                          ...(
                               (moreGallery, loadMore) =>
                                 <GalleryContainer
-                                  gallery=data##gallery
+                                  gallery=result##gallery
                                   moreGallery
                                   loadNextPage=loadMore
                                 />
                             )
-                       </LoadMoreWrapper>;
+                       </LoadMoreWrapper>
                      }
                  )
             </Query>

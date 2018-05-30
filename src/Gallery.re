@@ -55,7 +55,7 @@ let rec splitDescendants =
     }
   };
 
-let addFunc = (thumbedImageSlugs, slug, reduce) => {
+let addFunc = (thumbedImageSlugs, slug, send) => {
   let slugHasThumb = 
     List.exists(
       imageSlug => slug == imageSlug,
@@ -63,7 +63,7 @@ let addFunc = (thumbedImageSlugs, slug, reduce) => {
     );
 
   switch (slugHasThumb) {
-  | false => reduce(_event => AddImage(slug), ())
+  | false => send(AddImage(slug))
   | _ => ()
   };
 };
@@ -107,7 +107,7 @@ let make =
             | Some(_) => ()
             | None =>
               state.loadingTimeout :=
-                Some(Js.Global.setTimeout(self.reduce(_ => LoadImages), 200));
+                Some(Js.Global.setTimeout(_ => self.send(LoadImages), 200));
               ();
             }
         ),
@@ -148,8 +148,8 @@ let make =
           <GalleryImage
             key=image##id
             slug=slug
-            onEnter=(() => addFunc(thumbedImageSlugs, slug, self.reduce))
-            handleOpen=(self.reduce(_event => OpenLightbox(index)))
+            onEnter=(() => addFunc(thumbedImageSlugs, slug, self.send))
+            handleOpen=(_event => self.send(OpenLightbox(index)))
             thumbnail=image##thumbnail
             name=image##name
             rating=image##rating
@@ -177,7 +177,7 @@ let make =
       <PhotoSwipe
         isOpen=self.state.lightboxIsOpen
         items=(Array.of_list(swipeImages))
-        onClose=(self.reduce(_event => CloseLightbox))
+        onClose=(_event => self.send(CloseLightbox))
         options=swipeOptions
       />
     </div>;

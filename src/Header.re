@@ -179,11 +179,11 @@ let make = _children => {
     };
     <header className=(Js.Array.joinWith(" ", headerClasses))>
       <a className=logoCls href="#">
-        (ReasonReact.stringToElement("Photo Gallery"))
+        (ReasonReact.string("Photo Gallery"))
       </a>
       <div
         className=(Js.Array.joinWith(" ", mobileToggleClasses))
-        onClick=(self.reduce(_event => ToggleNav))>
+        onClick=(_event => self.send(ToggleNav))>
         <span />
         <span />
         <span />
@@ -194,24 +194,24 @@ let make = _children => {
             <NavLink
               className=activeCls
               _to="/"
-              onClick=(self.reduce(_event => ToggleNav))>
-              (ReasonReact.stringToElement("Home"))
+              onClick=(_event => self.send(ToggleNav))>
+              (ReasonReact.string("Home"))
             </NavLink>
           </li>
           <li>
             <NavLink
               className=activeCls
               _to="/gallery"
-              onClick=(self.reduce(_event => ToggleNav))>
-              (ReasonReact.stringToElement("Gallery"))
+              onClick=(_event => self.send(ToggleNav))>
+              (ReasonReact.string("Gallery"))
             </NavLink>
           </li>
           <li>
             <NavLink
               _to="/"
               className=activeCls
-              onClick=(self.reduce(_event => LogOut))>
-              (ReasonReact.stringToElement("Logout"))
+              onClick=(_event => self.send(LogOut))>
+              (ReasonReact.string("Logout"))
             </NavLink>
           </li>
         </ul>

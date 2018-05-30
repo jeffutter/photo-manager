@@ -49,14 +49,9 @@ let errorLink = ApolloLinks.createErrorLink(errorHandler);
 /* Create an HTTP Link */
 let httpLink = ApolloLinks.createHttpLink(~uri="/graphiql", ());
 
-module Instance =
-  ReasonApollo.CreateClient(
-    {
-      let apolloClient =
-        ReasonApollo.createApolloClient(
-          ~cache=inMemoryCache /* restore method can be piped e.g. inMemoryCache |> restore(window.__APOLLO__) */,
-          ~link=ApolloLinks.from([|context, errorLink, httpLink|]),
-          (),
-        );
-    },
+let instance =
+  ReasonApollo.createApolloClient(
+    ~cache=inMemoryCache,
+    ~link=ApolloLinks.from([|context, errorLink, httpLink|]),
+    (),
   );

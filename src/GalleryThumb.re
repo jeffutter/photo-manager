@@ -27,7 +27,7 @@ let make = (~name: string, ~slug: string, _children) => {
                           />
                         </svg>
                         <div className=detailsClass>
-                          (ReasonReact.stringToElement(name))
+                          (ReasonReact.string(name))
                         </div>
                       </NavLink>;
                     }

@@ -9,8 +9,7 @@ let cls =
     padding2(~h=px(2), ~v=zero),
   ]);
 
-let star = filled =>
-  ReasonReact.stringToElement(filled ? {j|★|j} : {j|☆|j});
+let star = filled => ReasonReact.string(filled ? {j|★|j} : {j|☆|j});
 
 let make = (~filled=false, ~index: int, ~handleClick, _children) => {
   ...component,

@@ -99,19 +99,29 @@ module.exports = {
     overlay: false,
     proxy: {
       "/__auth": {
-        target: "http://localhost:4000"
+        target: "https://gallery.sadclown.net",
+        changeOrigin: true,
+        secure: false
       },
       "/auth": {
-        target: "http://localhost:4000"
+        target: "https://gallery.sadclown.net",
+        changeOrigin: true,
+        secure: false
       },
       "/config": {
-        target: "http://localhost:4000"
+        target: "https://gallery.sadclown.net",
+        changeOrigin: true,
+        secure: false
       },
       "/graphql": {
-        target: "http://localhost:4000"
+        target: "https://gallery.sadclown.net",
+        changeOrigin: true,
+        secure: false
       },
       "/graphiql": {
-        target: "http://localhost:4000"
+        target: "https://gallery.sadclown.net",
+        changeOrigin: true,
+        secure: false
       }
     }
   },

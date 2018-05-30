@@ -18,8 +18,8 @@ let make =
   render: (_) =>
     <WaypointItem w=320 h=295 ?onEnter name slug ?thumbnail ?rating>
       ...(
-           (~visible) =>
-             visible ?
+           (~visible as _visible) =>
+             true ?
                <GalleryItem lightBG=true>
                  ...(
                       (wrapClass, detailsClass) =>
@@ -37,7 +37,7 @@ let make =
                             }
                           )
                           <div className=detailsClass>
-                            <div> (ReasonReact.stringToElement(name)) </div>
+                            <div> (ReasonReact.string(name)) </div>
                             <Stars slug rating />
                           </div>
                         </div>

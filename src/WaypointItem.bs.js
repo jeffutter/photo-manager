@@ -41,10 +41,10 @@ function make(onEnter, onLeave, name, slug, thumbnail, rating, w, h, children) {
           /* shouldUpdate */(function (param) {
               var match = param[/* newSelf */1];
               var match$1 = param[/* oldSelf */0];
-              if (Caml_obj.caml_notequal(match$1[/* state */2], match[/* state */2])) {
+              if (Caml_obj.caml_notequal(match$1[/* state */1], match[/* state */1])) {
                 return true;
               } else {
-                return Caml_obj.caml_notequal(match$1[/* retainedProps */3], match[/* retainedProps */3]);
+                return Caml_obj.caml_notequal(match$1[/* retainedProps */2], match[/* retainedProps */2]);
               }
             }),
           /* render */(function (self) {
@@ -53,11 +53,11 @@ function make(onEnter, onLeave, name, slug, thumbnail, rating, w, h, children) {
                 var func = onEnter[0];
                 oEnter = (function () {
                     Curry._1(func, /* () */0);
-                    return Curry._1(self[/* send */4], /* Visible */0);
+                    return Curry._1(self[/* send */3], /* Visible */0);
                   });
               } else {
                 oEnter = (function () {
-                    return Curry._1(self[/* send */4], /* Visible */0);
+                    return Curry._1(self[/* send */3], /* Visible */0);
                   });
               }
               var oLeave;
@@ -65,16 +65,16 @@ function make(onEnter, onLeave, name, slug, thumbnail, rating, w, h, children) {
                 var func$1 = onLeave[0];
                 oLeave = (function () {
                     Curry._1(func$1, /* () */0);
-                    return Curry._1(self[/* send */4], /* NotVisible */1);
+                    return Curry._1(self[/* send */3], /* NotVisible */1);
                   });
               } else {
                 oLeave = (function () {
-                    return Curry._1(self[/* send */4], /* NotVisible */1);
+                    return Curry._1(self[/* send */3], /* NotVisible */1);
                   });
               }
-              return ReasonReact.element(/* None */0, /* None */0, Waypoint$PhotoManager.make(/* Some */[oEnter], /* Some */[oLeave], "-400px", "0px", false, /* array */[React.createElement("div", {
+              return ReasonReact.element(/* None */0, /* None */0, Waypoint$PhotoManager.make(/* Some */[oEnter], /* Some */[oLeave], "-400px", "200px", false, /* array */[React.createElement("div", {
                                     className: cls(w, h)
-                                  }, Curry._1(children, self[/* state */2][/* visible */0]))]));
+                                  }, Curry._1(children, self[/* state */1][/* visible */0]))]));
             }),
           /* initialState */(function () {
               return /* record */[/* visible */false];
