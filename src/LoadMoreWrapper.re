@@ -7,6 +7,45 @@ type action =
 
 let component = ReasonReact.reducerComponent("LoadMoreWrapper");
 
+let combine =
+    (
+      previousGallery: PhotoManager.GalleryQueries.MoreQuery.t,
+      newGallery: PhotoManager.GalleryQueries.MoreQuery.t,
+    )
+    : PhotoManager.GalleryQueries.MoreQuery.t =>
+  switch (previousGallery##gallery, newGallery##gallery) {
+  | (Some(gallery), Some(moreGallery)) =>
+    let newDescendants =
+      switch (gallery##descendants, moreGallery##descendants) {
+      | (None, None) => None
+      | (Some(descendants), None) => Some(descendants)
+      | (None, Some(descendants)) => Some(descendants)
+      | (Some(oldDescendants), Some(newDescendants)) =>
+        Some(Array.append(oldDescendants, newDescendants))
+      };
+    {
+      "gallery":
+        Some({
+          "id": gallery##id,
+          "name": gallery##name,
+          "path": gallery##path,
+          "slug": gallery##slug,
+          "descendants": newDescendants,
+        }),
+    };
+  | (Some(_), None) => previousGallery
+  | (None, Some(_)) => newGallery
+  | (None, None) => {"gallery": None}
+  };
+
+let updateQuery =
+    (previousResults: PhotoManager.GalleryQueries.MoreQuery.t, updateQuery)
+    : PhotoManager.GalleryQueries.MoreQuery.t =>
+  switch (updateQuery##fetchMoreResult) {
+  | Some(fetchMoreResults) => combine(fetchMoreResults, previousResults)
+  | None => previousResults
+  };
+
 let make = (~slug: string, children) => {
   ...component,
   initialState: () => {slugs: [||]},
@@ -18,9 +57,9 @@ let make = (~slug: string, children) => {
     Js.log("Render load more wrapper");
     let loadMoreQuery =
       GalleryQueries.MoreQuery.make(~slug, ~slugs=self.state.slugs, ());
-    <Query variables=loadMoreQuery##variables>
+    <Query variables=loadMoreQuery##variables updateQuery>
       ...(
-           ({result}) => {
+           ({result, fetchMore as _fetchMore}) => {
              let fMore = slugs => self.send(Fetch(slugs));
              switch (result) {
              | Loading =>
