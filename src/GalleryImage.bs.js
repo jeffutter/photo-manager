@@ -24,6 +24,16 @@ var imgCls = Css.style(/* :: */[
       ]
     ]);
 
+function cls(w, h) {
+  return Css.style(/* :: */[
+              Css.width(Css.px(w)),
+              /* :: */[
+                Css.height(Css.px(h)),
+                /* [] */0
+              ]
+            ]);
+}
+
 function make(onEnter, name, slug, thumbnail, rating, handleOpen, _) {
   return /* record */[
           /* debugName */component[/* debugName */0],
@@ -36,21 +46,37 @@ function make(onEnter, name, slug, thumbnail, rating, handleOpen, _) {
           /* willUpdate */component[/* willUpdate */7],
           /* shouldUpdate */component[/* shouldUpdate */8],
           /* render */(function () {
-              return ReasonReact.element(/* None */0, /* None */0, WaypointItem$PhotoManager.make(onEnter, /* None */0, name, slug, thumbnail, rating, 320, 295, (function () {
-                                return ReasonReact.element(/* None */0, /* None */0, GalleryItem$PhotoManager.make(/* Some */[true], (function (wrapClass, detailsClass) {
-                                                  return React.createElement("div", {
-                                                              className: wrapClass,
-                                                              onClick: handleOpen
-                                                            }, thumbnail ? React.createElement("img", {
-                                                                    className: imgCls,
-                                                                    height: "225",
-                                                                    src: thumbnail[0],
-                                                                    width: "300"
-                                                                  }) : ReasonReact.element(/* None */0, /* None */0, CircleLoader$PhotoManager.make(/* array */[])), React.createElement("div", {
-                                                                  className: detailsClass
-                                                                }, React.createElement("div", undefined, name), ReasonReact.element(/* None */0, /* None */0, Stars$PhotoManager.make(slug, rating, /* array */[]))));
-                                                })));
-                              })));
+              var tmp;
+              if (thumbnail) {
+                var thumb = thumbnail[0];
+                tmp = ReasonReact.element(/* None */0, /* None */0, GalleryItem$PhotoManager.make(/* Some */[true], (function (wrapClass, detailsClass) {
+                            return React.createElement("div", {
+                                        className: wrapClass,
+                                        onClick: handleOpen
+                                      }, React.createElement("img", {
+                                            className: imgCls,
+                                            height: "225",
+                                            src: thumb,
+                                            width: "300"
+                                          }), React.createElement("div", {
+                                            className: detailsClass
+                                          }, React.createElement("div", undefined, name), ReasonReact.element(/* None */0, /* None */0, Stars$PhotoManager.make(slug, rating, /* array */[]))));
+                          })));
+              } else {
+                tmp = ReasonReact.element(/* None */0, /* None */0, WaypointItem$PhotoManager.make(onEnter, name, slug, thumbnail, rating, 320, 295, (function () {
+                            return ReasonReact.element(/* None */0, /* None */0, GalleryItem$PhotoManager.make(/* Some */[true], (function (wrapClass, detailsClass) {
+                                              return React.createElement("div", {
+                                                          className: wrapClass,
+                                                          onClick: handleOpen
+                                                        }, ReasonReact.element(/* None */0, /* None */0, CircleLoader$PhotoManager.make(/* array */[])), React.createElement("div", {
+                                                              className: detailsClass
+                                                            }, React.createElement("div", undefined, name), ReasonReact.element(/* None */0, /* None */0, Stars$PhotoManager.make(slug, rating, /* array */[]))));
+                                            })));
+                          })));
+              }
+              return React.createElement("div", {
+                          className: cls(320, 295)
+                        }, tmp);
             }),
           /* initialState */component[/* initialState */10],
           /* retainedProps */component[/* retainedProps */11],
@@ -63,6 +89,7 @@ function make(onEnter, name, slug, thumbnail, rating, handleOpen, _) {
 export {
   component ,
   imgCls ,
+  cls ,
   make ,
   
 }
