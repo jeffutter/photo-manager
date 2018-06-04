@@ -159,7 +159,6 @@ function make$1() {
                               /* None */0,
                               /* None */0,
                               /* None */0,
-                              /* None */0,
                               (function (param) {
                                   var result = param[/* result */0];
                                   if (typeof result === "number") {
@@ -167,7 +166,13 @@ function make$1() {
                                   } else if (result.tag) {
                                     var result$1 = result[0];
                                     return ReasonReact.element(/* None */0, /* None */0, LoadMoreWrapper$PhotoManager.make(slug, (function (moreGallery, loadMore) {
-                                                      return ReasonReact.element(/* None */0, /* None */0, GalleryContainer$PhotoManager.make(result$1.gallery, moreGallery, loadMore, /* array */[]));
+                                                      var loadNextPage = function (slugs) {
+                                                        console.log("load next");
+                                                        var loadMoreQuery = GalleryQueries$PhotoManager.MoreQuery[/* make */7](slug, slugs, /* () */0);
+                                                        Curry._1(loadMore, loadMoreQuery.variables);
+                                                        return /* () */0;
+                                                      };
+                                                      return ReasonReact.element(/* None */0, /* None */0, GalleryContainer$PhotoManager.make(result$1.gallery, moreGallery, loadNextPage, /* array */[]));
                                                     })));
                                   } else {
                                     return React.createElement("div", undefined, "Error Loading Gallery");

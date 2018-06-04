@@ -1,6 +1,7 @@
 type image = {
   .
   "id": string,
+  "__typename": string,
   "name": string,
   "path": Js.Array.t(string),
   "slug": string,
@@ -16,6 +17,7 @@ type image = {
 type moreImage = {
   .
   "id": string,
+  "__typename": string,
   "name": string,
   "path": Js.Array.t(string),
   "slug": string,
@@ -25,6 +27,7 @@ type moreImage = {
 type completeImage = {
   .
   "id": string,
+  "__typename": string,
   "name": string,
   "path": Js.Array.t(string),
   "slug": string,
@@ -41,6 +44,7 @@ type completeImage = {
 type galleryNoDescendants = {
   .
   "id": string,
+  "__typename": string,
   "name": string,
   "path": Js.Array.t(string),
   "slug": string,
@@ -49,6 +53,7 @@ type galleryNoDescendants = {
 type gallery = {
   .
   "id": string,
+  "__typename": string,
   "name": string,
   "path": Js.Array.t(string),
   "slug": string,
@@ -61,6 +66,7 @@ and descendants = Js.Array.t(descendant);
 type moreGallery = {
   .
   "id": string,
+  "__typename": string,
   "name": string,
   "path": Js.Array.t(string),
   "slug": string,
@@ -72,6 +78,7 @@ and moreDescendants = Js.Array.t(moreDescendant);
 type completeGallery = {
   .
   "id": string,
+  "__typename": string,
   "name": string,
   "path": Js.Array.t(string),
   "slug": string,
@@ -89,6 +96,7 @@ module GalleryQuery = [%graphql
   query gallery($slug: String!) {
     gallery(slug: $slug) {
       id
+      __typename
       name
       path
       slug
@@ -96,12 +104,14 @@ module GalleryQuery = [%graphql
       descendants {
       ... on Gallery {
         id
+        __typename
         name
         path
         slug
       }
       ... on Image {
         id
+        __typename
         name
         path
         slug
@@ -124,18 +134,21 @@ module MoreQuery = [%graphql
   query gallery($slug: String!, $slugs: [String!]!) {
     gallery(slug: $slug) {
       id
+      __typename
       name
       path
       slug
       descendants(slugs: $slugs) {
       ... on Gallery {
         id
+        __typename
         name
         path
         slug
       }
       ... on Image {
         id
+        __typename
         name
         path
         slug
@@ -152,6 +165,7 @@ module RateImage = [%graphql
     mutation rateImage($slug: String!, $rating: Int!) {
       rateImage(slug: $slug, rating: $rating) {
         id
+        __typename
         name
         path
         slug

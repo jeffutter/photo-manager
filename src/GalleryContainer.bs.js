@@ -74,6 +74,7 @@ function mergeGallery(_, gallery) {
 function mergeImage(image, moreImage) {
   return {
           id: image.id,
+          __typename: image.__typename,
           name: image.name,
           path: image.path,
           slug: image.slug,
@@ -95,6 +96,7 @@ function convertGallery(gallery) {
 function convertImage(image) {
   return {
           id: image.id,
+          __typename: image.__typename,
           name: image.name,
           path: image.path,
           slug: image.slug,

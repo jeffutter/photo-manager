@@ -86,12 +86,28 @@ let make = _children => {
                      | Data(result) =>
                        <LoadMoreWrapper slug>
                          ...(
-                              (moreGallery, loadMore) =>
+                              (moreGallery, loadMore) => {
+                                let loadNextPage = slugs => {
+                                  Js.log("load next");
+                                  let loadMoreQuery =
+                                    GalleryQueries.MoreQuery.make(
+                                      ~slug,
+                                      ~slugs,
+                                      (),
+                                    );
+                                  ignore(
+                                    loadMore(
+                                      ~variables=loadMoreQuery##variables,
+                                    ),
+                                  );
+                                  ();
+                                };
                                 <GalleryContainer
                                   gallery=result##gallery
                                   moreGallery
-                                  loadNextPage=loadMore
-                                />
+                                  loadNextPage
+                                />;
+                              }
                             )
                        </LoadMoreWrapper>
                      }

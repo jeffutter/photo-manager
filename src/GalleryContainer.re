@@ -51,6 +51,7 @@ let mergeImage =
     (image: GalleryQueries.image, moreImage: GalleryQueries.moreImage)
     : GalleryQueries.completeImage => {
   "id": image##id,
+  "__typename": image##__typename,
   "name": image##name,
   "path": image##path,
   "slug": image##slug,
@@ -72,6 +73,7 @@ let convertImage =
     (image: GalleryQueries.image)
     : GalleryQueries.completeImage => {
   "id": image##id,
+  "__typename": image##__typename,
   "name": image##name,
   "path": image##path,
   "slug": image##slug,

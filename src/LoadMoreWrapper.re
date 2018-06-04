@@ -1,82 +1,83 @@
 module Query = ReasonApollo.CreateQuery(GalleryQueries.MoreQuery);
 
-type state = {slugs: Js.Array.t(string)};
+let component = ReasonReact.statelessComponent("LoadMoreWrapper");
 
-type action =
-  | Fetch(array(string));
+type responseJS = {
+  .
+  "gallery":
+    Js.Nullable.t(
+      {
+        .
+        "id": string,
+        "name": string,
+        "path": Js.Array.t(string),
+        "slug": string,
+        "descendants": Js.Nullable.t(Js.Array.t(Js.t({.}))),
+        "__typename": string,
+      },
+    ),
+};
 
-let component = ReasonReact.reducerComponent("LoadMoreWrapper");
+external unsafeFromJson : Js.Json.t => responseJS = "%identity";
 
-let combine =
-    (
-      previousGallery: PhotoManager.GalleryQueries.MoreQuery.t,
-      newGallery: PhotoManager.GalleryQueries.MoreQuery.t,
-    )
-    : PhotoManager.GalleryQueries.MoreQuery.t =>
-  switch (previousGallery##gallery, newGallery##gallery) {
-  | (Some(gallery), Some(moreGallery)) =>
-    let newDescendants =
-      switch (gallery##descendants, moreGallery##descendants) {
-      | (None, None) => None
-      | (Some(descendants), None) => Some(descendants)
-      | (None, Some(descendants)) => Some(descendants)
-      | (Some(oldDescendants), Some(newDescendants)) =>
-        Some(Array.append(oldDescendants, newDescendants))
-      };
-    {
-      "gallery":
-        Some({
-          "id": gallery##id,
-          "name": gallery##name,
-          "path": gallery##path,
-          "slug": gallery##slug,
-          "descendants": newDescendants,
-        }),
-    };
-  | (Some(_), None) => previousGallery
-  | (None, Some(_)) => newGallery
-  | (None, None) => {"gallery": None}
-  };
+external unsafeToJson : responseJS => Js.Json.t = "%identity";
 
-let updateQuery =
-    (previousResults: PhotoManager.GalleryQueries.MoreQuery.t, updateQuery)
-    : PhotoManager.GalleryQueries.MoreQuery.t =>
-  switch (updateQuery##fetchMoreResult) {
-  | Some(fetchMoreResults) => combine(fetchMoreResults, previousResults)
-  | None => previousResults
-  };
+let updateQuery = (previousResult, newResults) => {
+  let previousResult = unsafeFromJson(previousResult);
+  (
+    switch (newResults##fetchMoreResult) {
+    | Some(fetchMoreResult) =>
+      let fetchMoreResult = unsafeFromJson(fetchMoreResult);
+      let combinedGallery =
+        switch (
+          previousResult##gallery |> Js.Nullable.toOption,
+          fetchMoreResult##gallery |> Js.Nullable.toOption,
+        ) {
+        | (Some(previousGallery), Some(moreGallery)) =>
+          let combinedDescendants =
+            switch (
+              previousGallery##descendants |> Js.Nullable.toOption,
+              moreGallery##descendants |> Js.Nullable.toOption,
+            ) {
+            | (Some(previousDescendants), Some(moreDescendants)) =>
+              Some(Array.append(previousDescendants, moreDescendants))
+            | (Some(previousDescendants), None) => Some(previousDescendants)
+            | (None, Some(moreDescendants)) => Some(moreDescendants)
+            | (None, None) => Some([||])
+            };
+          Some({
+            "id": previousGallery##id,
+            "name": previousGallery##name,
+            "path": previousGallery##path,
+            "slug": previousGallery##slug,
+            "descendants": combinedDescendants |> Js.Nullable.fromOption,
+            "__typename": previousGallery##__typename,
+          });
+        | (Some(previousGallery), None) => Some(previousGallery)
+        | (None, Some(moreGallery)) => Some(moreGallery)
+        | (None, None) => None
+        };
+      {"gallery": combinedGallery |> Js.Nullable.fromOption};
+    | None => {"gallery": Js.Nullable.null}
+    }
+  )
+  |> unsafeToJson;
+};
 
 let make = (~slug: string, children) => {
   ...component,
-  initialState: () => {slugs: [||]},
-  reducer: (action, _state) =>
-    switch (action) {
-    | Fetch(slugs) => ReasonReact.Update({slugs: slugs})
-    },
-  render: self => {
+  render: _self => {
     Js.log("Render load more wrapper");
-    let loadMoreQuery =
-      GalleryQueries.MoreQuery.make(~slug, ~slugs=self.state.slugs, ());
-    <Query variables=loadMoreQuery##variables updateQuery>
+    let loadMoreQuery = GalleryQueries.MoreQuery.make(~slug, ~slugs=[||], ());
+    <Query variables=loadMoreQuery##variables>
       ...(
-           ({result, fetchMore as _fetchMore}) => {
-             let fMore = slugs => self.send(Fetch(slugs));
+           ({result, fetchMore}) =>
              switch (result) {
-             | Loading =>
-               <LoadMoreCache gallery=None>
-                 ...(gallery => children(gallery, fMore))
-               </LoadMoreCache>
-             | Error(_error) =>
-               <LoadMoreCache gallery=None>
-                 ...(gallery => children(gallery, fMore))
-               </LoadMoreCache>
+             | Loading => children(None, fetchMore(~updateQuery))
+             | Error(_error) => children(None, fetchMore(~updateQuery))
              | Data(response) =>
-               Js.log2("Result Gallery", response##gallery);
-               <LoadMoreCache gallery=response##gallery>
-                 ...(gallery => children(gallery, fMore))
-               </LoadMoreCache>;
-             };
-           }
+               children(response##gallery, fetchMore(~updateQuery))
+             }
          )
     </Query>;
   },
