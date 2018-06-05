@@ -16,9 +16,9 @@ var component = ReasonReact.statelessComponent("LoadMoreWrapper");
 
 function updateQuery(previousResult, newResults) {
   var match = newResults.fetchMoreResult;
-  if (match) {
+  if (match !== undefined) {
     var match$1 = previousResult.gallery;
-    var match$2 = match[0].gallery;
+    var match$2 = match.gallery;
     var combinedGallery;
     if (match$1 == null) {
       combinedGallery = (match$2 == null) ? /* None */0 : /* Some */[match$2];
@@ -78,12 +78,10 @@ function make(slug, children) {
                               (function (param) {
                                   var fetchMore = param[/* fetchMore */5];
                                   var result = param[/* result */0];
-                                  if (typeof result === "number") {
-                                    return Curry._2(children, /* None */0, Curry._1(fetchMore, /* Some */[updateQuery]));
-                                  } else if (result.tag) {
-                                    return Curry._2(children, result[0].gallery, Curry._1(fetchMore, /* Some */[updateQuery]));
+                                  if (typeof result === "number" || !result.tag) {
+                                    return Curry._2(children, /* None */0, Curry._1(fetchMore, updateQuery));
                                   } else {
-                                    return Curry._2(children, /* None */0, Curry._1(fetchMore, /* Some */[updateQuery]));
+                                    return Curry._2(children, result[0].gallery, Curry._1(fetchMore, updateQuery));
                                   }
                                 })
                             ]));

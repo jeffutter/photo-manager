@@ -22,10 +22,10 @@ external unsafeFromJson : Js.Json.t => responseJS = "%identity";
 
 external unsafeToJson : responseJS => Js.Json.t = "%identity";
 
-let updateQuery = (previousResult, newResults) => {
+let updateQuery = (previousResult, newResults: Query.updateQueryOptions) => {
   let previousResult = unsafeFromJson(previousResult);
   (
-    switch (newResults##fetchMoreResult) {
+    switch (newResults |. Query.fetchMoreResult) {
     | Some(fetchMoreResult) =>
       let fetchMoreResult = unsafeFromJson(fetchMoreResult);
       let combinedGallery =
