@@ -1,13 +1,9 @@
-open Css;
-
 type retainedProps = {
   name: string,
   slug: string,
   thumbnail: option(string),
   rating: option(int),
 };
-
-let cls = (~w, ~h) => style([width(px(w)), height(px(h))]);
 
 type self = {retainedProps};
 
@@ -21,8 +17,6 @@ let make =
       ~slug: string,
       ~thumbnail: option(string)=?,
       ~rating: option(int)=?,
-      ~w: int,
-      ~h: int,
       children,
     ) => {
   ...component,

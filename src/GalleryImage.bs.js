@@ -63,7 +63,7 @@ function make(onEnter, name, slug, thumbnail, rating, handleOpen, _) {
                                           }, React.createElement("div", undefined, name), ReasonReact.element(/* None */0, /* None */0, Stars$PhotoManager.make(slug, rating, /* array */[]))));
                           })));
               } else {
-                tmp = ReasonReact.element(/* None */0, /* None */0, WaypointItem$PhotoManager.make(onEnter, name, slug, thumbnail, rating, 320, 295, (function () {
+                tmp = ReasonReact.element(/* None */0, /* None */0, WaypointItem$PhotoManager.make(onEnter, name, slug, thumbnail, rating, (function () {
                             return ReasonReact.element(/* None */0, /* None */0, GalleryItem$PhotoManager.make(/* Some */[true], (function (wrapClass, detailsClass) {
                                               return React.createElement("div", {
                                                           className: wrapClass,

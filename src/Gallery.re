@@ -3,6 +3,7 @@ type state = {
   currentImage: int,
   pendingImages: list(string),
   loadingTimeout: ref(option(Js.Global.timeoutId)),
+  descendants: GalleryQueries.completeDescendants,
 };
 
 type action =
@@ -83,6 +84,7 @@ let make =
     currentImage: 0,
     pendingImages: [],
     loadingTimeout: ref(None),
+    descendants: descendants
   },
   reducer: (action, state) =>
     switch (action) {
@@ -133,14 +135,29 @@ let make =
         ),
       );
     },
+  shouldUpdate: ({oldSelf: {state: oldState}, newSelf: {state: newState}}) => {
+    oldState.descendants != newState.descendants || oldState.lightboxIsOpen != newState.lightboxIsOpen || oldState.currentImage != newState.currentImage;
+  },
+  willReceiveProps: ({state}) => {
+    {
+      ...state,
+      descendants: descendants
+    };
+  },
   render: self => {
+    Console.time("gallery");
+    Console.time("gallery-split");
     let (thumbedImageSlugs, images, galleries) =
-      descendants |> Array.to_list |> splitDescendants(([], [], []));
+      self.state.descendants |> Array.to_list |> splitDescendants(([], [], []));
+    Console.timeEnd("gallery-split");
+    Console.time("gallery-render-galleries");
     let renderedGalleries =
       List.map(
         item => <GalleryThumb key=item##id name=item##name slug=item##slug />,
         galleries,
       );
+    Console.timeEnd("gallery-render-galleries");
+    Console.time("gallery-render-images");
     let renderedImages =
       List.mapi(
         (index, image: GalleryQueries.completeImage) => {
@@ -157,8 +174,12 @@ let make =
         },
         images,
       );
+    Console.timeEnd("gallery-render-images");
+    Console.time("gallery-render-concat");
     let renderedDescendants =
       List.concat([renderedGalleries, renderedImages]);
+    Console.timeEnd("gallery-render-concat");
+    Console.time("gallery-swipe");
     let swipeImages =
       List.map(
         (image: GalleryQueries.completeImage) => {
@@ -170,6 +191,8 @@ let make =
         },
         images,
       );
+    Console.timeEnd("gallery-swipe");
+    Console.timeEnd("gallery");
     let swipeOptions = {"index": self.state.currentImage};
     <div className="gallery">
       <BreadCrumbs slug path name />

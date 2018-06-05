@@ -40,7 +40,7 @@ let make =
                )
           </GalleryItem>
         | None =>
-          <WaypointItem w=320 h=295 ?onEnter name slug ?thumbnail ?rating>
+          <WaypointItem ?onEnter name slug ?thumbnail ?rating>
             ...(
                  () =>
                    <GalleryItem lightBG=true>
