@@ -8146,8 +8146,9 @@ realpath-native@^1.0.0:
   dependencies:
     util.promisify "^1.0.0"
 
-"reason-apollo@file:../reason-apollo":
+"reason-apollo@github:jeffutter/reason-apollo#updateQuery":
   version "0.10.1-beta"
+  resolved "https://codeload.github.com/jeffutter/reason-apollo/tar.gz/75db3b4d32b184c13f791995755b10fa4267c05f"
 
 reason-react@^0.4.2:
   version "0.4.2"
