@@ -42,7 +42,7 @@ let component = ReasonReact.statelessComponent("Stars");
 
 let make = (~slug: string, ~rating: option(int), _children) => {
   ...component,
-  render: (_) =>
+  render: _ =>
     <Mutation>
       ...(
            (mutation, {result}) => {

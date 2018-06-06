@@ -17,7 +17,7 @@ let make =
       _children,
     ) => {
   ...component,
-  render: (_) =>
+  render: _ =>
     <div className=(cls(~w=320, ~h=295))>
       (
         switch (thumbnail) {

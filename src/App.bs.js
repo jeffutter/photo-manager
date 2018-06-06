@@ -11,7 +11,6 @@ import * as Header$PhotoManager from "./Header.bs.js";
 import * as Cookies$PhotoManager from "./Cookies.bs.js";
 import * as LoginForm$PhotoManager from "./LoginForm.bs.js";
 import * as GalleryQueries$PhotoManager from "./GalleryQueries.bs.js";
-import * as FullPageSpinner$PhotoManager from "./FullPageSpinner.bs.js";
 import * as LoadMoreWrapper$PhotoManager from "./LoadMoreWrapper.bs.js";
 import * as GalleryContainer$PhotoManager from "./GalleryContainer.bs.js";
 
@@ -125,6 +124,12 @@ function mapUrlToRoute(url) {
   }
 }
 
+function loadNextPage(loadMore, slug, slugs) {
+  var loadMoreQuery = GalleryQueries$PhotoManager.MoreQuery[/* make */7](slug, slugs, /* () */0);
+  Curry._1(loadMore, loadMoreQuery.variables);
+  return /* () */0;
+}
+
 var Query = ReasonApollo.CreateQuery([
       GalleryQueries$PhotoManager.GalleryQuery[2],
       GalleryQueries$PhotoManager.GalleryQuery[3]
@@ -162,17 +167,15 @@ function make$1() {
                               (function (param) {
                                   var result = param[/* result */0];
                                   if (typeof result === "number") {
-                                    return ReasonReact.element(/* None */0, /* None */0, FullPageSpinner$PhotoManager.make(/* array */[]));
+                                    return ReasonReact.element(/* None */0, /* None */0, GalleryContainer$PhotoManager.make(/* None */0, /* None */0, (function () {
+                                                      return /* () */0;
+                                                    }), /* array */[]));
                                   } else if (result.tag) {
                                     var result$1 = result[0];
                                     return ReasonReact.element(/* None */0, /* None */0, LoadMoreWrapper$PhotoManager.make(slug, (function (moreGallery, loadMore) {
-                                                      var loadNextPage = function (slugs) {
-                                                        console.log("load next");
-                                                        var loadMoreQuery = GalleryQueries$PhotoManager.MoreQuery[/* make */7](slug, slugs, /* () */0);
-                                                        Curry._1(loadMore, loadMoreQuery.variables);
-                                                        return /* () */0;
-                                                      };
-                                                      return ReasonReact.element(/* None */0, /* None */0, GalleryContainer$PhotoManager.make(result$1.gallery, moreGallery, loadNextPage, /* array */[]));
+                                                      return ReasonReact.element(/* None */0, /* None */0, GalleryContainer$PhotoManager.make(result$1.gallery, moreGallery, (function (param) {
+                                                                        return loadNextPage(loadMore, slug, param);
+                                                                      }), /* array */[]));
                                                     })));
                                   } else {
                                     return React.createElement("div", undefined, "Error Loading Gallery");
@@ -215,6 +218,7 @@ export {
   reducer ,
   component$1 as component,
   mapUrlToRoute ,
+  loadNextPage ,
   Query ,
   make$1 as make,
   

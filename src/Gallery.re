@@ -57,11 +57,8 @@ let rec splitDescendants =
   };
 
 let addFunc = (thumbedImageSlugs, slug, send) => {
-  let slugHasThumb = 
-    List.exists(
-      imageSlug => slug == imageSlug,
-      thumbedImageSlugs,
-    );
+  let slugHasThumb =
+    List.exists(imageSlug => slug == imageSlug, thumbedImageSlugs);
 
   switch (slugHasThumb) {
   | false => send(AddImage(slug))
@@ -84,7 +81,7 @@ let make =
     currentImage: 0,
     pendingImages: [],
     loadingTimeout: ref(None),
-    descendants: descendants
+    descendants,
   },
   reducer: (action, state) =>
     switch (action) {
@@ -135,20 +132,19 @@ let make =
         ),
       );
     },
-  shouldUpdate: ({oldSelf: {state: oldState}, newSelf: {state: newState}}) => {
-    oldState.descendants != newState.descendants || oldState.lightboxIsOpen != newState.lightboxIsOpen || oldState.currentImage != newState.currentImage;
-  },
-  willReceiveProps: ({state}) => {
-    {
-      ...state,
-      descendants: descendants
-    };
-  },
+  shouldUpdate:
+    ({oldSelf: {state: oldState}, newSelf: {state: newState}}) =>
+    oldState.descendants != newState.descendants
+    || oldState.lightboxIsOpen != newState.lightboxIsOpen
+    || oldState.currentImage != newState.currentImage,
+  willReceiveProps: ({state}) => {...state, descendants},
   render: self => {
     Console.time("gallery");
     Console.time("gallery-split");
     let (thumbedImageSlugs, images, galleries) =
-      self.state.descendants |> Array.to_list |> splitDescendants(([], [], []));
+      self.state.descendants
+      |> Array.to_list
+      |> splitDescendants(([], [], []));
     Console.timeEnd("gallery-split");
     Console.time("gallery-render-galleries");
     let renderedGalleries =
@@ -164,13 +160,13 @@ let make =
           let slug = image##slug;
           <GalleryImage
             key=image##id
-            slug=slug
+            slug
             onEnter=(() => addFunc(thumbedImageSlugs, slug, self.send))
             handleOpen=(_event => self.send(OpenLightbox(index)))
             thumbnail=image##thumbnail
             name=image##name
             rating=image##rating
-          />
+          />;
         },
         images,
       );

@@ -34,7 +34,7 @@ let make =
       },
     ) =>
     oldRetainedProps != newRetainedProps,
-  render: (_) =>
+  render: _ =>
     <Waypoint
       ?onEnter bottomOffset="-400px" topOffset="200px" fireOnRapidScroll=false>
       <div> (children()) </div>

@@ -48,6 +48,11 @@ let mapUrlToRoute = (url: ReasonReact.Router.url) =>
   | _ => LoginForm
   };
 
+let loadNextPage = (loadMore, slug, slugs) => {
+  let loadMoreQuery = GalleryQueries.MoreQuery.make(~slug, ~slugs, ());
+  ignore(loadMore(~variables=loadMoreQuery##variables));
+};
+
 module Query = ReasonApollo.CreateQuery(GalleryQueries.GalleryQuery);
 
 let make = _children => {
@@ -78,7 +83,12 @@ let make = _children => {
               ...(
                    ({result}) =>
                      switch (result) {
-                     | Loading => <FullPageSpinner />
+                     | Loading =>
+                       <GalleryContainer
+                         gallery=None
+                         moreGallery=None
+                         loadNextPage=(_ => ())
+                       />
                      | Error(_error) =>
                        <div>
                          (ReasonReact.string("Error Loading Gallery"))
@@ -86,28 +96,12 @@ let make = _children => {
                      | Data(result) =>
                        <LoadMoreWrapper slug>
                          ...(
-                              (moreGallery, loadMore) => {
-                                let loadNextPage = slugs => {
-                                  Js.log("load next");
-                                  let loadMoreQuery =
-                                    GalleryQueries.MoreQuery.make(
-                                      ~slug,
-                                      ~slugs,
-                                      (),
-                                    );
-                                  ignore(
-                                    loadMore(
-                                      ~variables=loadMoreQuery##variables,
-                                    ),
-                                  );
-                                  ();
-                                };
+                              (moreGallery, loadMore) =>
                                 <GalleryContainer
                                   gallery=result##gallery
                                   moreGallery
-                                  loadNextPage
-                                />;
-                              }
+                                  loadNextPage=(loadNextPage(loadMore, slug))
+                                />
                             )
                        </LoadMoreWrapper>
                      }
