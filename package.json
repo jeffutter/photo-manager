@@ -45,7 +45,7 @@
     "babel-plugin-named-asset-import": "^1.0.0-next.66cc7a90",
     "babel-preset-react-app": "^4.0.0-next.66cc7a90",
     "brotli-webpack-plugin": "^1.0.0",
-    "bs-css": "^6.6.0",
+    "bs-css": "7.0.1",
     "bs-platform": "^3.0.0",
     "case-sensitive-paths-webpack-plugin": "^2.1.2",
     "clean-webpack-plugin": "^0.1.19",
