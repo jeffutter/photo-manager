@@ -30,3 +30,6 @@ let chunkList = (size, list) =>
     [],
     list,
   );
+
+let chunkArray = (size, array) =>
+  array |> Array.to_list |> chunkList(size) |> List.rev |> Array.of_list;

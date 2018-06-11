@@ -75,7 +75,7 @@ function make(onEnter, name, slug, thumbnail, rating, handleOpen, _) {
                           })));
               }
               return React.createElement("div", {
-                          className: cls(320, 295)
+                          className: cls(300, 295)
                         }, tmp);
             }),
           /* initialState */component[/* initialState */10],

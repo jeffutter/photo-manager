@@ -1,7 +1,8 @@
 open Css;
 
-let cls = lightBG =>
-  style([
+let cls = lightBG => {
+  let base = [
+    display(block),
     width(px(300)),
     maxWidth(px(300)),
     `declaration(("position", "inherit")), /* hack for react-waypoint */
@@ -23,23 +24,10 @@ let cls = lightBG =>
       "@media screen and (min-width: 768px)",
       [selector(":hover", [transform(scale(1.05, 1.05))])],
     ),
-    selector(
-      "&:after",
-      lightBG ?
-        [] :
-        [
-          `declaration(("content", "''")),
-          position(absolute),
-          top(zero),
-          left(zero),
-          width(`percent(100.0)),
-          height(`percent(100.0)),
-          backgroundColor(black),
-          opacity(0.2),
-          transition("opacity 0.3s ease-in-out"),
-        ],
-    ),
-  ]);
+  ];
+  let black = [backgroundColor(hex("ccc"))];
+  (lightBG ? base : List.append(base, black)) |> style;
+};
 
 let detailsCls =
   style([
@@ -65,5 +53,5 @@ let component = ReasonReact.statelessComponent("GalleryItem");
 
 let make = (~lightBG=true, children) => {
   ...component,
-  render: _ => children(cls(lightBG), detailsCls),
+  render: (_) => children(cls(lightBG), detailsCls),
 };

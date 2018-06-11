@@ -17,8 +17,8 @@ let make =
       _children,
     ) => {
   ...component,
-  render: _ =>
-    <div className=(cls(~w=320, ~h=295))>
+  render: (_) =>
+    <div className=(cls(~w=300, ~h=295))>
       (
         switch (thumbnail) {
         | Some(thumb) =>

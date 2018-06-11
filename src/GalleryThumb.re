@@ -9,7 +9,7 @@ let outerCls = (~w, ~h) => style([width(px(w)), height(px(h))]);
 
 let make = (~name: string, ~slug: string, _children) => {
   ...component,
-  render: _ =>
+  render: (_) =>
     <div className=(outerCls(~w=320, ~h=275))>
       <GalleryItem lightBG=false>
         ...(

@@ -87,7 +87,7 @@ let make = _children => {
                        <GalleryContainer
                          gallery=None
                          moreGallery=None
-                         loadNextPage=(_ => ())
+                         loadNextPage=((_) => ())
                        />
                      | Error(_error) =>
                        <div>
