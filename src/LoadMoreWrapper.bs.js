@@ -20,26 +20,48 @@ function updateQuery(previousResult, newResults) {
     var match$1 = previousResult.gallery;
     var match$2 = match.gallery;
     var combinedGallery;
-    if (match$1 == null) {
-      combinedGallery = (match$2 == null) ? /* None */0 : /* Some */[match$2];
-    } else if (match$2 == null) {
-      combinedGallery = /* Some */[match$1];
-    } else {
-      var match$3 = match$1.descendants;
-      var match$4 = match$2.descendants;
-      var combinedDescendants = (match$3 == null) ? (
-          (match$4 == null) ? /* Some */[/* array */[]] : /* Some */[match$4]
-        ) : (
-          (match$4 == null) ? /* Some */[match$3] : /* Some */[$$Array.append(match$3, match$4)]
-        );
+    if (match$1) {
+      var previousGallery = match$1[0];
+      if (match$2) {
+        var match$3 = previousGallery.descendants;
+        var match$4 = match$2[0].descendants;
+        var combinedDescendants;
+        if (match$3) {
+          var previousDescendants = match$3[0];
+          combinedDescendants = match$4 ? /* Some */[$$Array.append(previousDescendants, match$4[0])] : /* Some */[previousDescendants];
+        } else {
+          combinedDescendants = match$4 ? /* Some */[match$4[0]] : /* Some */[/* array */[]];
+        }
+        combinedGallery = /* Some */[{
+            id: previousGallery.id,
+            name: previousGallery.name,
+            path: previousGallery.path,
+            slug: previousGallery.slug,
+            descendants: Js_null_undefined.fromOption(combinedDescendants),
+            __typename: previousGallery.__typename
+          }];
+      } else {
+        combinedGallery = /* Some */[{
+            id: previousGallery.id,
+            name: previousGallery.name,
+            path: previousGallery.path,
+            slug: previousGallery.slug,
+            descendants: Js_null_undefined.fromOption(previousGallery.descendants),
+            __typename: previousGallery.__typename
+          }];
+      }
+    } else if (match$2) {
+      var moreGallery = match$2[0];
       combinedGallery = /* Some */[{
-          id: match$1.id,
-          name: match$1.name,
-          path: match$1.path,
-          slug: match$1.slug,
-          descendants: Js_null_undefined.fromOption(combinedDescendants),
-          __typename: match$1.__typename
+          id: moreGallery.id,
+          name: moreGallery.name,
+          path: moreGallery.path,
+          slug: moreGallery.slug,
+          descendants: Js_null_undefined.fromOption(moreGallery.descendants),
+          __typename: moreGallery.__typename
         }];
+    } else {
+      combinedGallery = /* None */0;
     }
     return {
             gallery: Js_null_undefined.fromOption(combinedGallery)
@@ -78,10 +100,18 @@ function make(slug, children) {
                               (function (param) {
                                   var fetchMore = param[/* fetchMore */5];
                                   var result = param[/* result */0];
-                                  if (typeof result === "number" || !result.tag) {
-                                    return Curry._2(children, /* None */0, Curry._1(fetchMore, updateQuery));
+                                  if (typeof result === "number") {
+                                    return Curry._2(children, /* None */0, (function (param) {
+                                                  return Curry._2(fetchMore, param, updateQuery);
+                                                }));
+                                  } else if (result.tag) {
+                                    return Curry._2(children, result[0].gallery, (function (param) {
+                                                  return Curry._2(fetchMore, param, updateQuery);
+                                                }));
                                   } else {
-                                    return Curry._2(children, result[0].gallery, Curry._1(fetchMore, updateQuery));
+                                    return Curry._2(children, /* None */0, (function (param) {
+                                                  return Curry._2(fetchMore, param, updateQuery);
+                                                }));
                                   }
                                 })
                             ]));

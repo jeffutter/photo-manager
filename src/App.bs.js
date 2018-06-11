@@ -126,7 +126,7 @@ function mapUrlToRoute(url) {
 
 function loadNextPage(loadMore, slug, slugs) {
   var loadMoreQuery = GalleryQueries$PhotoManager.MoreQuery[/* make */7](slug, slugs, /* () */0);
-  Curry._1(loadMore, loadMoreQuery.variables);
+  Curry._2(loadMore, /* Some */[loadMoreQuery.variables], /* () */0);
   return /* () */0;
 }
 

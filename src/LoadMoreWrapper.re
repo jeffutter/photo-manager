@@ -12,7 +12,34 @@ type responseJS = {
         "name": string,
         "path": Js.Array.t(string),
         "slug": string,
-        "descendants": Js.Nullable.t(Js.Array.t(Js.t({.}))),
+        "descendants":
+          Js.Nullable.t(
+            Js.Array.t(
+              [
+                | `Gallery(
+                    {
+                      .
+                      "__typename": string,
+                      "id": string,
+                      "name": string,
+                      "path": Js.Array.t(string),
+                      "slug": string,
+                    },
+                  )
+                | `Image(
+                    {
+                      .
+                      "__typename": string,
+                      "id": string,
+                      "name": string,
+                      "path": Js.Array.t(string),
+                      "slug": string,
+                      "thumbnail": option(string),
+                    },
+                  )
+              ],
+            ),
+          ),
         "__typename": string,
       },
     ),
@@ -22,23 +49,19 @@ external unsafeFromJson : Js.Json.t => responseJS = "%identity";
 
 external unsafeToJson : responseJS => Js.Json.t = "%identity";
 
-let updateQuery = (previousResult, newResults: Query.updateQueryOptions) => {
-  let previousResult = unsafeFromJson(previousResult);
+let updateQuery =
+    (
+      previousResult: PhotoManager.GalleryQueries.MoreQuery.t,
+      newResults: Query.updateQueryOptions,
+    ) =>
   (
     switch (newResults |. Query.fetchMoreResult) {
     | Some(fetchMoreResult) =>
-      let fetchMoreResult = unsafeFromJson(fetchMoreResult);
       let combinedGallery =
-        switch (
-          previousResult##gallery |> Js.Nullable.toOption,
-          fetchMoreResult##gallery |> Js.Nullable.toOption,
-        ) {
+        switch (previousResult##gallery, fetchMoreResult##gallery) {
         | (Some(previousGallery), Some(moreGallery)) =>
           let combinedDescendants =
-            switch (
-              previousGallery##descendants |> Js.Nullable.toOption,
-              moreGallery##descendants |> Js.Nullable.toOption,
-            ) {
+            switch (previousGallery##descendants, moreGallery##descendants) {
             | (Some(previousDescendants), Some(moreDescendants)) =>
               Some(Array.append(previousDescendants, moreDescendants))
             | (Some(previousDescendants), None) => Some(previousDescendants)
@@ -53,8 +76,25 @@ let updateQuery = (previousResult, newResults: Query.updateQueryOptions) => {
             "descendants": combinedDescendants |> Js.Nullable.fromOption,
             "__typename": previousGallery##__typename,
           });
-        | (Some(previousGallery), None) => Some(previousGallery)
-        | (None, Some(moreGallery)) => Some(moreGallery)
+        | (Some(previousGallery), None) =>
+          Some({
+            "id": previousGallery##id,
+            "name": previousGallery##name,
+            "path": previousGallery##path,
+            "slug": previousGallery##slug,
+            "descendants":
+              previousGallery##descendants |> Js.Nullable.fromOption,
+            "__typename": previousGallery##__typename,
+          })
+        | (None, Some(moreGallery)) =>
+          Some({
+            "id": moreGallery##id,
+            "name": moreGallery##name,
+            "path": moreGallery##path,
+            "slug": moreGallery##slug,
+            "descendants": moreGallery##descendants |> Js.Nullable.fromOption,
+            "__typename": moreGallery##__typename,
+          })
         | (None, None) => None
         };
       {"gallery": combinedGallery |> Js.Nullable.fromOption};
@@ -62,7 +102,6 @@ let updateQuery = (previousResult, newResults: Query.updateQueryOptions) => {
     }
   )
   |> unsafeToJson;
-};
 
 let make = (~slug: string, children) => {
   ...component,

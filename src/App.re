@@ -50,7 +50,7 @@ let mapUrlToRoute = (url: ReasonReact.Router.url) =>
 
 let loadNextPage = (loadMore, slug, slugs) => {
   let loadMoreQuery = GalleryQueries.MoreQuery.make(~slug, ~slugs, ());
-  ignore(loadMore(~variables=loadMoreQuery##variables));
+  ignore(loadMore(~variables=?Some(loadMoreQuery##variables), ()));
 };
 
 module Query = ReasonApollo.CreateQuery(GalleryQueries.GalleryQuery);
