@@ -158,14 +158,16 @@ function cellRenderer(send, thumbedImageSlugs, grid, marginCls, options) {
                       }, ReasonReact.element(/* Some */[key], /* None */0, GalleryThumb$PhotoManager.make(gallery.name, gallery.slug, /* array */[]))));
       } else {
         var image = cell[1];
+        var match = image.thumbnail;
+        if (!match) {
+          addFunc(thumbedImageSlugs, image.slug, send);
+        }
         return React.createElement("div", {
                     key: key,
                     style: style
                   }, React.createElement("div", {
                         className: marginCls
-                      }, ReasonReact.element(/* Some */[key], /* None */0, GalleryImage$PhotoManager.make(/* Some */[(function () {
-                                    return addFunc(thumbedImageSlugs, image.slug, send);
-                                  })], image.name, image.slug, image.thumbnail, image.rating, (function () {
+                      }, ReasonReact.element(/* Some */[key], /* None */0, GalleryImage$PhotoManager.make(image.name, image.slug, image.thumbnail, image.rating, (function () {
                                   console.time("find-index");
                                   var index = $$Array.of_list(thumbedImageSlugs).indexOf(image.slug);
                                   console.timeEnd("find-index");
@@ -267,15 +269,15 @@ function make($staropt$star, $staropt$star$1, $staropt$star$2, $staropt$star$3, 
                                                             ]
                                                           ]);
                                                       var partial_arg = self[/* send */3];
-                                                      return ReasonReact.element(/* None */0, /* None */0, Grid$PhotoManager.make(/* Some */[true], /* Some */[Css.style(/* :: */[
+                                                      return ReasonReact.element(/* None */0, /* None */0, Grid$PhotoManager.make(/* Some */[true], (function (param) {
+                                                                        return cellRenderer(partial_arg, thumbedImageSlugs, grid, marginCls, param);
+                                                                      }), /* Some */[Css.style(/* :: */[
                                                                             Css.margin2(Css.px(0), Css.px(gridMargin)),
                                                                             /* :: */[
                                                                               Css.outlineStyle(/* none */-922086728),
                                                                               /* [] */0
                                                                             ]
-                                                                          ])], (function (param) {
-                                                                        return cellRenderer(partial_arg, thumbedImageSlugs, grid, marginCls, param);
-                                                                      }), columns$1, cellWidth, windowHeight, /* Some */[isScrolling], /* Some */[onChildScroll], List.length(grid), 325, /* Some */[scrollTop], gridWidth, /* array */[]));
+                                                                          ])], columns$1, cellWidth, windowHeight, /* Some */[isScrolling], /* Some */[onChildScroll], /* None */0, /* Some */[5], List.length(grid), 325, /* Some */[scrollTop], gridWidth, /* array */[]));
                                                     }))), ReasonReact.element(/* None */0, /* None */0, PhotoSwipe$PhotoManager.make(/* Some */[self[/* state */1][/* lightboxIsOpen */0]], $$Array.of_list(swipeImages), (function () {
                                                       return Curry._1(self[/* send */3], /* CloseLightbox */0);
                                                     }), swipeOptions, /* array */[])));

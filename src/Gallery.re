@@ -94,12 +94,16 @@ let cellRenderer =
     | cell =>
       switch (cell) {
       | `CompleteImage(image) =>
+        /* If thumbnail isn't loaded, call load more */
+        switch (image##thumbnail) {
+        | Some(_) => ()
+        | None => addFunc(thumbedImageSlugs, image##slug, send)
+        };
         <div style key>
           <div className=marginCls>
             <GalleryImage
               key
               slug=image##slug
-              onEnter=(() => addFunc(thumbedImageSlugs, image##slug, send))
               handleOpen=(
                 _event => {
                   Console.time("find-index");
@@ -116,7 +120,7 @@ let cellRenderer =
               rating=image##rating
             />
           </div>
-        </div>
+        </div>;
       | `CompleteGallery(gallery) =>
         <div style key>
           <div className=marginCls>
@@ -257,12 +261,6 @@ let make =
                           ]);
                         <Grid
                           autoHeight=true
-                          className=(
-                            style([
-                              margin2(~v=px(0), ~h=px(gridMargin)),
-                              outlineStyle(`none),
-                            ])
-                          )
                           cellRenderer=(
                             cellRenderer(
                               self.send,
@@ -271,14 +269,21 @@ let make =
                               marginCls,
                             )
                           )
+                          className=(
+                            style([
+                              margin2(~v=px(0), ~h=px(gridMargin)),
+                              outlineStyle(`none),
+                            ])
+                          )
                           columnCount=columns
                           columnWidth=cellWidth
                           height=windowHeight
                           isScrolling
                           onScroll=onChildScroll
-                          scrollTop
+                          overscanRowCount=5
                           rowCount=(List.length(grid))
                           rowHeight=325
+                          scrollTop
                           width=gridWidth
                         />;
                       }

@@ -6,7 +6,6 @@ import * as ReasonReact from "../node_modules/reason-react/src/ReasonReact.js";
 import * as Stars$PhotoManager from "./Stars.bs.js";
 import * as GalleryItem$PhotoManager from "./GalleryItem.bs.js";
 import * as CircleLoader$PhotoManager from "./CircleLoader.bs.js";
-import * as WaypointItem$PhotoManager from "./WaypointItem.bs.js";
 
 var component = ReasonReact.statelessComponent("GalleryItem");
 
@@ -34,7 +33,7 @@ function cls(w, h) {
             ]);
 }
 
-function make(onEnter, name, slug, thumbnail, rating, handleOpen, _) {
+function make(name, slug, thumbnail, rating, handleOpen, _) {
   return /* record */[
           /* debugName */component[/* debugName */0],
           /* reactClassInternal */component[/* reactClassInternal */1],
@@ -46,37 +45,33 @@ function make(onEnter, name, slug, thumbnail, rating, handleOpen, _) {
           /* willUpdate */component[/* willUpdate */7],
           /* shouldUpdate */component[/* shouldUpdate */8],
           /* render */(function () {
-              var tmp;
-              if (thumbnail) {
-                var thumb = thumbnail[0];
-                tmp = ReasonReact.element(/* None */0, /* None */0, GalleryItem$PhotoManager.make(/* Some */[true], (function (wrapClass, detailsClass) {
-                            return React.createElement("div", {
-                                        className: wrapClass,
-                                        onClick: handleOpen
-                                      }, React.createElement("img", {
-                                            className: imgCls,
-                                            height: "225",
-                                            src: thumb,
-                                            width: "300"
-                                          }), React.createElement("div", {
-                                            className: detailsClass
-                                          }, React.createElement("div", undefined, name), ReasonReact.element(/* None */0, /* None */0, Stars$PhotoManager.make(slug, rating, /* array */[]))));
-                          })));
-              } else {
-                tmp = ReasonReact.element(/* None */0, /* None */0, WaypointItem$PhotoManager.make(onEnter, name, slug, thumbnail, rating, (function () {
-                            return ReasonReact.element(/* None */0, /* None */0, GalleryItem$PhotoManager.make(/* Some */[true], (function (wrapClass, detailsClass) {
-                                              return React.createElement("div", {
-                                                          className: wrapClass,
-                                                          onClick: handleOpen
-                                                        }, ReasonReact.element(/* None */0, /* None */0, CircleLoader$PhotoManager.make(/* array */[])), React.createElement("div", {
-                                                              className: detailsClass
-                                                            }, React.createElement("div", undefined, name), ReasonReact.element(/* None */0, /* None */0, Stars$PhotoManager.make(slug, rating, /* array */[]))));
-                                            })));
-                          })));
-              }
               return React.createElement("div", {
                           className: cls(300, 295)
-                        }, tmp);
+                        }, ReasonReact.element(/* None */0, /* None */0, GalleryItem$PhotoManager.make(/* Some */[true], (function (wrapClass, detailsClass) {
+                                    if (thumbnail) {
+                                      var thumb = thumbnail[0];
+                                      return ReasonReact.element(/* None */0, /* None */0, GalleryItem$PhotoManager.make(/* Some */[true], (function (wrapClass, detailsClass) {
+                                                        return React.createElement("div", {
+                                                                    className: wrapClass,
+                                                                    onClick: handleOpen
+                                                                  }, React.createElement("img", {
+                                                                        className: imgCls,
+                                                                        height: "225",
+                                                                        src: thumb,
+                                                                        width: "300"
+                                                                      }), React.createElement("div", {
+                                                                        className: detailsClass
+                                                                      }, React.createElement("div", undefined, name), ReasonReact.element(/* None */0, /* None */0, Stars$PhotoManager.make(slug, rating, /* array */[]))));
+                                                      })));
+                                    } else {
+                                      return React.createElement("div", {
+                                                  className: wrapClass,
+                                                  onClick: handleOpen
+                                                }, ReasonReact.element(/* None */0, /* None */0, CircleLoader$PhotoManager.make(/* array */[])), React.createElement("div", {
+                                                      className: detailsClass
+                                                    }, React.createElement("div", undefined, name), ReasonReact.element(/* None */0, /* None */0, Stars$PhotoManager.make(slug, rating, /* array */[]))));
+                                    }
+                                  }))));
             }),
           /* initialState */component[/* initialState */10],
           /* retainedProps */component[/* retainedProps */11],
