@@ -64,7 +64,7 @@ Css.$$global("body, html", /* :: */[
 
 ((require('react-photoswipe/dist/photoswipe.css')));
 
-ReactDOMRe.renderToElementWithId(ReasonReact.element(/* None */0, /* None */0, ApolloProvider.make(Client$PhotoManager.instance, /* array */[ReasonReact.element(/* None */0, /* None */0, App$PhotoManager.make(/* array */[]))])), "root");
+ReactDOMRe.renderToElementWithId(ReasonReact.element(/* None */0, /* None */0, ApolloProvider.make(Client$PhotoManager.instance, /* array */[ReasonReact.element(/* None */0, /* None */0, App$PhotoManager.make(/* array */[]))])), "app-root");
 
 ReasonReact.Router[/* push */0]("");
 
