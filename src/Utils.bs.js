@@ -21,34 +21,34 @@ function sortBy(func, array) {
 }
 
 function chunkList(size, list) {
-  return List.fold_left((function (acc, item) {
-                var match = acc ? /* tuple */[
-                    acc[0],
-                    acc[1]
-                  ] : /* tuple */[
-                    /* [] */0,
-                    /* [] */0
-                  ];
-                var lastChunk = match[0];
-                var length = List.length(lastChunk);
-                if (length < size) {
-                  return /* :: */[
-                          /* :: */[
-                            item,
-                            lastChunk
-                          ],
-                          match[1]
-                        ];
-                } else {
-                  return /* :: */[
-                          /* :: */[
-                            item,
+  return List.rev(List.map(List.rev, List.fold_left((function (acc, item) {
+                        var match = acc ? /* tuple */[
+                            acc[0],
+                            acc[1]
+                          ] : /* tuple */[
+                            /* [] */0,
                             /* [] */0
-                          ],
-                          acc
-                        ];
-                }
-              }), /* [] */0, list);
+                          ];
+                        var lastChunk = match[0];
+                        var length = List.length(lastChunk);
+                        if (length < size) {
+                          return /* :: */[
+                                  /* :: */[
+                                    item,
+                                    lastChunk
+                                  ],
+                                  match[1]
+                                ];
+                        } else {
+                          return /* :: */[
+                                  /* :: */[
+                                    item,
+                                    /* [] */0
+                                  ],
+                                  acc
+                                ];
+                        }
+                      }), /* [] */0, list)));
 }
 
 function chunkArray(size, array) {

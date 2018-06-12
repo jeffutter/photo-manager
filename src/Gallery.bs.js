@@ -255,7 +255,7 @@ function make($staropt$star, $staropt$star$1, $staropt$star$2, $staropt$star$3, 
                                                       var gridWidth = Caml_int32.imul(cellWidth, columns$1);
                                                       var gridMargin = (parentWidth - gridWidth | 0) / 2 | 0;
                                                       var cellPadding = (cellWidth - 300 | 0) / 2 | 0;
-                                                      var grid = List.rev(List.map(List.rev, Utils$PhotoManager.chunkList(columns$1, $$Array.to_list(self[/* state */1][/* descendants */4]))));
+                                                      var grid = Utils$PhotoManager.chunkList(columns$1, $$Array.to_list(self[/* state */1][/* descendants */4]));
                                                       var marginCls = Css.style(/* :: */[
                                                             Css.position(/* relative */903134412),
                                                             /* :: */[

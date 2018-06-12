@@ -29,7 +29,9 @@ let chunkList = (size, list) =>
     },
     [],
     list,
-  );
+  )
+  |> List.map(chunk => chunk |> List.rev)
+  |> List.rev;
 
 let chunkArray = (size, array) =>
   array |> Array.to_list |> chunkList(size) |> List.rev |> Array.of_list;

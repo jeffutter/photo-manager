@@ -32,17 +32,21 @@
     "start": "concurrently \"bsb -make-world -w\" \"NODE_ENV=development webpack-dev-server --open\"",
     "start:hot": "concurrently \"bsb -make-world -w\" \"NODE_ENV=development webpack-dev-server --hot --open\"",
     "clean": "bsb -clean-world",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "bsb -make-world && jest",
     "webpack": "NODE_ENV=development webpack -w",
     "webpack:production": "bsb -clean-world && bsb -make-world && PUBLIC_URL='' NODE_ENV=production webpack && cp -Rp public/* build/ && rm -rf apps/photo_management_api_web/priv/static/* && cp -Rp build/* apps/photo_management_api_web/priv/static"
   },
   "devDependencies": {
+    "@babel/core": "^7.0.0-beta.49",
     "@glennsl/bs-jest": "^0.4.2",
     "autoprefixer": "^8.2.0",
+    "babel-core": "^7.0.0-0",
     "babel-eslint": "^8.2.2",
+    "babel-jest": "^23.0.1",
     "babel-loader": "^8.0.0-beta.2",
     "babel-plugin-graphql-tag": "^1.5.0",
     "babel-plugin-named-asset-import": "^1.0.0-next.66cc7a90",
+    "babel-preset-env": "^1.7.0",
     "babel-preset-react-app": "^4.0.0-next.66cc7a90",
     "brotli-webpack-plugin": "^1.0.0",
     "bs-css": "7.0.1",
@@ -84,6 +88,11 @@
       "last 4 versions",
       "Firefox ESR",
       "not ie < 11"
+    ]
+  },
+  "jest": {
+    "transformIgnorePatterns": [
+      "node_modules/(?!(@glennsl|bs-platform)/)"
     ]
   }
 }

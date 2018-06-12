@@ -4,38 +4,158 @@ import * as Jest from "../node_modules/@glennsl/bs-jest/src/jest.js";
 import * as Utils$PhotoManager from "../src/Utils.bs.js";
 
 describe("chunkList", (function () {
-        return Jest.test("chunk by 1", (function () {
-                      return Jest.Expect[/* toBe */2](/* :: */[
+        Jest.test("chunk by 1", (function () {
+                return Jest.Expect[/* toEqual */12](/* :: */[
+                            /* :: */[
+                              1,
+                              /* [] */0
+                            ],
+                            /* :: */[
+                              /* :: */[
+                                2,
+                                /* [] */0
+                              ],
+                              /* :: */[
+                                /* :: */[
+                                  3,
+                                  /* [] */0
+                                ],
+                                /* :: */[
                                   /* :: */[
-                                    1,
+                                    4,
                                     /* [] */0
                                   ],
                                   /* :: */[
                                     /* :: */[
-                                      2,
+                                      5,
                                       /* [] */0
                                     ],
+                                    /* [] */0
+                                  ]
+                                ]
+                              ]
+                            ]
+                          ], Jest.Expect[/* expect */0](Utils$PhotoManager.chunkList(1, /* :: */[
+                                    1,
                                     /* :: */[
+                                      2,
                                       /* :: */[
                                         3,
-                                        /* [] */0
-                                      ],
-                                      /* :: */[
                                         /* :: */[
                                           4,
-                                          /* [] */0
-                                        ],
-                                        /* :: */[
                                           /* :: */[
                                             5,
                                             /* [] */0
-                                          ],
+                                          ]
+                                        ]
+                                      ]
+                                    ]
+                                  ])));
+              }));
+        Jest.test("chunk by 2", (function () {
+                return Jest.Expect[/* toEqual */12](/* :: */[
+                            /* :: */[
+                              1,
+                              /* :: */[
+                                2,
+                                /* [] */0
+                              ]
+                            ],
+                            /* :: */[
+                              /* :: */[
+                                3,
+                                /* :: */[
+                                  4,
+                                  /* [] */0
+                                ]
+                              ],
+                              /* :: */[
+                                /* :: */[
+                                  5,
+                                  /* [] */0
+                                ],
+                                /* [] */0
+                              ]
+                            ]
+                          ], Jest.Expect[/* expect */0](Utils$PhotoManager.chunkList(2, /* :: */[
+                                    1,
+                                    /* :: */[
+                                      2,
+                                      /* :: */[
+                                        3,
+                                        /* :: */[
+                                          4,
+                                          /* :: */[
+                                            5,
+                                            /* [] */0
+                                          ]
+                                        ]
+                                      ]
+                                    ]
+                                  ])));
+              }));
+        Jest.test("chunk by 3", (function () {
+                return Jest.Expect[/* toEqual */12](/* :: */[
+                            /* :: */[
+                              1,
+                              /* :: */[
+                                2,
+                                /* :: */[
+                                  3,
+                                  /* [] */0
+                                ]
+                              ]
+                            ],
+                            /* :: */[
+                              /* :: */[
+                                4,
+                                /* :: */[
+                                  5,
+                                  /* [] */0
+                                ]
+                              ],
+                              /* [] */0
+                            ]
+                          ], Jest.Expect[/* expect */0](Utils$PhotoManager.chunkList(3, /* :: */[
+                                    1,
+                                    /* :: */[
+                                      2,
+                                      /* :: */[
+                                        3,
+                                        /* :: */[
+                                          4,
+                                          /* :: */[
+                                            5,
+                                            /* [] */0
+                                          ]
+                                        ]
+                                      ]
+                                    ]
+                                  ])));
+              }));
+        return Jest.test("chunk by 4", (function () {
+                      return Jest.Expect[/* toEqual */12](/* :: */[
+                                  /* :: */[
+                                    1,
+                                    /* :: */[
+                                      2,
+                                      /* :: */[
+                                        3,
+                                        /* :: */[
+                                          4,
                                           /* [] */0
                                         ]
                                       ]
                                     ]
+                                  ],
+                                  /* :: */[
+                                    /* :: */[
+                                      5,
+                                      /* [] */0
+                                    ],
+                                    /* [] */0
                                   ]
-                                ], Jest.Expect[/* expect */0](Utils$PhotoManager.chunkList(1, /* :: */[
+                                ], Jest.Expect[/* expect */0](Utils$PhotoManager.chunkList(4, /* :: */[
                                           1,
                                           /* :: */[
                                             2,

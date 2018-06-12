@@ -248,9 +248,7 @@ let make =
                         let grid =
                           self.state.descendants
                           |> Array.to_list
-                          |> Utils.chunkList(columns)
-                          |> List.map(list => List.rev(list))
-                          |> List.rev;
+                          |> Utils.chunkList(columns);
                         let marginCls =
                           style([
                             position(`relative),
