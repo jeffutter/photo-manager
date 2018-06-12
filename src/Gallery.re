@@ -223,12 +223,6 @@ let make =
     Console.timeEnd("gallery-swipe");
     Console.timeEnd("gallery");
     let swipeOptions = {"index": self.state.currentImage};
-    let grid =
-      self.state.descendants
-      |> Array.to_list
-      |> Utils.chunkList(4)
-      |> List.map(list => List.rev(list))
-      |> List.rev;
     <WindowScroller>
       ...(
            windowScrollerOptions => {
@@ -251,6 +245,12 @@ let make =
                         let gridWidth = cellWidth * columns;
                         let gridMargin = (parentWidth - gridWidth) / 2;
                         let cellPadding = (cellWidth - imageWidth) / 2;
+                        let grid =
+                          self.state.descendants
+                          |> Array.to_list
+                          |> Utils.chunkList(columns)
+                          |> List.map(list => List.rev(list))
+                          |> List.rev;
                         let marginCls =
                           style([
                             position(`relative),
