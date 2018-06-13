@@ -6,18 +6,12 @@ import * as $$Array from "../node_modules/bs-platform/lib/es6/array.js";
 import * as Block from "../node_modules/bs-platform/lib/es6/block.js";
 import * as Curry from "../node_modules/bs-platform/lib/es6/curry.js";
 import * as React from "react";
-import * as Js_exn from "../node_modules/bs-platform/lib/es6/js_exn.js";
 import * as Caml_obj from "../node_modules/bs-platform/lib/es6/caml_obj.js";
-import * as Caml_int32 from "../node_modules/bs-platform/lib/es6/caml_int32.js";
 import * as ReasonReact from "../node_modules/reason-react/src/ReasonReact.js";
-import * as Grid$PhotoManager from "./Grid.bs.js";
 import * as Utils$PhotoManager from "./Utils.bs.js";
-import * as AutoSizer$PhotoManager from "./AutoSizer.bs.js";
-import * as Caml_builtin_exceptions from "../node_modules/bs-platform/lib/es6/caml_builtin_exceptions.js";
 import * as PhotoSwipe$PhotoManager from "./PhotoSwipe.bs.js";
 import * as BreadCrumbs$PhotoManager from "./BreadCrumbs.bs.js";
-import * as GalleryImage$PhotoManager from "./GalleryImage.bs.js";
-import * as GalleryThumb$PhotoManager from "./GalleryThumb.bs.js";
+import * as GalleryBody$PhotoManager from "./GalleryBody.bs.js";
 import * as WindowScroller$PhotoManager from "./WindowScroller.bs.js";
 
 var component = ReasonReact.reducerComponent("Gallery");
@@ -74,7 +68,7 @@ function splitDescendants(_param, _descendants) {
   };
 }
 
-function addFunc(thumbedImageSlugs, slug, send) {
+function addFunc(send, thumbedImageSlugs, slug) {
   var slugHasThumb = List.exists((function (imageSlug) {
           return slug === imageSlug;
         }), thumbedImageSlugs);
@@ -85,99 +79,9 @@ function addFunc(thumbedImageSlugs, slug, send) {
   }
 }
 
-function columns(width) {
-  if (width > 2000 || width > 1750) {
-    return 5;
-  } else if (width > 1400) {
-    return 4;
-  } else if (width > 1050) {
-    return 3;
-  } else if (width > 700) {
-    return 2;
-  } else {
-    return 1;
-  }
-}
-
-function gutter(width) {
-  if (width > 2000) {
-    return 100;
-  } else {
-    return 50;
-  }
-}
-
-function cellRenderer(send, thumbedImageSlugs, grid, marginCls, options) {
-  var columnIndex = options.columnIndex;
-  var rowIndex = options.rowIndex;
-  var key = options.key;
-  var style = options.style;
-  var exit = 0;
-  var row;
-  try {
-    row = List.nth(grid, rowIndex);
-    exit = 1;
-  }
-  catch (raw_exn){
-    var exn = Js_exn.internalToOCamlException(raw_exn);
-    if (exn[0] === Caml_builtin_exceptions.failure) {
-      return React.createElement("div", {
-                  key: key,
-                  style: style
-                });
-    } else {
-      throw exn;
-    }
-  }
-  if (exit === 1) {
-    var exit$1 = 0;
-    var cell;
-    try {
-      cell = List.nth(row, columnIndex);
-      exit$1 = 2;
-    }
-    catch (raw_exn$1){
-      var exn$1 = Js_exn.internalToOCamlException(raw_exn$1);
-      if (exn$1[0] === Caml_builtin_exceptions.failure) {
-        return React.createElement("div", {
-                    key: key,
-                    style: style
-                  });
-      } else {
-        throw exn$1;
-      }
-    }
-    if (exit$1 === 2) {
-      if (cell[0] >= 121710777) {
-        var gallery = cell[1];
-        return React.createElement("div", {
-                    key: key,
-                    style: style
-                  }, React.createElement("div", {
-                        className: marginCls
-                      }, ReasonReact.element(/* Some */[key], /* None */0, GalleryThumb$PhotoManager.make(gallery.name, gallery.slug, /* array */[]))));
-      } else {
-        var image = cell[1];
-        var match = image.thumbnail;
-        if (!match) {
-          addFunc(thumbedImageSlugs, image.slug, send);
-        }
-        return React.createElement("div", {
-                    key: key,
-                    style: style
-                  }, React.createElement("div", {
-                        className: marginCls
-                      }, ReasonReact.element(/* Some */[key], /* None */0, GalleryImage$PhotoManager.make(image.name, image.slug, image.thumbnail, image.rating, (function () {
-                                  console.time("find-index");
-                                  var index = $$Array.of_list(thumbedImageSlugs).indexOf(image.slug);
-                                  console.timeEnd("find-index");
-                                  return Curry._1(send, /* OpenLightbox */Block.__(0, [index]));
-                                }), /* array */[]))));
-      }
-    }
-    
-  }
-  
+function openLightboxFunc(send, thumbedImageSlugs, slug) {
+  var index = $$Array.of_list(thumbedImageSlugs).indexOf(slug);
+  return Curry._1(send, /* OpenLightbox */Block.__(0, [index]));
 }
 
 function make($staropt$star, $staropt$star$1, $staropt$star$2, $staropt$star$3, loadNextPage, _) {
@@ -213,15 +117,11 @@ function make($staropt$star, $staropt$star$1, $staropt$star$2, $staropt$star$3, 
               }
             }),
           /* render */(function (self) {
-              console.time("gallery");
-              console.time("gallery-split");
               var match = splitDescendants(/* tuple */[
                     /* [] */0,
                     /* [] */0
                   ], $$Array.to_list(self[/* state */1][/* descendants */4]));
               var thumbedImageSlugs = match[0];
-              console.timeEnd("gallery-split");
-              console.time("gallery-swipe");
               var swipeImages = List.map((function (image) {
                       return {
                               src: image.largeUrl,
@@ -231,16 +131,22 @@ function make($staropt$star, $staropt$star$1, $staropt$star$2, $staropt$star$3, 
                               title: image.name
                             };
                     }), match[1]);
-              console.timeEnd("gallery-swipe");
-              console.timeEnd("gallery");
               var swipeOptions = {
                 index: self[/* state */1][/* currentImage */1]
               };
               return ReasonReact.element(/* None */0, /* None */0, WindowScroller$PhotoManager.make((function (windowScrollerOptions) {
                                 var windowHeight = windowScrollerOptions.height;
                                 var isScrolling = windowScrollerOptions.isScrolling;
-                                var onChildScroll = windowScrollerOptions.onChildScroll;
+                                var onScroll = windowScrollerOptions.onChildScroll;
                                 var scrollTop = windowScrollerOptions.scrollTop;
+                                var partial_arg = self[/* send */3];
+                                var openLightbox = function (param) {
+                                  return openLightboxFunc(partial_arg, thumbedImageSlugs, param);
+                                };
+                                var partial_arg$1 = self[/* send */3];
+                                var loadImage = function (param) {
+                                  return addFunc(partial_arg$1, thumbedImageSlugs, param);
+                                };
                                 return React.createElement("div", {
                                             className: Css.style(/* :: */[
                                                   Css.position(/* relative */903134412),
@@ -249,36 +155,7 @@ function make($staropt$star, $staropt$star$1, $staropt$star$2, $staropt$star$3, 
                                                     /* [] */0
                                                   ]
                                                 ])
-                                          }, ReasonReact.element(/* None */0, /* None */0, BreadCrumbs$PhotoManager.make(path, slug, name, /* array */[])), ReasonReact.element(/* None */0, /* None */0, AutoSizer$PhotoManager.make(/* None */0, /* None */0, /* None */0, /* Some */[true], /* None */0, (function (size) {
-                                                      var parentWidth = size.width;
-                                                      var columns$1 = columns(parentWidth);
-                                                      var gutter$1 = gutter(parentWidth);
-                                                      var cellWidth = 300 + gutter$1 | 0;
-                                                      var gridWidth = Caml_int32.imul(cellWidth, columns$1);
-                                                      var gridMargin = (parentWidth - gridWidth | 0) / 2 | 0;
-                                                      var cellPadding = (cellWidth - 300 | 0) / 2 | 0;
-                                                      var grid = Utils$PhotoManager.chunkList(columns$1, $$Array.to_list(self[/* state */1][/* descendants */4]));
-                                                      var marginCls = Css.style(/* :: */[
-                                                            Css.position(/* relative */903134412),
-                                                            /* :: */[
-                                                              Css.top(Css.px(10)),
-                                                              /* :: */[
-                                                                Css.left(Css.px(cellPadding)),
-                                                                /* [] */0
-                                                              ]
-                                                            ]
-                                                          ]);
-                                                      var partial_arg = self[/* send */3];
-                                                      return ReasonReact.element(/* None */0, /* None */0, Grid$PhotoManager.make(/* Some */[true], (function (param) {
-                                                                        return cellRenderer(partial_arg, thumbedImageSlugs, grid, marginCls, param);
-                                                                      }), /* Some */[Css.style(/* :: */[
-                                                                            Css.margin2(Css.px(0), Css.px(gridMargin)),
-                                                                            /* :: */[
-                                                                              Css.outlineStyle(/* none */-922086728),
-                                                                              /* [] */0
-                                                                            ]
-                                                                          ])], columns$1, cellWidth, windowHeight, /* Some */[isScrolling], /* Some */[onChildScroll], /* None */0, /* Some */[5], List.length(grid), 325, /* Some */[scrollTop], gridWidth, /* array */[]));
-                                                    }))), ReasonReact.element(/* None */0, /* None */0, PhotoSwipe$PhotoManager.make(/* Some */[self[/* state */1][/* lightboxIsOpen */0]], $$Array.of_list(swipeImages), (function () {
+                                          }, ReasonReact.element(/* None */0, /* None */0, BreadCrumbs$PhotoManager.make(path, slug, name, /* array */[])), ReasonReact.element(/* None */0, /* None */0, GalleryBody$PhotoManager.make(/* Some */[self[/* state */1][/* descendants */4]], openLightbox, loadImage, windowHeight, isScrolling, onScroll, scrollTop, /* array */[])), ReasonReact.element(/* None */0, /* None */0, PhotoSwipe$PhotoManager.make(/* Some */[self[/* state */1][/* lightboxIsOpen */0]], $$Array.of_list(swipeImages), (function () {
                                                       return Curry._1(self[/* send */3], /* CloseLightbox */0);
                                                     }), swipeOptions, /* array */[])));
                               })));
@@ -370,19 +247,11 @@ function make($staropt$star, $staropt$star$1, $staropt$star$2, $staropt$star$3, 
         ];
 }
 
-var imageWidth = 300;
-
-var baseGutter = 50;
-
 export {
   component ,
   splitDescendants ,
   addFunc ,
-  imageWidth ,
-  baseGutter ,
-  columns ,
-  gutter ,
-  cellRenderer ,
+  openLightboxFunc ,
   make ,
   
 }

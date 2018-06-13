@@ -43,7 +43,7 @@ let rec splitDescendants =
     }
   };
 
-let addFunc = (thumbedImageSlugs, slug, send) => {
+let addFunc = (send, thumbedImageSlugs, slug) => {
   let slugHasThumb =
     List.exists(imageSlug => slug == imageSlug, thumbedImageSlugs);
   switch (slugHasThumb) {
@@ -52,86 +52,9 @@ let addFunc = (thumbedImageSlugs, slug, send) => {
   };
 };
 
-let imageWidth = 300;
-
-let baseGutter = 50;
-
-let columns = (width: int) : int =>
-  switch (width) {
-  | w when w > 5 * (imageWidth + baseGutter * 2) => 5
-  | w when w > 5 * (imageWidth + baseGutter) => 5
-  | w when w > 4 * (imageWidth + baseGutter) => 4
-  | w when w > 3 * (imageWidth + baseGutter) => 3
-  | w when w > 2 * (imageWidth + baseGutter) => 2
-  | _ => 1
-  };
-
-let gutter = (width: int) : int =>
-  switch (width) {
-  | w when w > 5 * (imageWidth + baseGutter * 2) => baseGutter * 2
-  | w when w > 5 * (imageWidth + baseGutter) => baseGutter
-  | w when w > 4 * (imageWidth + baseGutter) => baseGutter
-  | w when w > 3 * (imageWidth + baseGutter) => baseGutter
-  | w when w > 2 * (imageWidth + baseGutter) => baseGutter
-  | _ => baseGutter
-  };
-
-let cellRenderer =
-    (
-      send,
-      thumbedImageSlugs,
-      grid,
-      marginCls: string,
-      options: Grid.cellRenderOptions,
-    ) => {
-  let columnIndex = options |. Grid.columnIndex;
-  let rowIndex = options |. Grid.rowIndex;
-  let key = options |. Grid.key;
-  let style = options |. Grid.style;
-  switch (List.nth(grid, rowIndex)) {
-  | row =>
-    switch (List.nth(row, columnIndex)) {
-    | cell =>
-      switch (cell) {
-      | `CompleteImage(image) =>
-        /* If thumbnail isn't loaded, call load more */
-        switch (image##thumbnail) {
-        | Some(_) => ()
-        | None => addFunc(thumbedImageSlugs, image##slug, send)
-        };
-        <div style key>
-          <div className=marginCls>
-            <GalleryImage
-              key
-              slug=image##slug
-              handleOpen=(
-                _event => {
-                  Console.time("find-index");
-                  let index =
-                    thumbedImageSlugs
-                    |> Array.of_list
-                    |> Js.Array.indexOf(image##slug);
-                  Console.timeEnd("find-index");
-                  send(OpenLightbox(index));
-                }
-              )
-              thumbnail=image##thumbnail
-              name=image##name
-              rating=image##rating
-            />
-          </div>
-        </div>;
-      | `CompleteGallery(gallery) =>
-        <div style key>
-          <div className=marginCls>
-            <GalleryThumb key name=gallery##name slug=gallery##slug />
-          </div>
-        </div>
-      }
-    | exception (Failure(_)) => <div key style />
-    }
-  | exception (Failure(_)) => <div key style />
-  };
+let openLightboxFunc = (send, thumbedImageSlugs, slug) => {
+  let index = thumbedImageSlugs |> Array.of_list |> Js.Array.indexOf(slug);
+  send(OpenLightbox(index));
 };
 
 let make =
@@ -207,12 +130,8 @@ let make =
     || oldState.currentImage != newState.currentImage,
   willReceiveProps: ({state}) => {...state, descendants},
   render: self => {
-    Console.time("gallery");
-    Console.time("gallery-split");
     let (thumbedImageSlugs, images) =
       self.state.descendants |> Array.to_list |> splitDescendants(([], []));
-    Console.timeEnd("gallery-split");
-    Console.time("gallery-swipe");
     let swipeImages =
       List.map(
         (image: GalleryQueries.completeImage) => {
@@ -224,8 +143,6 @@ let make =
         },
         images,
       );
-    Console.timeEnd("gallery-swipe");
-    Console.timeEnd("gallery");
     let swipeOptions = {"index": self.state.currentImage};
     <WindowScroller>
       ...(
@@ -233,62 +150,24 @@ let make =
              let windowHeight = windowScrollerOptions |. WindowScroller.height;
              let isScrolling =
                windowScrollerOptions |. WindowScroller.isScrolling;
-             let onChildScroll =
+             let onScroll =
                windowScrollerOptions |. WindowScroller.onChildScroll;
              let scrollTop = windowScrollerOptions |. WindowScroller.scrollTop;
+             let openLightbox =
+               openLightboxFunc(self.send, thumbedImageSlugs);
+             let loadImage = addFunc(self.send, thumbedImageSlugs);
              <div
                className=(style([position(`relative), height(pct(100.0))]))>
                <BreadCrumbs slug path name />
-               <AutoSizer disableHeight=true>
-                 ...(
-                      size => {
-                        let parentWidth = size |. AutoSizer.width;
-                        let columns = columns(parentWidth);
-                        let gutter = gutter(parentWidth);
-                        let cellWidth = imageWidth + gutter;
-                        let gridWidth = cellWidth * columns;
-                        let gridMargin = (parentWidth - gridWidth) / 2;
-                        let cellPadding = (cellWidth - imageWidth) / 2;
-                        let grid =
-                          self.state.descendants
-                          |> Array.to_list
-                          |> Utils.chunkList(columns);
-                        let marginCls =
-                          style([
-                            position(`relative),
-                            top(px(10)),
-                            left(px(cellPadding)),
-                          ]);
-                        <Grid
-                          autoHeight=true
-                          cellRenderer=(
-                            cellRenderer(
-                              self.send,
-                              thumbedImageSlugs,
-                              grid,
-                              marginCls,
-                            )
-                          )
-                          className=(
-                            style([
-                              margin2(~v=px(0), ~h=px(gridMargin)),
-                              outlineStyle(`none),
-                            ])
-                          )
-                          columnCount=columns
-                          columnWidth=cellWidth
-                          height=windowHeight
-                          isScrolling
-                          onScroll=onChildScroll
-                          overscanRowCount=5
-                          rowCount=(List.length(grid))
-                          rowHeight=325
-                          scrollTop
-                          width=gridWidth
-                        />;
-                      }
-                    )
-               </AutoSizer>
+               <GalleryBody
+                 windowHeight
+                 openLightbox
+                 isScrolling
+                 onScroll
+                 scrollTop
+                 descendants=self.state.descendants
+                 loadImage
+               />
                <PhotoSwipe
                  isOpen=self.state.lightboxIsOpen
                  items=(Array.of_list(swipeImages))
