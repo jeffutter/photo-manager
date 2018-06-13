@@ -80,29 +80,26 @@ function cellRenderer(loadImage, openLightbox, grid, marginCls, options) {
       }
     }
     if (exit$1 === 2) {
+      var tmp;
       if (cell[0] >= 121710777) {
         var gallery = cell[1];
-        return React.createElement("div", {
-                    key: key,
-                    style: style
-                  }, React.createElement("div", {
-                        className: marginCls
-                      }, ReasonReact.element(/* Some */[key], /* None */0, GalleryThumb$PhotoManager.make(gallery.name, gallery.slug, /* array */[]))));
+        tmp = ReasonReact.element(/* Some */[key], /* None */0, GalleryThumb$PhotoManager.make(gallery.name, gallery.slug, /* array */[]));
       } else {
         var image = cell[1];
         var match = image.thumbnail;
         if (!match) {
           Curry._1(loadImage, image.slug);
         }
-        return React.createElement("div", {
-                    key: key,
-                    style: style
-                  }, React.createElement("div", {
-                        className: marginCls
-                      }, ReasonReact.element(/* Some */[key], /* None */0, GalleryImage$PhotoManager.make(image.name, image.slug, image.thumbnail, image.rating, (function () {
-                                  return Curry._1(openLightbox, image.slug);
-                                }), /* array */[]))));
+        tmp = ReasonReact.element(/* Some */[key], /* None */0, GalleryImage$PhotoManager.make(image.name, image.slug, image.thumbnail, image.rating, (function () {
+                    return Curry._1(openLightbox, image.slug);
+                  }), /* array */[]));
       }
+      return React.createElement("div", {
+                  key: key,
+                  style: style
+                }, React.createElement("div", {
+                      className: marginCls
+                    }, tmp));
     }
     
   }

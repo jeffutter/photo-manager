@@ -42,32 +42,30 @@ let cellRenderer =
   | row =>
     switch (List.nth(row, columnIndex)) {
     | cell =>
-      switch (cell) {
-      | `CompleteImage(image) =>
-        /* If thumbnail isn't loaded, call load more */
-        switch (image##thumbnail) {
-        | Some(_) => ()
-        | None => loadImage(image##slug)
-        };
-        <div style key>
-          <div className=marginCls>
-            <GalleryImage
-              key
-              slug=image##slug
-              handleOpen=(_event => openLightbox(image##slug))
-              thumbnail=image##thumbnail
-              name=image##name
-              rating=image##rating
-            />
-          </div>
-        </div>;
-      | `CompleteGallery(gallery) =>
-        <div style key>
-          <div className=marginCls>
-            <GalleryThumb key name=gallery##name slug=gallery##slug />
-          </div>
+      <div style key>
+        <div className=marginCls>
+          (
+            switch (cell) {
+            | `CompleteImage(image) =>
+              /* If thumbnail isn't loaded, call load more */
+              switch (image##thumbnail) {
+              | Some(_) => ()
+              | None => loadImage(image##slug)
+              };
+              <GalleryImage
+                key
+                slug=image##slug
+                handleOpen=(_event => openLightbox(image##slug))
+                thumbnail=image##thumbnail
+                name=image##name
+                rating=image##rating
+              />;
+            | `CompleteGallery(gallery) =>
+              <GalleryThumb key name=gallery##name slug=gallery##slug />
+            }
+          )
         </div>
-      }
+      </div>
     | exception (Failure(_)) => <div key style />
     }
   | exception (Failure(_)) => <div key style />
