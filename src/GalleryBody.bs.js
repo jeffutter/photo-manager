@@ -39,6 +39,23 @@ function gutter(width) {
   }
 }
 
+function cls(gridMargin) {
+  return Css.style(/* :: */[
+              Css.margin2(Css.px(0), Css.px(gridMargin)),
+              /* :: */[
+                Css.outlineStyle(/* none */-922086728),
+                /* [] */0
+              ]
+            ]);
+}
+
+function marginCls(cellPadding) {
+  return Css.style(/* :: */[
+              Css.margin4(Css.px(10), /* zero */-789508312, /* zero */-789508312, Css.px(cellPadding)),
+              /* [] */0
+            ]);
+}
+
 function cellRenderer(loadImage, openLightbox, grid, marginCls, options) {
   var columnIndex = options.columnIndex;
   var rowIndex = options.rowIndex;
@@ -96,12 +113,43 @@ function cellRenderer(loadImage, openLightbox, grid, marginCls, options) {
       }
       return React.createElement("div", {
                   key: key,
+                  className: marginCls,
                   style: style
-                }, React.createElement("div", {
-                      className: marginCls
-                    }, tmp));
+                }, tmp);
     }
     
+  }
+  
+}
+
+function rowHeight(grid, param) {
+  var exit = 0;
+  var row;
+  try {
+    row = List.nth(grid, param[/* index */0]);
+    exit = 1;
+  }
+  catch (raw_exn){
+    var exn = Js_exn.internalToOCamlException(raw_exn);
+    if (exn[0] === Caml_builtin_exceptions.failure) {
+      return 325;
+    } else {
+      throw exn;
+    }
+  }
+  if (exit === 1) {
+    var match = List.for_all((function (item) {
+            if (typeof item === "number") {
+              return false;
+            } else {
+              return item[0] === 121710777;
+            }
+          }), row);
+    if (match) {
+      return 300;
+    } else {
+      return 325;
+    }
   }
   
 }
@@ -129,25 +177,12 @@ function make($staropt$star, openLightbox, loadImage, windowHeight, isScrolling,
                                 var gridMargin = (parentWidth - gridWidth | 0) / 2 | 0;
                                 var cellPadding = (cellWidth - 300 | 0) / 2 | 0;
                                 var grid = Utils$PhotoManager.chunkList(columns$1, listDescendants);
-                                var marginCls = Css.style(/* :: */[
-                                      Css.position(/* relative */903134412),
-                                      /* :: */[
-                                        Css.top(Css.px(10)),
-                                        /* :: */[
-                                          Css.left(Css.px(cellPadding)),
-                                          /* [] */0
-                                        ]
-                                      ]
-                                    ]);
+                                var partial_arg = marginCls(cellPadding);
                                 return ReasonReact.element(/* None */0, /* None */0, Grid$PhotoManager.make(/* Some */[true], (function (param) {
-                                                  return cellRenderer(loadImage, openLightbox, grid, marginCls, param);
-                                                }), /* Some */[Css.style(/* :: */[
-                                                      Css.margin2(Css.px(0), Css.px(gridMargin)),
-                                                      /* :: */[
-                                                        Css.outlineStyle(/* none */-922086728),
-                                                        /* [] */0
-                                                      ]
-                                                    ])], columns$1, cellWidth, windowHeight, /* Some */[isScrolling], /* Some */[onScroll], /* None */0, /* Some */[5], List.length(grid), 325, /* Some */[scrollTop], gridWidth, /* array */[]));
+                                                  return cellRenderer(loadImage, openLightbox, grid, partial_arg, param);
+                                                }), /* Some */[cls(gridMargin)], columns$1, cellWidth, windowHeight, /* Some */[isScrolling], /* Some */[onScroll], /* None */0, /* Some */[5], List.length(grid), (function (param) {
+                                                  return rowHeight(grid, param);
+                                                }), /* Some */[scrollTop], gridWidth, /* array */[]));
                               })));
             }),
           /* initialState */component[/* initialState */10],
@@ -160,15 +195,24 @@ function make($staropt$star, openLightbox, loadImage, windowHeight, isScrolling,
 
 var imageWidth = 300;
 
+var imageHeight = 325;
+
+var galleryHeight = 300;
+
 var baseGutter = 50;
 
 export {
   component ,
   imageWidth ,
+  imageHeight ,
+  galleryHeight ,
   baseGutter ,
   columns ,
   gutter ,
+  cls ,
+  marginCls ,
   cellRenderer ,
+  rowHeight ,
   make ,
   
 }

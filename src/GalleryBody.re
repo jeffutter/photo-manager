@@ -4,6 +4,10 @@ let component = ReasonReact.statelessComponent("GalleryBody");
 
 let imageWidth = 300;
 
+let imageHeight = 325;
+
+let galleryHeight = 300;
+
 let baseGutter = 50;
 
 let columns = (width: int) : int =>
@@ -26,6 +30,19 @@ let gutter = (width: int) : int =>
   | _ => baseGutter
   };
 
+let cls = gridMargin =>
+  style([margin2(~v=px(0), ~h=px(gridMargin)), outlineStyle(`none)]);
+
+let marginCls = cellPadding =>
+  style([
+    margin4(
+      ~top=px(10),
+      ~right=`zero,
+      ~bottom=`zero,
+      ~left=px(cellPadding),
+    ),
+  ]);
+
 let cellRenderer =
     (
       loadImage,
@@ -42,35 +59,48 @@ let cellRenderer =
   | row =>
     switch (List.nth(row, columnIndex)) {
     | cell =>
-      <div style key>
-        <div className=marginCls>
-          (
-            switch (cell) {
-            | `CompleteImage(image) =>
-              /* If thumbnail isn't loaded, call load more */
-              switch (image##thumbnail) {
-              | Some(_) => ()
-              | None => loadImage(image##slug)
-              };
-              <GalleryImage
-                key
-                slug=image##slug
-                handleOpen=(_event => openLightbox(image##slug))
-                thumbnail=image##thumbnail
-                name=image##name
-                rating=image##rating
-              />;
-            | `CompleteGallery(gallery) =>
-              <GalleryThumb key name=gallery##name slug=gallery##slug />
-            }
-          )
-        </div>
+      <div style key className=marginCls>
+        (
+          switch (cell) {
+          | `CompleteImage(image) =>
+            /* If thumbnail isn't loaded, call load more */
+            switch (image##thumbnail) {
+            | Some(_) => ()
+            | None => loadImage(image##slug)
+            };
+            <GalleryImage
+              key
+              slug=image##slug
+              handleOpen=(_event => openLightbox(image##slug))
+              thumbnail=image##thumbnail
+              name=image##name
+              rating=image##rating
+            />;
+          | `CompleteGallery(gallery) =>
+            <GalleryThumb key name=gallery##name slug=gallery##slug />
+          }
+        )
       </div>
     | exception (Failure(_)) => <div key style />
     }
   | exception (Failure(_)) => <div key style />
   };
 };
+
+let rowHeight = (grid, {index}: Grid.rowHeightOptions) =>
+  switch (List.nth(grid, index)) {
+  | row =>
+    List.for_all(
+      item =>
+        switch (item) {
+        | `CompleteGallery(_) => true
+        | _ => false
+        },
+      row,
+    ) ?
+      galleryHeight : imageHeight
+  | exception (Failure(_)) => imageHeight
+  };
 
 let make =
     (
@@ -97,23 +127,17 @@ let make =
              let gridMargin = (parentWidth - gridWidth) / 2;
              let cellPadding = (cellWidth - imageWidth) / 2;
              let grid = listDescendants |> Utils.chunkList(columns);
-             let marginCls =
-               style([
-                 position(`relative),
-                 top(px(10)),
-                 left(px(cellPadding)),
-               ]);
              <Grid
                autoHeight=true
                cellRenderer=(
-                 cellRenderer(loadImage, openLightbox, grid, marginCls)
+                 cellRenderer(
+                   loadImage,
+                   openLightbox,
+                   grid,
+                   marginCls(cellPadding),
+                 )
                )
-               className=(
-                 style([
-                   margin2(~v=px(0), ~h=px(gridMargin)),
-                   outlineStyle(`none),
-                 ])
-               )
+               className=(cls(gridMargin))
                columnCount=columns
                columnWidth=cellWidth
                height=windowHeight
@@ -121,8 +145,9 @@ let make =
                onScroll
                overscanRowCount=5
                rowCount=(List.length(grid))
-               rowHeight=325
+               rowHeight=(rowHeight(grid))
                scrollTop
+               /* rowHeight=(`Number(325)) */
                width=gridWidth
              />;
            }
