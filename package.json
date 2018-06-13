@@ -23,7 +23,7 @@
     "react-virtualized": "^9.19.1",
     "reason-apollo": "github:jeffutter/reason-apollo#75db3b4d32b184c13f791995755b10fa4267c05f",
     "reason-react": "^0.4.2",
-    "svgr": "^1.9.1"
+    "@svgr/webpack": "^2.0.0"
   },
   "scripts": {
     "build": "bsb -make-world",
