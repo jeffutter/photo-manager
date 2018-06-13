@@ -122,31 +122,27 @@ function make($staropt$star, $staropt$star$1, $staropt$star$2, $staropt$star$3, 
                     /* [] */0
                   ], $$Array.to_list(self[/* state */1][/* descendants */4]));
               var thumbedImageSlugs = match[0];
-              var swipeImages = List.map((function (image) {
-                      return {
-                              src: image.largeUrl,
-                              msrc: image.smallUrl,
-                              w: image.width,
-                              h: image.height,
-                              title: image.name
-                            };
-                    }), match[1]);
+              var partial_arg = self[/* send */3];
+              var openLightbox = function (param) {
+                return openLightboxFunc(partial_arg, thumbedImageSlugs, param);
+              };
+              var partial_arg$1 = self[/* send */3];
+              var loadImage = function (param) {
+                return addFunc(partial_arg$1, thumbedImageSlugs, param);
+              };
+              var swipeImages = $$Array.of_list(List.map((function (image) {
+                          return {
+                                  src: image.largeUrl,
+                                  msrc: image.smallUrl,
+                                  w: image.width,
+                                  h: image.height,
+                                  title: image.name
+                                };
+                        }), match[1]));
               var swipeOptions = {
                 index: self[/* state */1][/* currentImage */1]
               };
-              return ReasonReact.element(/* None */0, /* None */0, WindowScroller$PhotoManager.make((function (windowScrollerOptions) {
-                                var windowHeight = windowScrollerOptions.height;
-                                var isScrolling = windowScrollerOptions.isScrolling;
-                                var onScroll = windowScrollerOptions.onChildScroll;
-                                var scrollTop = windowScrollerOptions.scrollTop;
-                                var partial_arg = self[/* send */3];
-                                var openLightbox = function (param) {
-                                  return openLightboxFunc(partial_arg, thumbedImageSlugs, param);
-                                };
-                                var partial_arg$1 = self[/* send */3];
-                                var loadImage = function (param) {
-                                  return addFunc(partial_arg$1, thumbedImageSlugs, param);
-                                };
+              return ReasonReact.element(/* None */0, /* None */0, WindowScroller$PhotoManager.make((function (scrollerOptions) {
                                 return React.createElement("div", {
                                             className: Css.style(/* :: */[
                                                   Css.position(/* relative */903134412),
@@ -155,7 +151,7 @@ function make($staropt$star, $staropt$star$1, $staropt$star$2, $staropt$star$3, 
                                                     /* [] */0
                                                   ]
                                                 ])
-                                          }, ReasonReact.element(/* None */0, /* None */0, BreadCrumbs$PhotoManager.make(path, slug, name, /* array */[])), ReasonReact.element(/* None */0, /* None */0, GalleryBody$PhotoManager.make(/* Some */[self[/* state */1][/* descendants */4]], openLightbox, loadImage, windowHeight, isScrolling, onScroll, scrollTop, /* array */[])), ReasonReact.element(/* None */0, /* None */0, PhotoSwipe$PhotoManager.make(/* Some */[self[/* state */1][/* lightboxIsOpen */0]], $$Array.of_list(swipeImages), (function () {
+                                          }, ReasonReact.element(/* None */0, /* None */0, BreadCrumbs$PhotoManager.make(path, slug, name, /* array */[])), ReasonReact.element(/* None */0, /* None */0, GalleryBody$PhotoManager.make(/* Some */[self[/* state */1][/* descendants */4]], openLightbox, loadImage, scrollerOptions.height, scrollerOptions.isScrolling, scrollerOptions.onChildScroll, scrollerOptions.scrollTop, /* array */[])), ReasonReact.element(/* None */0, /* None */0, PhotoSwipe$PhotoManager.make(/* Some */[self[/* state */1][/* lightboxIsOpen */0]], swipeImages, (function () {
                                                       return Curry._1(self[/* send */3], /* CloseLightbox */0);
                                                     }), swipeOptions, /* array */[])));
                               })));

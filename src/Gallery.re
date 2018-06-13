@@ -132,50 +132,43 @@ let make =
   render: self => {
     let (thumbedImageSlugs, images) =
       self.state.descendants |> Array.to_list |> splitDescendants(([], []));
+    let openLightbox = openLightboxFunc(self.send, thumbedImageSlugs);
+    let loadImage = addFunc(self.send, thumbedImageSlugs);
     let swipeImages =
-      List.map(
-        (image: GalleryQueries.completeImage) => {
-          "src": image##largeUrl,
-          "msrc": image##smallUrl,
-          "w": image##width,
-          "h": image##height,
-          "title": image##name,
-        },
-        images,
-      );
+      images
+      |> List.map((image: GalleryQueries.completeImage) =>
+           {
+             "src": image##largeUrl,
+             "msrc": image##smallUrl,
+             "w": image##width,
+             "h": image##height,
+             "title": image##name,
+           }
+         )
+      |> Array.of_list;
     let swipeOptions = {"index": self.state.currentImage};
     <WindowScroller>
       ...(
-           windowScrollerOptions => {
-             let windowHeight = windowScrollerOptions |. WindowScroller.height;
-             let isScrolling =
-               windowScrollerOptions |. WindowScroller.isScrolling;
-             let onScroll =
-               windowScrollerOptions |. WindowScroller.onChildScroll;
-             let scrollTop = windowScrollerOptions |. WindowScroller.scrollTop;
-             let openLightbox =
-               openLightboxFunc(self.send, thumbedImageSlugs);
-             let loadImage = addFunc(self.send, thumbedImageSlugs);
+           scrollerOptions =>
              <div
                className=(style([position(`relative), height(pct(100.0))]))>
                <BreadCrumbs slug path name />
                <GalleryBody
-                 windowHeight
+                 windowHeight=(WindowScroller.height(scrollerOptions))
                  openLightbox
-                 isScrolling
-                 onScroll
-                 scrollTop
+                 isScrolling=(WindowScroller.isScrolling(scrollerOptions))
+                 onScroll=(WindowScroller.onChildScroll(scrollerOptions))
+                 scrollTop=(WindowScroller.scrollTop(scrollerOptions))
                  descendants=self.state.descendants
                  loadImage
                />
                <PhotoSwipe
                  isOpen=self.state.lightboxIsOpen
-                 items=(Array.of_list(swipeImages))
+                 items=swipeImages
                  onClose=(_event => self.send(CloseLightbox))
                  options=swipeOptions
                />
-             </div>;
-           }
+             </div>
          )
     </WindowScroller>;
   },
