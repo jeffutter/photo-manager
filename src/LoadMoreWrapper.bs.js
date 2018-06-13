@@ -63,7 +63,6 @@ function make(slug, children) {
           /* willUpdate */component[/* willUpdate */7],
           /* shouldUpdate */component[/* shouldUpdate */8],
           /* render */(function () {
-              console.log("Render load more wrapper");
               var loadMoreQuery = GalleryQueries$PhotoManager.MoreQuery[/* make */7](slug, /* array */[], /* () */0);
               return ReasonReact.element(/* None */0, /* None */0, Curry.app(Query[/* make */3], [
                               /* Some */[loadMoreQuery.variables],

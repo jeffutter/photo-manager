@@ -75,7 +75,10 @@ function addFunc(send, thumbedImageSlugs, slug) {
   if (slugHasThumb) {
     return /* () */0;
   } else {
-    return Curry._1(send, /* AddImage */Block.__(1, [slug]));
+    setTimeout((function () {
+            return Curry._1(send, /* AddImage */Block.__(1, [slug]));
+          }), 0);
+    return /* () */0;
   }
 }
 

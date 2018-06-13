@@ -67,7 +67,6 @@ let updateQuery = (previousResult, newResults: Query.updateQueryOptions) => {
 let make = (~slug: string, children) => {
   ...component,
   render: _self => {
-    Js.log("Render load more wrapper");
     let loadMoreQuery = GalleryQueries.MoreQuery.make(~slug, ~slugs=[||], ());
     <Query variables=loadMoreQuery##variables>
       ...(

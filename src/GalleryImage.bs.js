@@ -49,20 +49,17 @@ function make(name, slug, thumbnail, rating, handleOpen, _) {
                           className: cls(300, 295)
                         }, ReasonReact.element(/* None */0, /* None */0, GalleryItem$PhotoManager.make(/* Some */[true], (function (wrapClass, detailsClass) {
                                     if (thumbnail) {
-                                      var thumb = thumbnail[0];
-                                      return ReasonReact.element(/* None */0, /* None */0, GalleryItem$PhotoManager.make(/* Some */[true], (function (wrapClass, detailsClass) {
-                                                        return React.createElement("div", {
-                                                                    className: wrapClass,
-                                                                    onClick: handleOpen
-                                                                  }, React.createElement("img", {
-                                                                        className: imgCls,
-                                                                        height: "225",
-                                                                        src: thumb,
-                                                                        width: "300"
-                                                                      }), React.createElement("div", {
-                                                                        className: detailsClass
-                                                                      }, React.createElement("div", undefined, name), ReasonReact.element(/* None */0, /* None */0, Stars$PhotoManager.make(slug, rating, /* array */[]))));
-                                                      })));
+                                      return React.createElement("div", {
+                                                  className: wrapClass,
+                                                  onClick: handleOpen
+                                                }, React.createElement("img", {
+                                                      className: imgCls,
+                                                      height: "225",
+                                                      src: thumbnail[0],
+                                                      width: "300"
+                                                    }), React.createElement("div", {
+                                                      className: detailsClass
+                                                    }, React.createElement("div", undefined, name), ReasonReact.element(/* None */0, /* None */0, Stars$PhotoManager.make(slug, rating, /* array */[]))));
                                     } else {
                                       return React.createElement("div", {
                                                   className: wrapClass,

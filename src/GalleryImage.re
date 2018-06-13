@@ -23,23 +23,13 @@ let make =
              (wrapClass, detailsClass) =>
                switch (thumbnail) {
                | Some(thumb) =>
-                 <GalleryItem lightBG=true>
-                   ...(
-                        (wrapClass, detailsClass) =>
-                          <div onClick=handleOpen className=wrapClass>
-                            <img
-                              src=thumb
-                              className=imgCls
-                              width="300"
-                              height="225"
-                            />
-                            <div className=detailsClass>
-                              <div> (ReasonReact.string(name)) </div>
-                              <Stars slug rating />
-                            </div>
-                          </div>
-                      )
-                 </GalleryItem>
+                 <div onClick=handleOpen className=wrapClass>
+                   <img src=thumb className=imgCls width="300" height="225" />
+                   <div className=detailsClass>
+                     <div> (ReasonReact.string(name)) </div>
+                     <Stars slug rating />
+                   </div>
+                 </div>
                | None =>
                  <div onClick=handleOpen className=wrapClass>
                    <CircleLoader />

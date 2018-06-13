@@ -47,7 +47,7 @@ let addFunc = (send, thumbedImageSlugs, slug) => {
   let slugHasThumb =
     List.exists(imageSlug => slug == imageSlug, thumbedImageSlugs);
   switch (slugHasThumb) {
-  | false => send(AddImage(slug))
+  | false => Js.Global.setTimeout(() => send(AddImage(slug)), 0) |> ignore
   | _ => ()
   };
 };
