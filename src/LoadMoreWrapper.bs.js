@@ -77,10 +77,18 @@ function make(slug, children) {
                               (function (param) {
                                   var fetchMore = param[/* fetchMore */5];
                                   var result = param[/* result */0];
-                                  if (typeof result === "number" || !result.tag) {
-                                    return Curry._2(children, /* None */0, Curry._1(fetchMore, updateQuery));
+                                  if (typeof result === "number") {
+                                    return Curry._2(children, /* None */0, (function (param) {
+                                                  return Curry._2(fetchMore, param, updateQuery);
+                                                }));
+                                  } else if (result.tag) {
+                                    return Curry._2(children, result[0].gallery, (function (param) {
+                                                  return Curry._2(fetchMore, param, updateQuery);
+                                                }));
                                   } else {
-                                    return Curry._2(children, result[0].gallery, Curry._1(fetchMore, updateQuery));
+                                    return Curry._2(children, /* None */0, (function (param) {
+                                                  return Curry._2(fetchMore, param, updateQuery);
+                                                }));
                                   }
                                 })
                             ]));

@@ -40,8 +40,9 @@ var context = ApolloLinkContext.setContext((function () {
         }
       }));
 
-function errorHandler(errorResponse) {
-  if (errorResponse.networkError.statusCode === 401) {
+function errorHandler(error) {
+  var match = error.networkError;
+  if (!(match == null) && match.statusCode === 401) {
     Cookies$PhotoManager.logOut(/* Some */[true], /* () */0);
     return ReasonReact.Router[/* push */0]("/login");
   } else {
