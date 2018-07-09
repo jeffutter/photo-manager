@@ -154,11 +154,11 @@ let make =
                className=(style([position(`relative), height(pct(100.0))]))>
                <BreadCrumbs slug path name />
                <GalleryBody
-                 windowHeight=(WindowScroller.height(scrollerOptions))
+                 windowHeight=(WindowScroller.heightGet(scrollerOptions))
                  openLightbox
-                 isScrolling=(WindowScroller.isScrolling(scrollerOptions))
-                 onScroll=(WindowScroller.onChildScroll(scrollerOptions))
-                 scrollTop=(WindowScroller.scrollTop(scrollerOptions))
+                 isScrolling=(WindowScroller.isScrollingGet(scrollerOptions))
+                 onScroll=(WindowScroller.onChildScrollGet(scrollerOptions))
+                 scrollTop=(WindowScroller.scrollTopGet(scrollerOptions))
                  descendants=self.state.descendants
                  loadImage
                />

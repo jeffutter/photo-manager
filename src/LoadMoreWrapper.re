@@ -25,7 +25,7 @@ external unsafeToJson : responseJS => Js.Json.t = "%identity";
 let updateQuery = (previousResult, newResults: Query.updateQueryOptions) => {
   let previousResult = unsafeFromJson(previousResult);
   (
-    switch (newResults |. Query.fetchMoreResult) {
+    switch (newResults |. Query.fetchMoreResultGet) {
     | Some(fetchMoreResult) =>
       let fetchMoreResult = unsafeFromJson(fetchMoreResult);
       let combinedGallery =

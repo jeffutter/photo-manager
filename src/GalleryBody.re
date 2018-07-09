@@ -51,10 +51,10 @@ let cellRenderer =
       marginCls: string,
       options: Grid.cellRenderOptions,
     ) => {
-  let columnIndex = options |. Grid.columnIndex;
-  let rowIndex = options |. Grid.rowIndex;
-  let key = options |. Grid.key;
-  let style = options |. Grid.style;
+  let columnIndex = options |. Grid.columnIndexGet;
+  let rowIndex = options |. Grid.rowIndexGet;
+  let key = options |. Grid.keyGet;
+  let style = options |. Grid.styleGet;
   switch (List.nth(grid, rowIndex)) {
   | row =>
     switch (List.nth(row, columnIndex)) {
@@ -119,7 +119,7 @@ let make =
     <AutoSizer disableHeight=true>
       ...(
            size => {
-             let parentWidth = size |. AutoSizer.width;
+             let parentWidth = size |. AutoSizer.widthGet;
              let columns = columns(parentWidth);
              let gutter = gutter(parentWidth);
              let cellWidth = imageWidth + gutter;
