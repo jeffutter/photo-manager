@@ -144,10 +144,7 @@ function parse(value) {
               tmp$7 = tmp$8;
             }
           } else {
-            throw [
-                  Graphql_error,
-                  "Field totalDescendants on type Gallery is missing"
-                ];
+            tmp$7 = undefined;
           }
           var match$17 = value$1["descendants"];
           var tmp$9;
@@ -415,10 +412,7 @@ function parse(value) {
                                           tmp$12 = tmp$13;
                                         }
                                       } else {
-                                        throw [
-                                              Graphql_error,
-                                              "Field size on type Image is missing"
-                                            ];
+                                        tmp$12 = undefined;
                                       }
                                       var match$28 = value$2["width"];
                                       var tmp$14;
@@ -440,10 +434,7 @@ function parse(value) {
                                           tmp$14 = tmp$15;
                                         }
                                       } else {
-                                        throw [
-                                              Graphql_error,
-                                              "Field width on type Image is missing"
-                                            ];
+                                        tmp$14 = undefined;
                                       }
                                       var match$31 = value$2["height"];
                                       var tmp$16;
@@ -465,10 +456,7 @@ function parse(value) {
                                           tmp$16 = tmp$17;
                                         }
                                       } else {
-                                        throw [
-                                              Graphql_error,
-                                              "Field height on type Image is missing"
-                                            ];
+                                        tmp$16 = undefined;
                                       }
                                       var match$34 = value$2["rating"];
                                       var tmp$18;
@@ -490,10 +478,7 @@ function parse(value) {
                                           tmp$18 = tmp$19;
                                         }
                                       } else {
-                                        throw [
-                                              Graphql_error,
-                                              "Field rating on type Image is missing"
-                                            ];
+                                        tmp$18 = undefined;
                                       }
                                       var match$37 = value$2["smallUrl"];
                                       var tmp$20;
@@ -515,10 +500,7 @@ function parse(value) {
                                           tmp$20 = tmp$21;
                                         }
                                       } else {
-                                        throw [
-                                              Graphql_error,
-                                              "Field smallUrl on type Image is missing"
-                                            ];
+                                        tmp$20 = undefined;
                                       }
                                       var match$40 = value$2["mediumUrl"];
                                       var tmp$22;
@@ -540,10 +522,7 @@ function parse(value) {
                                           tmp$22 = tmp$23;
                                         }
                                       } else {
-                                        throw [
-                                              Graphql_error,
-                                              "Field mediumUrl on type Image is missing"
-                                            ];
+                                        tmp$22 = undefined;
                                       }
                                       var match$43 = value$2["largeUrl"];
                                       var tmp$24;
@@ -565,10 +544,7 @@ function parse(value) {
                                           tmp$24 = tmp$25;
                                         }
                                       } else {
-                                        throw [
-                                              Graphql_error,
-                                              "Field largeUrl on type Image is missing"
-                                            ];
+                                        tmp$24 = undefined;
                                       }
                                       tmp$6 = {
                                         id: tmp$7,
@@ -628,10 +604,7 @@ function parse(value) {
               tmp$9 = tmp$10;
             }
           } else {
-            throw [
-                  Graphql_error,
-                  "Field descendants on type Gallery is missing"
-                ];
+            tmp$9 = undefined;
           }
           tmp$1 = {
             id: tmp$2,
@@ -651,10 +624,7 @@ function parse(value) {
         tmp = Js_primitive.some(tmp$1);
       }
     } else {
-      throw [
-            Graphql_error,
-            "Field gallery on type RootQueryType is missing"
-          ];
+      tmp = undefined;
     }
     return {
             gallery: tmp
@@ -1116,10 +1086,7 @@ function parse$1(value) {
                                           tmp$12 = tmp$13;
                                         }
                                       } else {
-                                        throw [
-                                              Graphql_error$1,
-                                              "Field thumbnail on type Image is missing"
-                                            ];
+                                        tmp$12 = undefined;
                                       }
                                       tmp$6 = {
                                         id: tmp$7,
@@ -1173,10 +1140,7 @@ function parse$1(value) {
               tmp$7 = tmp$8;
             }
           } else {
-            throw [
-                  Graphql_error$1,
-                  "Field descendants on type Gallery is missing"
-                ];
+            tmp$7 = undefined;
           }
           tmp$1 = {
             id: tmp$2,
@@ -1195,10 +1159,7 @@ function parse$1(value) {
         tmp = Js_primitive.some(tmp$1);
       }
     } else {
-      throw [
-            Graphql_error$1,
-            "Field gallery on type RootQueryType is missing"
-          ];
+      tmp = undefined;
     }
     return {
             gallery: tmp
@@ -1427,10 +1388,7 @@ function parse$2(value) {
               tmp$7 = tmp$8;
             }
           } else {
-            throw [
-                  Graphql_error$2,
-                  "Field rating on type Image is missing"
-                ];
+            tmp$7 = undefined;
           }
           tmp$1 = {
             id: tmp$2,
@@ -1449,10 +1407,7 @@ function parse$2(value) {
         tmp = Js_primitive.some(tmp$1);
       }
     } else {
-      throw [
-            Graphql_error$2,
-            "Field rateImage on type RootMutationType is missing"
-          ];
+      tmp = undefined;
     }
     return {
             rateImage: tmp
