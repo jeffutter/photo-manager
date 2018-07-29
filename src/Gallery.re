@@ -147,6 +147,7 @@ let make =
          )
       |> Array.of_list;
     let swipeOptions = {"index": self.state.currentImage};
+    let showPhotoSwipe = Array.length(swipeImages) > 0;
     <WindowScroller>
       ...(
            scrollerOptions =>
@@ -162,12 +163,16 @@ let make =
                  descendants=self.state.descendants
                  loadImage
                />
-               <PhotoSwipe
-                 isOpen=self.state.lightboxIsOpen
-                 items=swipeImages
-                 onClose=(_event => self.send(CloseLightbox))
-                 options=swipeOptions
-               />
+               (
+                 showPhotoSwipe ?
+                   <PhotoSwipe
+                     isOpen=self.state.lightboxIsOpen
+                     items=swipeImages
+                     onClose=(_event => self.send(CloseLightbox))
+                     options=swipeOptions
+                   /> :
+                   <div />
+               )
              </div>
          )
     </WindowScroller>;
