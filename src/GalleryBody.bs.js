@@ -56,7 +56,7 @@ function marginCls(cellPadding) {
             ]);
 }
 
-function cellRenderer(loadImage, openLightbox, grid, marginCls, options) {
+function cellRenderer(loadImage, isScrolling, openLightbox, grid, marginCls, options) {
   var columnIndex = options.columnIndex;
   var rowIndex = options.rowIndex;
   var key = options.key;
@@ -105,7 +105,11 @@ function cellRenderer(loadImage, openLightbox, grid, marginCls, options) {
         var image = cell[1];
         var match = image.thumbnail;
         if (match === undefined) {
-          Curry._1(loadImage, image.slug);
+          if (isScrolling) {
+            
+          } else {
+            Curry._1(loadImage, image.slug);
+          }
         }
         tmp = ReasonReact.element(key, undefined, GalleryImage$PhotoManager.make(image.name, image.slug, image.thumbnail, image.rating, (function () {
                     return Curry._1(openLightbox, image.slug);
@@ -179,7 +183,7 @@ function make($staropt$star, openLightbox, loadImage, windowHeight, isScrolling,
                                 var grid = Utils$PhotoManager.chunkList(columns$1, listDescendants);
                                 var partial_arg = marginCls(cellPadding);
                                 return ReasonReact.element(undefined, undefined, Grid$PhotoManager.make(true, (function (param) {
-                                                  return cellRenderer(loadImage, openLightbox, grid, partial_arg, param);
+                                                  return cellRenderer(loadImage, isScrolling, openLightbox, grid, partial_arg, param);
                                                 }), cls(gridMargin), columns$1, cellWidth, windowHeight, isScrolling, onScroll, undefined, 5, List.length(grid), (function (param) {
                                                   return rowHeight(grid, param);
                                                 }), scrollTop, gridWidth, /* array */[]));

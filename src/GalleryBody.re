@@ -46,6 +46,7 @@ let marginCls = cellPadding =>
 let cellRenderer =
     (
       loadImage,
+      isScrolling,
       openLightbox,
       grid,
       marginCls: string,
@@ -64,9 +65,10 @@ let cellRenderer =
           switch (cell) {
           | `CompleteImage(image) =>
             /* If thumbnail isn't loaded, call load more */
-            switch (image##thumbnail) {
-            | Some(_) => ()
-            | None => loadImage(image##slug)
+            switch (image##thumbnail, isScrolling) {
+            | (Some(_), _) => ()
+            | (None, true) => ()
+            | (None, false) => loadImage(image##slug)
             };
             <GalleryImage
               key
@@ -132,6 +134,7 @@ let make =
                cellRenderer=(
                  cellRenderer(
                    loadImage,
+                   isScrolling,
                    openLightbox,
                    grid,
                    marginCls(cellPadding),
