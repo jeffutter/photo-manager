@@ -66,7 +66,7 @@ let logoCls =
     textTransform(uppercase),
     display(inlineBlock),
     margin4(~top=px(18), ~right=zero, ~bottom=px(18), ~left=px(10)),
-    lineHeight(1.0),
+    lineHeight(`abs(1.0)),
     textDecoration(none),
     width(auto),
     selector(
@@ -112,7 +112,7 @@ let navCls =
             display(inlineBlock),
             position(relative),
             marginLeft(px(35)),
-            lineHeight(1.5),
+            lineHeight(`abs(1.5)),
             selector(
               "@media only screen and (max-width: 766px)",
               [

@@ -61,15 +61,13 @@ module Query = ReasonApollo.CreateQuery(GalleryQueries.GalleryQuery);
 let make = _children => {
   ...component,
   reducer,
-  subscriptions: self => [
-    Sub(
-      () =>
-        ReasonReact.Router.watchUrl(url =>
-          self.send(ChangeRoute(url |> mapUrlToRoute))
-        ),
-      ReasonReact.Router.unwatchUrl,
-    ),
-  ],
+  didMount: self => {
+    let watcherID =
+      ReasonReact.Router.watchUrl(url =>
+        self.send(ChangeRoute(url |> mapUrlToRoute))
+      );
+    self.onUnmount(() => ReasonReact.Router.unwatchUrl(watcherID));
+  },
   initialState: () => {route: LoginForm},
   render: self =>
     <div id="app" className=cls>

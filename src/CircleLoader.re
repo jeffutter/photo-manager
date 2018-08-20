@@ -18,7 +18,7 @@ let make = _children => {
         <circle cx="22" cy="22" r="1">
           <animate
             attributeName="r"
-            _begin="0s"
+            begin_="0s"
             dur="1.8s"
             values="1; 20"
             calcMode="spline"
@@ -28,7 +28,7 @@ let make = _children => {
           />
           <animate
             attributeName="stroke-opacity"
-            _begin="0s"
+            begin_="0s"
             dur="1.8s"
             values="1; 0"
             calcMode="spline"
@@ -40,7 +40,7 @@ let make = _children => {
         <circle cx="22" cy="22" r="1">
           <animate
             attributeName="r"
-            _begin="-0.9s"
+            begin_="-0.9s"
             dur="1.8s"
             values="1; 20"
             calcMode="spline"
@@ -50,7 +50,7 @@ let make = _children => {
           />
           <animate
             attributeName="stroke-opacity"
-            _begin="-0.9s"
+            begin_="-0.9s"
             dur="1.8s"
             values="1; 0"
             calcMode="spline"

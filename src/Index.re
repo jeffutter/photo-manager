@@ -41,7 +41,7 @@ Css.(
     [
       fontFamily("'Lato', sans-serif"),
       fontWeight(300),
-      lineHeight(1.5),
+      lineHeight(`abs(1.5)),
       width(pct(100.0)),
       height(pct(100.0)),
       margin(px(0)),
