@@ -1,9 +1,14 @@
 kind: Deployment
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 metadata:
   name: photo-manager
+  labels:
+    app: photo-manager
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: photo-manager
   template:
     metadata:
       labels:
