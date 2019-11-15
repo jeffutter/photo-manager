@@ -5,9 +5,11 @@ metadata:
   annotations:
     prometheus.io/scrape: "true"
 spec:
+  type: NodePort
   selector:
     app: photo-manager
   ports:
-    - protocol: TCP
+    - name: www
+      protocol: TCP
       port: 80
       targetPort: http

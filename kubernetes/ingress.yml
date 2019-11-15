@@ -17,4 +17,4 @@ spec:
       - path: /
         backend:
           serviceName: photo-manager
-          servicePort: 80
+          servicePort: www
