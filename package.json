@@ -65,7 +65,7 @@
     "optimize-css-assets-webpack-plugin": "^5.0.0",
     "postcss-flexbugs-fixes": "^4.1.0",
     "postcss-loader": "^3.0.0",
-    "react-dev-utils": "^5.0.1",
+    "react-dev-utils": "^5.0.2",
     "style-loader": "^0.22.1",
     "sw-precache-webpack-plugin": "^0.11.5",
     "thread-loader": "^1.1.5",
