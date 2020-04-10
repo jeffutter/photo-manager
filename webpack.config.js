@@ -4,7 +4,7 @@ const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
   .BundleAnalyzerPlugin;
 const CaseSensitivePathsPlugin = require("case-sensitive-paths-webpack-plugin");
 const CompressionPlugin = require("compression-webpack-plugin");
-const CleanWebpackPlugin = require("clean-webpack-plugin");
+const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 //const InterpolateHtmlPlugin = require('react-dev-utils/InterpolateHtmlPlugin');
 const ManifestPlugin = require("webpack-manifest-plugin");
@@ -27,7 +27,7 @@ const REACT_APP = /^REACT_APP_/i;
 
 function getClientEnvironment(publicUrl) {
   const raw = Object.keys(process.env)
-    .filter(key => REACT_APP.test(key))
+    .filter((key) => REACT_APP.test(key))
     .reduce(
       (env, key) => {
         env[key] = process.env[key];
@@ -41,7 +41,7 @@ function getClientEnvironment(publicUrl) {
         // For example, <img src={process.env.PUBLIC_URL + '/img/logo.png'} />.
         // This should only be used as an escape hatch. Normally you would put
         // images into the `src` and `import` them in code to get their paths.
-        PUBLIC_URL: publicUrl
+        PUBLIC_URL: publicUrl,
       }
     );
   // Stringify all values so we can feed into Webpack DefinePlugin
@@ -49,7 +49,7 @@ function getClientEnvironment(publicUrl) {
     "process.env": Object.keys(raw).reduce((env, key) => {
       env[key] = JSON.stringify(raw[key]);
       return env;
-    }, {})
+    }, {}),
   };
 
   return { raw, stringified };
@@ -64,9 +64,9 @@ const postCSSLoaderOptions = {
   plugins: () => [
     require("postcss-flexbugs-fixes"),
     autoprefixer({
-      flexbox: "no-2009"
-    })
-  ]
+      flexbox: "no-2009",
+    }),
+  ],
 };
 
 module.exports = {
@@ -74,7 +74,7 @@ module.exports = {
     ? "./src/Index.bs.js"
     : [
         require.resolve("react-dev-utils/webpackHotDevClient"),
-        "./src/Index.bs.js"
+        "./src/Index.bs.js",
       ],
   output: {
     path: outputDir,
@@ -85,7 +85,7 @@ module.exports = {
       : "static/js/bundle.js",
     chunkFilename: isProd()
       ? "static/js/[name].[chunkhash:8].chunk.js"
-      : "static/js/[name].chunk.js"
+      : "static/js/[name].chunk.js",
   },
   mode: isProd() ? "production" : "development",
   devtool: shouldUseSourceMap
@@ -101,29 +101,29 @@ module.exports = {
       "/__auth": {
         target: "https://gallery.sadclown.net",
         changeOrigin: true,
-        secure: false
+        secure: false,
       },
       "/auth": {
         target: "https://gallery.sadclown.net",
         changeOrigin: true,
-        secure: false
+        secure: false,
       },
       "/config": {
         target: "https://gallery.sadclown.net",
         changeOrigin: true,
-        secure: false
+        secure: false,
       },
       "/graphql": {
         target: "https://gallery.sadclown.net",
         changeOrigin: true,
-        secure: false
+        secure: false,
       },
       "/graphiql": {
         target: "https://gallery.sadclown.net",
         changeOrigin: true,
-        secure: false
-      }
-    }
+        secure: false,
+      },
+    },
   },
   module: {
     rules: [
@@ -140,22 +140,22 @@ module.exports = {
                 loader: require.resolve("css-loader"),
                 options: {
                   importLoaders: 1,
-                  sourceMap: shouldUseSourceMap
-                }
+                  sourceMap: shouldUseSourceMap,
+                },
               },
               {
                 loader: require.resolve("postcss-loader"),
-                options: postCSSLoaderOptions
-              }
-            ]
+                options: postCSSLoaderOptions,
+              },
+            ],
           },
           {
             test: [/\.bmp$/, /\.gif$/, /\.jpe?g$/, /\.png$/],
             loader: require.resolve("url-loader"),
             options: {
               limit: 10000,
-              name: "static/media/[name].[hash:8].[ext]"
-            }
+              name: "static/media/[name].[hash:8].[ext]",
+            },
           },
           {
             test: /\.(js|jsx|mjs)$/,
@@ -179,18 +179,18 @@ module.exports = {
                       {
                         loaderMap: {
                           svg: {
-                            ReactComponent: "@svgr/webpack![path]"
-                          }
-                        }
-                      }
-                    ]
+                            ReactComponent: "@svgr/webpack![path]",
+                          },
+                        },
+                      },
+                    ],
                   ],
                   compact: isProd() ? true : false,
                   cacheDirectory: isProd() ? false : true,
-                  highlightCode: true
-                }
-              }
-            ]
+                  highlightCode: true,
+                },
+              },
+            ],
           },
           // Process any JS outside of the app with Babel.
           // Unlike the application JS, we only compile the standard ES features.
@@ -206,7 +206,7 @@ module.exports = {
                   babelrc: false,
                   compact: false,
                   presets: [
-                    require.resolve("babel-preset-react-app/dependencies")
+                    require.resolve("babel-preset-react-app/dependencies"),
                   ],
                   plugins: [
                     [
@@ -214,17 +214,17 @@ module.exports = {
                       {
                         loaderMap: {
                           svg: {
-                            ReactComponent: "@svgr/webpack![path]"
-                          }
-                        }
-                      }
-                    ]
+                            ReactComponent: "@svgr/webpack![path]",
+                          },
+                        },
+                      },
+                    ],
                   ],
                   cacheDirectory: true,
-                  highlightCode: true
-                }
-              }
-            ]
+                  highlightCode: true,
+                },
+              },
+            ],
           },
           {
             loader: require.resolve("file-loader"),
@@ -234,12 +234,12 @@ module.exports = {
             // by webpacks internal loaders.
             exclude: [/\.(js|jsx|mjs)$/, /\.html$/, /\.json$/],
             options: {
-              name: "static/media/[name].[hash:8].[ext]"
-            }
-          }
-        ]
-      }
-    ]
+              name: "static/media/[name].[hash:8].[ext]",
+            },
+          },
+        ],
+      },
+    ],
   },
   optimization: {
     minimizer: [
@@ -251,7 +251,7 @@ module.exports = {
             // into invalid ecma 5 code. This is why the 'compress' and 'output'
             // sections only apply transformations that are ecma 5 safe
             // https://github.com/facebook/create-react-app/pull/4234
-            ecma: 8
+            ecma: 8,
           },
           compress: {
             ecma: 5,
@@ -260,46 +260,46 @@ module.exports = {
             // https://github.com/facebook/create-react-app/issues/2376
             // Pending further investigation:
             // https://github.com/mishoo/UglifyJS2/issues/2011
-            comparisons: false
+            comparisons: false,
           },
           mangle: {
-            safari10: true
+            safari10: true,
           },
           output: {
             ecma: 5,
             comments: false,
             // Turned on because emoji and regex is not minified properly using default
             // https://github.com/facebook/create-react-app/issues/2488
-            ascii_only: true
-          }
+            ascii_only: true,
+          },
         },
         // Use multi-process parallel running to improve the build speed
         // Default number of concurrent runs: os.cpus().length - 1
         parallel: true,
         // Enable file caching
         cache: true,
-        sourceMap: shouldUseSourceMap
+        sourceMap: shouldUseSourceMap,
       }),
-      new OptimizeCSSAssetsPlugin({ cssProcessorOptions: { zindex: false } })
+      new OptimizeCSSAssetsPlugin({ cssProcessorOptions: { zindex: false } }),
     ],
     // Automatically split vendor and commons
     // https://twitter.com/wSokra/status/969633336732905474
     splitChunks: {
-      chunks: "all"
+      chunks: "all",
     },
     // Keep the runtime chunk seperated to enable long term caching
     // https://twitter.com/wSokra/status/969679223278505985
-    runtimeChunk: true
+    runtimeChunk: true,
   },
   resolve: {
     // modules: ["node_modules"].concat(
     //   // It is guaranteed to exist because we tweak it in `env.js`
     //   process.env.NODE_PATH.split("/").filter(Boolean)
     // ),
-    extensions: [".web.js", ".mjs", ".js", ".json", ".web.jsx", ".jsx"]
+    extensions: [".web.js", ".mjs", ".js", ".json", ".web.jsx", ".jsx"],
   },
   plugins: [
-    new CleanWebpackPlugin(["build"]),
+    new CleanWebpackPlugin(),
     // new InterpolateHtmlPlugin(env.raw),
     new webpack.DefinePlugin(env.stringified),
     only(
@@ -309,7 +309,7 @@ module.exports = {
           // Options similar to the same options in webpackOptions.output
           // both options are optional
           filename: "static/css/[name].[contenthash:8].css",
-          chunkFilename: "static/css/[name].[contenthash:8].chunk.css"
+          chunkFilename: "static/css/[name].[contenthash:8].chunk.css",
         })
     ),
     only(isDev, () => new webpack.NamedModulesPlugin()),
@@ -319,7 +319,7 @@ module.exports = {
       () =>
         new ManifestPlugin({
           fileName: "asset-manifest.json",
-          publicPath: "/"
+          publicPath: "/",
         })
     ),
     only(
@@ -327,7 +327,7 @@ module.exports = {
       () =>
         new BundleAnalyzerPlugin({
           analyzerMode: "static",
-          openAnalyzer: false
+          openAnalyzer: false,
         })
     ),
     new HtmlWebpackPlugin({
@@ -344,8 +344,8 @@ module.exports = {
         keepClosingSlash: true,
         minifyJS: true,
         minifyCSS: true,
-        minifyURLs: true
-      }
+        minifyURLs: true,
+      },
     }),
     only(
       isProd,
@@ -376,7 +376,7 @@ module.exports = {
           // `navigateFallback` and `navigateFallbackWhitelist` are disabled by default; see
           // https://github.com/facebook/create-react-app/blob/master/packages/react-scripts/template/README.md#service-worker-considerations
           navigateFallback: "/index.html",
-          navigateFallbackWhitelist: [/^(?!\/__).*/]
+          navigateFallbackWhitelist: [/^(?!\/__).*/],
           // navigateFallback: publicUrl + '/index.html',
           // navigateFallbackWhitelist: [/^(?!\/__).*/],
         })
@@ -389,7 +389,7 @@ module.exports = {
           algorithm: "gzip",
           test: /\.(js|css|html|svg)$/,
           threshold: 0,
-          minRatio: 0.8
+          minRatio: 0.8,
         })
     ),
     only(
@@ -399,15 +399,15 @@ module.exports = {
           asset: "[path].br[query]",
           test: /\.(js|css|html|svg)$/,
           threshold: 0,
-          minRatio: 0.8
+          minRatio: 0.8,
         })
-    )
+    ),
   ],
   node: {
     dgram: "empty",
     fs: "empty",
     net: "empty",
     tls: "empty",
-    child_process: "empty"
-  }
+    child_process: "empty",
+  },
 };
