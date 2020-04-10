@@ -1,13 +1,10 @@
-let component = ReasonReact.statelessComponent("NavLink");
-
+[@react.component]
 let make =
     (
       ~_to: string,
       ~className: option(string)=?,
-      /* ~activeClassName: option(string)=?, */
-      ~onClick: option(ReactEventRe.Mouse.t => unit)=?,
-      children,
+      ~onClick: option(ReactEvent.Mouse.t => unit)=?,
+      ~children,
     ) => {
-  ...component,
-  render: _self => <Link href=_to ?className ?onClick> ...children </Link>,
+  <Link href=_to ?className ?onClick> children </Link>
 };

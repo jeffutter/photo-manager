@@ -19,7 +19,7 @@ let headerCls =
     width(`percent(100.0)),
     overflow(hidden),
     transition(~duration=300, "all"),
-    fontFamily("\"Montserrat\", sans-serif"),
+    fontFamily(`custom("\"Montserrat\", sans-serif")),
     backgroundColor(rgba(255, 255, 255, 0.95)),
     borderBottom(px(1), solid, gainsboro),
   ]);
@@ -33,7 +33,7 @@ let mobileToggleCls =
     right(px(22)),
     top(zero),
     width(px(30)),
-    transform(rotate(deg(0))),
+    transform(rotate(deg(0.0))),
     transition(~duration=500, ~timingFunction=easeInOut, "all"),
     zIndex(1000),
     selector(
@@ -56,7 +56,7 @@ let mobileToggleCls =
 let openNavCls =
   style([
     important(maxHeight(px(440))),
-    selector(".mobileToggle", [transform(rotate(deg(-90)))]),
+    selector(".mobileToggle", [transform(rotate(deg(-90.0)))]),
   ]);
 
 let logoCls =
@@ -149,7 +149,7 @@ let navCls =
 
 let activeCls = style([]);
 
-let openNavMobileToggle = style([transform(rotate(deg(90)))]);
+let openNavMobileToggle = style([transform(rotate(deg(90.0)))]);
 
 type state = {_open: bool};
 
@@ -157,65 +157,60 @@ type action =
   | ToggleNav
   | LogOut;
 
-let component = ReasonReact.reducerComponent("Header");
-
-let make = _children => {
-  ...component,
-  initialState: () => {_open: false},
-  reducer: (action, state) =>
-    switch (action) {
-    | ToggleNav => ReasonReact.Update({_open: ! state._open})
-    | LogOut =>
-      Cookies.logOut();
-      setLocationHref("/");
-      ReasonReact.NoUpdate;
-    },
-  render: self => {
-    let headerClasses = [|headerCls|];
-    let mobileToggleClasses = [|mobileToggleCls|];
-    if (self.state._open) {
-      ignore(Js.Array.push(openNavCls, headerClasses));
-      ignore(Js.Array.push(openNavMobileToggle, mobileToggleClasses));
-    };
-    <header className=(Js.Array.joinWith(" ", headerClasses))>
-      <a className=logoCls href="#">
-        (ReasonReact.string("Photo Gallery"))
-      </a>
-      <div
-        className=(Js.Array.joinWith(" ", mobileToggleClasses))
-        onClick=(_event => self.send(ToggleNav))>
-        <span />
-        <span />
-        <span />
-      </div>
-      <nav className=navCls>
-        <ul>
-          <li>
-            <NavLink
-              className=activeCls
-              _to="/"
-              onClick=(_event => self.send(ToggleNav))>
-              (ReasonReact.string("Home"))
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
-              className=activeCls
-              _to="/gallery"
-              onClick=(_event => self.send(ToggleNav))>
-              (ReasonReact.string("Gallery"))
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
-              _to="/"
-              className=activeCls
-              onClick=(_event => self.send(LogOut))>
-              (ReasonReact.string("Logout"))
-            </NavLink>
-          </li>
-        </ul>
-      </nav>
-    </header>;
-  },
+[@react.component]
+let make = () => {
+  let (state, dispatch) =
+    React.useReducer(
+      (state, action) =>
+        switch (action) {
+        | ToggleNav => {_open: !state._open}
+        | LogOut =>
+          Cookies.logOut();
+          setLocationHref("/");
+          state;
+        },
+      {_open: false},
+    );
+  let headerClasses = [|headerCls|];
+  let mobileToggleClasses = [|mobileToggleCls|];
+  if (state._open) {
+    ignore(Js.Array.push(openNavCls, headerClasses));
+    ignore(Js.Array.push(openNavMobileToggle, mobileToggleClasses));
+  };
+  <header className={Js.Array.joinWith(" ", headerClasses)}>
+    <a className=logoCls href="#"> {React.string("Photo Gallery")} </a>
+    <div
+      className={Js.Array.joinWith(" ", mobileToggleClasses)}
+      onClick={_event => dispatch(ToggleNav)}>
+      <span />
+      <span />
+      <span />
+    </div>
+    <nav className=navCls>
+      <ul>
+        <li>
+          <NavLink
+            className=activeCls
+            _to="/"
+            onClick={_event => dispatch(ToggleNav)}>
+            {React.string("Home")}
+          </NavLink>
+        </li>
+        <li>
+          <NavLink
+            className=activeCls
+            _to="/gallery"
+            onClick={_event => dispatch(ToggleNav)}>
+            {React.string("Gallery")}
+          </NavLink>
+        </li>
+        <li>
+          <NavLink
+            _to="/" className=activeCls onClick={_event => dispatch(LogOut)}>
+            {React.string("Logout")}
+          </NavLink>
+        </li>
+      </ul>
+    </nav>
+  </header>;
 };

@@ -1,22 +1,18 @@
 [@bs.module "react-photoswipe"]
-external photoSwipe : ReasonReact.reactClass = "PhotoSwipe";
+external photoSwipe: ReasonReact.reactClass = "PhotoSwipe";
 
 [@bs.val] [@bs.return nullable]
-external _getElementById : string => option(Dom.element) =
+external _getElementById: string => option(Dom.element) =
   "document.getElementById";
 
-let component = ReasonReact.statelessComponent("PhotoSwipe");
-
+[@react.component]
 let make =
     (
       ~isOpen: bool=false,
       ~items: Js.Array.t('a),
       ~onClose,
       ~options,
-      _children,
     ) => {
-  ...component,
-  render: (_) =>
     switch (_getElementById("modal-root")) {
     | None =>
       raise(
@@ -39,5 +35,5 @@ let make =
         |> ReasonReact.element,
         element,
       )
-    },
+    }
 };

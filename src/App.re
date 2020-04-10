@@ -14,11 +14,22 @@ type retainedProps = {path: string};
 
 module Redirect = {
   let component = ReasonReact.statelessComponent("Redirect");
-  let make = (~path, _children) => {
+  let make = (~path) => {
     ...component,
     didMount: _self => ReasonReact.Router.push(path),
     render: _self => <div />,
   };
+  /**
+ * This is a wrapper created to let this component be used from the new React api.
+ * Please convert this component to a [@react.component] function and then remove this wrapping code.
+ */
+  let make =
+    ReasonReactCompat.wrapReasonReactForReact(
+      ~component, (reactProps: {. "path": 'path}) =>
+      make(~path=reactProps##path)
+    );
+  [@bs.obj]
+  external makeProps: (~path: 'path, unit) => {. "path": 'path} = "";
 };
 
 type route =
@@ -30,13 +41,6 @@ type state = {route};
 
 type action =
   | ChangeRoute(route);
-
-let reducer = (action, _state) =>
-  switch (action) {
-  | ChangeRoute(route) => ReasonReact.Update({route: route})
-  };
-
-let component = ReasonReact.reducerComponent("App");
 
 let mapUrlToRoute = (url: ReasonReact.Router.url) =>
   switch (url.path, Cookies.loggedIn()) {
@@ -58,58 +62,45 @@ let loadNextPage =
 
 module Query = ReasonApollo.CreateQuery(GalleryQueries.GalleryQuery);
 
-let make = _children => {
-  ...component,
-  reducer,
-  didMount: self => {
-    let watcherID =
-      ReasonReact.Router.watchUrl(url =>
-        self.send(ChangeRoute(url |> mapUrlToRoute))
-      );
-    self.onUnmount(() => ReasonReact.Router.unwatchUrl(watcherID));
-  },
-  initialState: () => {route: LoginForm},
-  render: self =>
-    <div id="app" className=cls>
-      (
-        switch (self.state.route) {
-        | Redirect(path) => <Redirect path />
-        | LoginForm => <LoginForm />
-        | Gallery(slugs) =>
-          let slug = Js.Array.joinWith("/", Array.of_list(slugs));
-          let galleryQuery = GalleryQueries.GalleryQuery.make(~slug, ());
-          <div>
-            <Header />
-            <Query variables=galleryQuery##variables>
-              ...(
-                   ({result}) =>
-                     switch (result) {
-                     | Loading =>
-                       <GalleryContainer
-                         gallery=None
-                         moreGallery=None
-                         loadNextPage=((_) => ())
-                       />
-                     | Error(_error) =>
-                       <div>
-                         (ReasonReact.string("Error Loading Gallery"))
-                       </div>
-                     | Data(result) =>
-                       <LoadMoreWrapper slug>
-                         ...(
-                              (moreGallery, loadMore) =>
-                                <GalleryContainer
-                                  gallery=result##gallery
-                                  moreGallery
-                                  loadNextPage=(loadNextPage(loadMore, slug))
-                                />
-                            )
-                       </LoadMoreWrapper>
-                     }
-                 )
-            </Query>
-          </div>;
-        }
-      )
-    </div>,
+[@react.component]
+let make = () => {
+  let url = ReasonReactRouter.useUrl();
+  let route = mapUrlToRoute(url);
+
+  <div id="app" className=cls>
+    {switch (route) {
+     | Redirect(path) => <Redirect path />
+     | LoginForm => <LoginForm />
+     | Gallery(slugs) =>
+       let slug = Js.Array.joinWith("/", Array.of_list(slugs));
+       let galleryQuery = GalleryQueries.GalleryQuery.make(~slug, ());
+       <div>
+         <Header />
+         <Query variables=galleryQuery##variables>
+           ...{({result}) =>
+             switch (result) {
+             | Loading =>
+               <GalleryContainer
+                 gallery=None
+                 moreGallery=None
+                 loadNextPage={_ => ()}
+               />
+             | Error(_error) =>
+               <div> {React.string("Error Loading Gallery")} </div>
+             | Data(result) =>
+               <LoadMoreWrapper slug>
+                 ...{(moreGallery, loadMore) =>
+                   <GalleryContainer
+                     gallery=result##gallery
+                     moreGallery
+                     loadNextPage={loadNextPage(loadMore, slug)}
+                   />
+                 }
+               </LoadMoreWrapper>
+             }
+           }
+         </Query>
+       </div>;
+     }}
+  </div>;
 };

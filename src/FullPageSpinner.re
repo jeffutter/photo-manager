@@ -1,7 +1,5 @@
 open Css;
 
-let component = ReasonReact.statelessComponent("FullPageSpinner");
-
 let containerCls =
   style([
     display(flexBox),
@@ -44,14 +42,13 @@ let bounce1Cls = style([animationDelay(320)]);
 
 let bounce2Cls = style([animationDelay(160)]);
 
-let make = _children => {
-  ...component,
-  render: _self =>
+[@react.component]
+let make = () => {
     <div className=containerCls>
       <div className=spinnerCls>
         <div className=bounce1Cls />
         <div className=bounce2Cls />
         <div />
       </div>
-    </div>,
+    </div>
 };

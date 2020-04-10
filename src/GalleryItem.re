@@ -5,21 +5,23 @@ let cls = lightBG => {
     display(block),
     width(px(300)),
     maxWidth(px(300)),
-    `declaration(("position", "inherit")), /* hack for react-waypoint */
+    unsafe("position", "inherit"), /* hack for react-waypoint */
     boxSizing(borderBox),
     color(hex("fff")),
     backgroundSize(cover),
-    `declaration(("backgroundPosition", "center")),
+    unsafe("backgroundPosition", "center"),
     boxShadow(
-      ~x=px(-2),
-      ~y=px(2),
-      ~blur=px(10),
-      ~spread=px(0),
-      rgba(68, 68, 68, 0.4),
+      Shadow.box(
+        ~x=px(-2),
+        ~y=px(2),
+        ~blur=px(10),
+        ~spread=px(0),
+        rgba(68, 68, 68, 0.4),
+      ),
     ),
     transition(~duration=300, ~timingFunction=`easeInOut, "transform"),
     cursor(`pointer),
-    `declaration(("counterIncrement", "item-counter")),
+    unsafe("counterIncrement", "item-counter"),
     selector(
       "@media screen and (min-width: 768px)",
       [selector(":hover", [transform(scale(1.05, 1.05))])],
@@ -41,7 +43,7 @@ let detailsCls =
     selector(
       "&:before",
       [
-        `declaration(("fontWeight", "bold")),
+        unsafe("fontWeight", "bold"),
         fontSize(rem(1.1)),
         paddingRight(em(0.5)),
         color(hex("444")),
@@ -49,9 +51,7 @@ let detailsCls =
     ),
   ]);
 
-let component = ReasonReact.statelessComponent("GalleryItem");
-
-let make = (~lightBG=true, children) => {
-  ...component,
-  render: (_) => children(cls(lightBG), detailsCls),
+[@react.component]
+let make = (~lightBG=true, ~children) => {
+  children(cls(lightBG), detailsCls);
 };

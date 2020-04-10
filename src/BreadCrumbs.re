@@ -1,7 +1,5 @@
 open Css;
 
-let component = ReasonReact.statelessComponent("BreadCrumbs");
-
 type linkData = {
   name: string,
   path: string,
@@ -18,22 +16,21 @@ let cls =
         borderBottom(px(1), `solid, hex("ccc")),
         selector(
           "&:active, &:visited",
-          [`declaration(("color", "inherit"))],
+          [unsafe("color", "inherit")],
         ),
       ],
     ),
   ]);
 
-let activeCls = style([`declaration(("color", "inherit"))]);
+let activeCls = style([unsafe("color", "inherit")]);
 
-let make = (~path: 'a, ~slug: string, ~name: string, _children) => {
-  ...component,
-  render: _self =>
+[@react.component]
+let make = (~path: 'a, ~slug: string, ~name: string) => {
     switch (slug) {
     | "root" =>
       <div className=cls>
         <NavLink className=activeCls _to="/gallery">
-          (ReasonReact.string("Gallery"))
+          (React.string("Gallery"))
         </NavLink>
       </div>
     | _ =>
@@ -56,25 +53,23 @@ let make = (~path: 'a, ~slug: string, ~name: string, _children) => {
         Js.Array.mapi(
           ({name: n, path: p}, idx) =>
             <span key=(Js.Int.toString(idx))>
-              <NavLink className=activeCls _to=p>
-                (ReasonReact.string(n))
-              </NavLink>
-              (ReasonReact.string(" / "))
+              <NavLink className=activeCls _to=p> (React.string(n)) </NavLink>
+              (React.string(" / "))
             </span>,
           pathObjs,
         );
       let rootNavLink =
         <NavLink className=activeCls _to="/gallery">
-          (ReasonReact.string("Gallery"))
+          (React.string("Gallery"))
         </NavLink>;
       ReasonReact.createDomElement(
         "div",
         ~props={"className": cls},
         Array.concat([
-          [|rootNavLink, ReasonReact.string(" / ")|],
+          [|rootNavLink, React.string(" / ")|],
           links,
-          [|ReasonReact.string(name)|],
+          [|React.string(name)|],
         ]),
       );
-    },
+    }
 };

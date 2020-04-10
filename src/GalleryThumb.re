@@ -1,15 +1,12 @@
 open Css;
 
-let component = ReasonReact.statelessComponent("GalleryThumb");
-
 let cls =
   style([margin2(~v=px(0), ~h=auto), padding(px(8)), display(block)]);
 
 let outerCls = (~w, ~h) => style([width(px(w)), height(px(h))]);
 
-let make = (~name: string, ~slug: string, _children) => {
-  ...component,
-  render: (_) =>
+[@react.component]
+let make = (~name: string, ~slug: string) => {
     <div className=(outerCls(~w=320, ~h=275))>
       <GalleryItem lightBG=false>
         ...(
@@ -26,12 +23,10 @@ let make = (~name: string, ~slug: string, _children) => {
                      id="folder"
                    />
                  </svg>
-                 <div className=detailsClass>
-                   (ReasonReact.string(name))
-                 </div>
+                 <div className=detailsClass> (React.string(name)) </div>
                </NavLink>;
              }
            )
       </GalleryItem>
-    </div>,
+    </div>
 };

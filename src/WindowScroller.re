@@ -1,6 +1,3 @@
-[@bs.module "react-virtualized"]
-external windowScroller : ReasonReact.reactClass = "WindowScroller";
-
 [@bs.deriving abstract]
 type onChildScroll = {scrollTop: int};
 
@@ -12,9 +9,7 @@ type childrenOptions = {
   scrollTop: int,
 };
 
-let make = (children: childrenOptions => ReasonReact.reactElement) =>
-  ReasonReact.wrapJsForReason(
-    ~reactClass=windowScroller,
-    ~props=Js.Obj.empty(),
-    children,
-  );
+[@react.component] [@bs.module "react-virtualized"]
+external make:
+  (~children: childrenOptions => ReasonReact.reactElement) => React.element =
+  "WindowScroller";

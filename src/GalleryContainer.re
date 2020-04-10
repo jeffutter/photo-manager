@@ -1,7 +1,5 @@
 open Css;
 
-let component = ReasonReact.statelessComponent("GalleryContainer");
-
 let contains = (~value: 'a, theList: array('a)) => {
   let f = (found, elem) => found || elem == value;
   Array.fold_left(f, false, theList);
@@ -69,9 +67,7 @@ let convertGallery =
     (gallery: GalleryQueries.galleryNoDescendants)
     : GalleryQueries.galleryNoDescendants => gallery;
 
-let convertImage =
-    (image: GalleryQueries.image)
-    : GalleryQueries.completeImage => {
+let convertImage = (image: GalleryQueries.image): GalleryQueries.completeImage => {
   "id": image##id,
   "__typename": image##__typename,
   "name": image##name,
@@ -88,8 +84,7 @@ let convertImage =
 };
 
 let noMatchCompleteChild =
-    (descendant: GalleryQueries.descendant)
-    : GalleryQueries.completeDescendant =>
+    (descendant: GalleryQueries.descendant): GalleryQueries.completeDescendant =>
   switch (descendant) {
   | `Image(image) => `CompleteImage(convertImage(image))
   | `Gallery(gallery) => `CompleteGallery(convertGallery(gallery))
@@ -119,38 +114,34 @@ let completeChild =
     };
   };
 
+[@react.component]
 let make =
     (
       ~gallery: option(GalleryQueries.gallery),
       ~moreGallery: option(GalleryQueries.moreGallery),
       ~loadNextPage: array(string) => unit,
-      _children,
     ) => {
-  ...component,
-  render: _self =>
-    <div className=cls>
-      (
-        switch (gallery, moreGallery) {
-        | (Some(gallery), Some(moreGallery)) =>
-          switch (gallery##descendants) {
-          | Some(descendants) =>
-            let newDescendants =
-              Array.map(
-                descendant =>
-                  completeChild(descendant, moreGallery##descendants),
-                descendants,
-              );
-            <Gallery
-              loadNextPage
-              name=gallery##name
-              path=gallery##path
-              slug=gallery##slug
-              descendants=newDescendants
-            />;
-          | None => <FullPageSpinner />
-          }
-        | _ => <FullPageSpinner />
-        }
-      )
-    </div>,
+  <div className=cls>
+    {switch (gallery, moreGallery) {
+     | (Some(gallery), Some(moreGallery)) =>
+       switch (gallery##descendants) {
+       | Some(descendants) =>
+         let newDescendants =
+           Array.map(
+             descendant =>
+               completeChild(descendant, moreGallery##descendants),
+             descendants,
+           );
+         <Gallery
+           loadNextPage
+           name=gallery##name
+           path=gallery##path
+           slug=gallery##slug
+           descendants=newDescendants
+         />;
+       | None => <FullPageSpinner />
+       }
+     | _ => <FullPageSpinner />
+     }}
+  </div>;
 };

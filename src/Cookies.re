@@ -1,16 +1,15 @@
 type document;
 
-[@bs.val] external document : document = "document";
+[@bs.val] external document: document = "document";
 
-[@bs.get] external getCookie : document => string = "cookie";
+[@bs.get] external getCookie: document => string = "cookie";
 
-[@bs.set] external setCookie : (document, string) => unit = "cookie";
+[@bs.set] external setCookie: (document, string) => unit = "cookie";
 
 /* [@bs.scope "default"] [@bs.module "./lib/client.js"]
    external resetStore : unit => unit = "resetStore"; */
 let createCookie =
-    (~name: string, ~value: string, ~days: option(int)=?, ())
-    : unit =>
+    (~name: string, ~value: string, ~days: option(int)=?, ()): unit =>
   switch (days) {
   | Some(d) =>
     let date = Js.Date.make();
@@ -25,7 +24,7 @@ let createCookie =
   | None => setCookie(document, name ++ "=" ++ value ++ "; path=/")
   };
 
-let readCookie = (name: string) : option(string) => {
+let readCookie = (name: string): option(string) => {
   let nameEQ = name ++ "=";
   let cookieChunks =
     getCookie(document)
@@ -38,10 +37,10 @@ let readCookie = (name: string) : option(string) => {
   };
 };
 
-let eraseCookie = (name: string) : unit =>
+let eraseCookie = (name: string): unit =>
   createCookie(~name, ~value="", ~days=-1, ());
 
-let loggedIn = () : bool => {
+let loggedIn = (): bool => {
   let token = readCookie("access_token");
   switch (token) {
   | Some(cookie) => Js.String.length(cookie) > 0
@@ -49,7 +48,7 @@ let loggedIn = () : bool => {
   };
 };
 
-let logOut = (~setWarning: bool=false, ()) : unit => {
+let logOut = (~setWarning: bool=false, ()): unit => {
   if (setWarning) {
     Dom.Storage.setItem(
       "loginFlash",

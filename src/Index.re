@@ -1,5 +1,5 @@
 [@bs.module "./registerServiceWorker"]
-external registerServiceWorker : unit => unit = "register";
+external registerServiceWorker: unit => unit = "register";
 
 type config = {sentry_dsn: string};
 
@@ -14,7 +14,7 @@ DynamicImport.(
   import("./Raven.bs.js")
   |> resolve
   <$> (
-    ((module Raven): (module RavenType)) => {
+    (module Raven: RavenType) => {
       Fetch.fetch("/config")
       |> Js.Promise.then_(Fetch.Response.text)
       |> Js.Promise.then_(text =>
@@ -39,8 +39,8 @@ Css.(
   global(
     "body, html",
     [
-      fontFamily("'Lato', sans-serif"),
-      fontWeight(300),
+      fontFamily(`custom("'Lato', sans-serif")),
+      fontWeight(`num(300)),
       lineHeight(`abs(1.5)),
       width(pct(100.0)),
       height(pct(100.0)),

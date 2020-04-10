@@ -43,3 +43,6 @@ yarn-debug.log*
 yarn-error.log*
 
 *.tool-versions*
+
+.graphql_ppx_cache/
+.bsb.lock
