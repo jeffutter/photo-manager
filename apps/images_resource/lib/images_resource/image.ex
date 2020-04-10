@@ -8,14 +8,12 @@ defmodule ImagesResource.Image do
   alias ImagesResource.Storage.{File, S3}
   alias ImagesResource.Upload.Upload
 
-  @endpoint "storage.googleapis.com"
-
   def url(_, _, options \\ [])
 
   def url(%File{name: name, path: path}, version, options) do
     bucket = Keyword.get(options, :bucket, bucket())
 
-    "https://#{@endpoint}/#{bucket}"
+    "https://#{bucket}.#{endpoint()}"
     |> Path.join(Upload.s3_key(version, path, name))
     |> URI.encode()
   end
@@ -97,5 +95,9 @@ defmodule ImagesResource.Image do
 
   defp bucket do
     Config.get(:images_resource, :dest_bucket)
+  end
+
+  defp endpoint do
+    System.get_env("ASSET_HOST")
   end
 end
