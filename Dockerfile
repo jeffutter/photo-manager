@@ -1,4 +1,4 @@
-FROM node:8.9.2-stretch as ui
+FROM node:12.16.2-stretch as ui
 RUN mkdir -p /src
 WORKDIR /src
 
@@ -46,7 +46,9 @@ RUN mix compile
 RUN mix release --env=prod
 
 FROM jeffutter/python-opencv-alpine
-RUN apk add -U bash imagemagick ncurses-libs libcrypto1.0 bc \
+RUN apk add -U --upgrade apk-tools \
+    && apk add -U --repository=http://dl-cdn.alpinelinux.org/alpine/edge/main libde265 libcrypto1.1 \
+    && apk add -U bash imagemagick ncurses-libs libcrypto1.0 bc \
     && rm -rf /var/cache/apk/*
 ADD https://raw.githubusercontent.com/wavexx/facedetect/master/facedetect /usr/local/bin/
 ADD bin/face_crop /usr/local/bin
