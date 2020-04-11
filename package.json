@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@glennsl/bs-json": "^5.0.2",
+    "@sentry/browser": "^5.15.4",
     "@svgr/webpack": "^5.3.1",
     "apollo-cache-inmemory": "^1.2.8",
     "apollo-client": "^2.4.0",
@@ -17,7 +18,6 @@
     "glamor": "^2.20.40",
     "graphql": "^0.13.0",
     "graphql-tag": "^2.8.0",
-    "raven-js": "^3.24.0",
     "react": "^16.4.2",
     "react-apollo": "^2.1.11",
     "react-dom": "^16.4.2",
