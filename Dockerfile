@@ -19,7 +19,7 @@ ADD public/ /src/public
 RUN mkdir -p apps/photo_management_api_web/priv/static/
 RUN yarn run webpack:production
 
-FROM elixir:1.6-alpine as build
+FROM elixir:1.8-otp-22-alpine as build
 RUN mkdir -p /src
 WORKDIR /src
 
@@ -45,14 +45,8 @@ ENV MIX_ENV prod
 RUN mix compile
 RUN mix release --env=prod
 
-FROM jeffutter/python-opencv-alpine
-RUN apk add -U --upgrade apk-tools \
-    && apk add -U --repository=http://dl-cdn.alpinelinux.org/alpine/edge/main libde265 libcrypto1.1 \
-    && apk add -U bash imagemagick ncurses-libs libcrypto1.0 bc \
+FROM elixir:1.8-otp-22-alpine
+RUN apk add -U bash ncurses-libs libcrypto1.1 bc imagemagick vips vips-tools \
     && rm -rf /var/cache/apk/*
-ADD https://raw.githubusercontent.com/wavexx/facedetect/master/facedetect /usr/local/bin/
-ADD bin/face_crop /usr/local/bin
-RUN chmod 755 /usr/local/bin/facedetect \
-    && chmod 755 /usr/local/bin/face_crop
 COPY --from=build /src/_build/prod/rel/photo_management /photo_management
 ENTRYPOINT ["/photo_management/bin/photo_management"]

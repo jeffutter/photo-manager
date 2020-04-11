@@ -30,7 +30,10 @@ defmodule ImagesResource.Upload.Transform do
   end
 
   def transform(:thumb, _) do
-    {:face_crop, fn input, output -> "#{input} #{output}" end, :jpg}
+    {:vipsthumbnail,
+     fn input, output ->
+       "#{input} --smartcrop attention --size 300x225 -o #{output}[Q=70,optimize_coding,strip]"
+     end, :jpg}
   end
 
   def transform(:small, _) do
