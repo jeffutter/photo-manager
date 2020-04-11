@@ -30,7 +30,7 @@
     "reason-apollo",
     "bs-fetch",
     "@glennsl/bs-json",
-    "bs-dynamic-import"
+    "bs-webapi"
   ],
   "bs-dev-dependencies": ["@glennsl/bs-jest"],
   "refmt": 3,

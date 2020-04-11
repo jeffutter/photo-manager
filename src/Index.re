@@ -1,38 +1,31 @@
 [@bs.module "./registerServiceWorker"]
 external registerServiceWorker: unit => unit = "register";
 
-type config = {sentry_dsn: string};
+type conf = {sentry_dsn: string};
 
 module Decode = {
-  let config = json =>
+  let conf = json =>
     Json.Decode.{sentry_dsn: json |> field("sentry_dsn", string)};
 };
 
-module type RavenType = (module type of Raven);
-
-DynamicImport.(
-  import("./Raven.bs.js")
-  |> resolve
-  <$> (
-    (module Raven: RavenType) => {
-      Fetch.fetch("/config")
-      |> Js.Promise.then_(Fetch.Response.text)
-      |> Js.Promise.then_(text =>
-           text |> Json.parseOrRaise |> Decode.config |> Js.Promise.resolve
-         )
-      |> Js.Promise.then_((config: config) => {
-           Raven.setup(config.sentry_dsn);
-           Js.Promise.resolve();
-         })
-      |> Js.Promise.catch(err => {
-           Js.log2("Error loading Raven. Bad response from server", err);
-           Js.Promise.resolve();
-         })
-      |> ignore;
-      ();
-    }
-  )
-  <$!> (error => Js.log(error))
+Webapi.Dom.(
+  window
+  |> Window.addEventListener("load", _ =>
+       Fetch.fetch("/config")
+       |> Js.Promise.then_(Fetch.Response.text)
+       |> Js.Promise.then_(text =>
+            text |> Json.parseOrRaise |> Decode.conf |> Js.Promise.resolve
+          )
+       |> Js.Promise.then_((conf: conf) => {
+            Sentry.init(~dsn=conf.sentry_dsn);
+            Js.Promise.resolve();
+          })
+       |> Js.Promise.catch(err => {
+            Js.log2("Error loading Sentry. Bad response from server", err);
+            Js.Promise.resolve();
+          })
+       |> ignore
+     )
 );
 
 Css.(

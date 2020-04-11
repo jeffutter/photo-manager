@@ -7,10 +7,10 @@ import * as React from "react";
 import * as ReactDOMRe from "../node_modules/reason-react/src/ReactDOMRe.js";
 import * as Json_decode from "../node_modules/@glennsl/bs-json/src/Json_decode.bs.js";
 import * as ReactApollo from "react-apollo";
-import * as DynamicImport from "../node_modules/bs-dynamic-import/src/DynamicImport.bs.js";
 import * as App$PhotoManager from "./App.bs.js";
 import * as ReasonReactRouter from "../node_modules/reason-react/src/ReasonReactRouter.js";
 import * as Client$PhotoManager from "./Client.bs.js";
+import * as Sentry$PhotoManager from "./Sentry.bs.js";
 import * as RegisterServiceWorker from "./registerServiceWorker";
 
 function registerServiceWorker(prim) {
@@ -18,29 +18,26 @@ function registerServiceWorker(prim) {
   return /* () */0;
 }
 
-function config(json) {
+function conf(json) {
   return /* record */[/* sentry_dsn */Json_decode.field("sentry_dsn", Json_decode.string, json)];
 }
 
 var Decode = {
-  config: config
+  conf: conf
 };
 
-DynamicImport.$less$$bang$great(DynamicImport.$less$$great(DynamicImport.resolve(import("./Raven.bs.js")), (function (Raven) {
-            fetch("/config").then((function (prim) {
-                          return prim.text();
-                        })).then((function (text) {
-                        return Promise.resolve(config(Json.parseOrRaise(text)));
-                      })).then((function (config) {
-                      Curry._1(Raven.setup, config[/* sentry_dsn */0]);
-                      return Promise.resolve(/* () */0);
-                    })).catch((function (err) {
-                    console.log("Error loading Raven. Bad response from server", err);
-                    return Promise.resolve(/* () */0);
-                  }));
-            return /* () */0;
-          })), (function (error) {
-        console.log(error);
+window.addEventListener("load", (function (param) {
+        fetch("/config").then((function (prim) {
+                      return prim.text();
+                    })).then((function (text) {
+                    return Promise.resolve(conf(Json.parseOrRaise(text)));
+                  })).then((function (conf) {
+                  Sentry$PhotoManager.init(conf[/* sentry_dsn */0]);
+                  return Promise.resolve(/* () */0);
+                })).catch((function (err) {
+                console.log("Error loading Sentry. Bad response from server", err);
+                return Promise.resolve(/* () */0);
+              }));
         return /* () */0;
       }));
 
