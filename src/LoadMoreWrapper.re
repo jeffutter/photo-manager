@@ -22,7 +22,7 @@ let updateQuery =
     (previousResult, newResults: ReasonApolloQuery.updateQueryOptions) => {
   let previousResult = unsafeFromJson(previousResult);
   (
-    switch (newResults->ReasonApolloQuery.fetchMoreResultGet) {
+    switch (newResults.fetchMoreResult) {
     | Some(fetchMoreResult) =>
       let fetchMoreResult = unsafeFromJson(fetchMoreResult);
       let combinedGallery =

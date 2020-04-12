@@ -24,10 +24,10 @@ function star(filled) {
 }
 
 function Star(Props) {
-  var match = Props.filled;
-  var filled = match !== undefined ? match : false;
+  var filledOpt = Props.filled;
   var index = Props.index;
   var handleClick = Props.handleClick;
+  var filled = filledOpt !== undefined ? filledOpt : false;
   var handleClickWithI = Curry._1(handleClick, index);
   return React.createElement("span", {
               className: cls,

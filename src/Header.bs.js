@@ -6,11 +6,9 @@ import * as React from "react";
 import * as Cookies$PhotoManager from "./Cookies.bs.js";
 import * as NavLink$PhotoManager from "./NavLink.bs.js";
 
-var setLocationHref = (
-    function (val) {
+var setLocationHref = (function (val) {
       window.location.href = val
-    }
-  );
+    });
 
 var headerCls = Curry._1(Css.style, /* :: */[
       Css.position(Css.fixed),
@@ -336,16 +334,20 @@ function Header(Props) {
   var match = React.useReducer((function (state, action) {
           if (action) {
             Cookies$PhotoManager.logOut(undefined, /* () */0);
-            Curry._1(setLocationHref, "/");
+            setLocationHref("/");
             return state;
           } else {
-            return /* record */[/* _open */!state[/* _open */0]];
+            return {
+                    _open: !state._open
+                  };
           }
-        }), /* record */[/* _open */false]);
+        }), {
+        _open: false
+      });
   var dispatch = match[1];
-  var headerClasses = /* array */[headerCls];
-  var mobileToggleClasses = /* array */[mobileToggleCls];
-  if (match[0][/* _open */0]) {
+  var headerClasses = [headerCls];
+  var mobileToggleClasses = [mobileToggleCls];
+  if (match[0]._open) {
     headerClasses.push(openNavCls);
     mobileToggleClasses.push(openNavMobileToggle);
   }
@@ -399,4 +401,4 @@ export {
   make ,
   
 }
-/* setLocationHref Not a pure module */
+/* headerCls Not a pure module */

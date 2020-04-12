@@ -346,7 +346,7 @@ function parse(value) {
 function make(slug, param) {
   return {
           query: ppx_printed_query,
-          variables: Js_dict.fromArray(/* array */[/* tuple */[
+          variables: Js_dict.fromArray([/* tuple */[
                     "slug",
                     slug
                   ]].filter((function (param) {
@@ -360,7 +360,7 @@ function makeWithVariables(variables) {
   var slug = variables.slug;
   return {
           query: ppx_printed_query,
-          variables: Js_dict.fromArray(/* array */[/* tuple */[
+          variables: Js_dict.fromArray([/* tuple */[
                     "slug",
                     slug
                   ]].filter((function (param) {
@@ -371,7 +371,7 @@ function makeWithVariables(variables) {
 }
 
 function makeVariables(slug, param) {
-  return Js_dict.fromArray(/* array */[/* tuple */[
+  return Js_dict.fromArray([/* tuple */[
                   "slug",
                   slug
                 ]].filter((function (param) {
@@ -380,7 +380,7 @@ function makeVariables(slug, param) {
 }
 
 function definition_002(graphql_ppx_use_json_variables_fn, slug, param) {
-  return Curry._1(graphql_ppx_use_json_variables_fn, Js_dict.fromArray(/* array */[/* tuple */[
+  return Curry._1(graphql_ppx_use_json_variables_fn, Js_dict.fromArray([/* tuple */[
                       "slug",
                       slug
                     ]].filter((function (param) {
@@ -646,7 +646,7 @@ function parse$1(value) {
 function make$1(slug, slugs, param) {
   return {
           query: ppx_printed_query$1,
-          variables: Js_dict.fromArray(/* array */[
+          variables: Js_dict.fromArray([
                   /* tuple */[
                     "slug",
                     slug
@@ -669,7 +669,7 @@ function makeWithVariables$1(variables) {
   var slugs = variables.slugs;
   return {
           query: ppx_printed_query$1,
-          variables: Js_dict.fromArray(/* array */[
+          variables: Js_dict.fromArray([
                   /* tuple */[
                     "slug",
                     slug
@@ -688,7 +688,7 @@ function makeWithVariables$1(variables) {
 }
 
 function makeVariables$1(slug, slugs, param) {
-  return Js_dict.fromArray(/* array */[
+  return Js_dict.fromArray([
                 /* tuple */[
                   "slug",
                   slug
@@ -705,7 +705,7 @@ function makeVariables$1(slug, slugs, param) {
 }
 
 function definition_002$1(graphql_ppx_use_json_variables_fn, slug, slugs, param) {
-  return Curry._1(graphql_ppx_use_json_variables_fn, Js_dict.fromArray(/* array */[
+  return Curry._1(graphql_ppx_use_json_variables_fn, Js_dict.fromArray([
                     /* tuple */[
                       "slug",
                       slug
@@ -836,7 +836,7 @@ function parse$2(value) {
 function make$2(slug, rating, param) {
   return {
           query: ppx_printed_query$2,
-          variables: Js_dict.fromArray(/* array */[
+          variables: Js_dict.fromArray([
                   /* tuple */[
                     "slug",
                     slug
@@ -857,7 +857,7 @@ function makeWithVariables$2(variables) {
   var rating = variables.rating;
   return {
           query: ppx_printed_query$2,
-          variables: Js_dict.fromArray(/* array */[
+          variables: Js_dict.fromArray([
                   /* tuple */[
                     "slug",
                     slug
@@ -874,7 +874,7 @@ function makeWithVariables$2(variables) {
 }
 
 function makeVariables$2(slug, rating, param) {
-  return Js_dict.fromArray(/* array */[
+  return Js_dict.fromArray([
                 /* tuple */[
                   "slug",
                   slug
@@ -889,7 +889,7 @@ function makeVariables$2(slug, rating, param) {
 }
 
 function definition_002$2(graphql_ppx_use_json_variables_fn, slug, rating, param) {
-  return Curry._1(graphql_ppx_use_json_variables_fn, Js_dict.fromArray(/* array */[
+  return Curry._1(graphql_ppx_use_json_variables_fn, Js_dict.fromArray([
                     /* tuple */[
                       "slug",
                       slug

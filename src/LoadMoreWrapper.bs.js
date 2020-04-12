@@ -17,7 +17,7 @@ function updateQuery(previousResult, newResults) {
   var match = newResults.fetchMoreResult;
   if (match !== undefined) {
     var match$1 = previousResult.gallery;
-    var match$2 = match.gallery;
+    var match$2 = Caml_option.valFromOption(match).gallery;
     var combinedGallery;
     if (match$1 == null) {
       combinedGallery = (match$2 == null) ? undefined : Caml_option.some(match$2);
@@ -27,7 +27,7 @@ function updateQuery(previousResult, newResults) {
       var match$3 = match$1.descendants;
       var match$4 = match$2.descendants;
       var combinedDescendants = (match$3 == null) ? (
-          (match$4 == null) ? /* array */[] : match$4
+          (match$4 == null) ? [] : match$4
         ) : (
           (match$4 == null) ? match$3 : $$Array.append(match$3, match$4)
         );
@@ -53,12 +53,12 @@ function updateQuery(previousResult, newResults) {
 function LoadMoreWrapper(Props) {
   var slug = Props.slug;
   var children = Props.children;
-  var loadMoreQuery = GalleryQueries$PhotoManager.MoreQuery.make(slug, /* array */[], /* () */0);
+  var loadMoreQuery = GalleryQueries$PhotoManager.MoreQuery.make(slug, [], /* () */0);
   return React.createElement(Query.make, {
               variables: loadMoreQuery.variables,
               children: (function (param) {
-                  var fetchMore = param[/* fetchMore */5];
-                  var result = param[/* result */0];
+                  var fetchMore = param.fetchMore;
+                  var result = param.result;
                   if (typeof result === "number") {
                     return Curry._2(children, undefined, (function (param) {
                                   return Curry._2(fetchMore, param, updateQuery);

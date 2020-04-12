@@ -47,26 +47,26 @@ var component = ReasonReact.statelessComponent("Redirect");
 
 var make = ReasonReactCompat.wrapReasonReactForReact(component, (function (reactProps) {
         var path = reactProps.path;
-        return /* record */[
-                /* debugName */component[/* debugName */0],
-                /* reactClassInternal */component[/* reactClassInternal */1],
-                /* handedOffState */component[/* handedOffState */2],
-                /* willReceiveProps */component[/* willReceiveProps */3],
-                /* didMount */(function (_self) {
+        return {
+                debugName: component.debugName,
+                reactClassInternal: component.reactClassInternal,
+                handedOffState: component.handedOffState,
+                willReceiveProps: component.willReceiveProps,
+                didMount: (function (_self) {
                     return ReasonReactRouter.push(path);
                   }),
-                /* didUpdate */component[/* didUpdate */5],
-                /* willUnmount */component[/* willUnmount */6],
-                /* willUpdate */component[/* willUpdate */7],
-                /* shouldUpdate */component[/* shouldUpdate */8],
-                /* render */(function (_self) {
+                didUpdate: component.didUpdate,
+                willUnmount: component.willUnmount,
+                willUpdate: component.willUpdate,
+                shouldUpdate: component.shouldUpdate,
+                render: (function (_self) {
                     return React.createElement("div", undefined);
                   }),
-                /* initialState */component[/* initialState */10],
-                /* retainedProps */component[/* retainedProps */11],
-                /* reducer */component[/* reducer */12],
-                /* jsElementWrapped */component[/* jsElementWrapped */13]
-              ];
+                initialState: component.initialState,
+                retainedProps: component.retainedProps,
+                reducer: component.reducer,
+                jsElementWrapped: component.jsElementWrapped
+              };
       }));
 
 var Redirect = {
@@ -75,7 +75,7 @@ var Redirect = {
 };
 
 function mapUrlToRoute(url) {
-  var match = url[/* path */0];
+  var match = url.path;
   var match$1 = Cookies$PhotoManager.loggedIn(/* () */0);
   if (match) {
     switch (match[0]) {
@@ -144,7 +144,7 @@ function App(Props) {
     tmp = React.createElement("div", undefined, React.createElement(Header$PhotoManager.make, { }), React.createElement(Query.make, {
               variables: galleryQuery.variables,
               children: (function (param) {
-                  var result = param[/* result */0];
+                  var result = param.result;
                   if (typeof result === "number") {
                     return React.createElement(GalleryContainer$PhotoManager.make, {
                                 gallery: undefined,

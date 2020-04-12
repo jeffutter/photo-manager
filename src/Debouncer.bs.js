@@ -4,13 +4,19 @@ import * as Curry from "../node_modules/bs-platform/lib/es6/curry.js";
 import * as Belt_Option from "../node_modules/bs-platform/lib/es6/belt_Option.js";
 import * as Caml_option from "../node_modules/bs-platform/lib/es6/caml_option.js";
 
-function makeCancelable($staropt$star, fn) {
-  var wait = $staropt$star !== undefined ? $staropt$star : 100;
-  var timerId = /* record */[/* contents */undefined];
-  var lastArg = /* record */[/* contents */undefined];
-  var lastCallTime = /* record */[/* contents */undefined];
+function makeCancelable(waitOpt, fn) {
+  var wait = waitOpt !== undefined ? waitOpt : 100;
+  var timerId = {
+    contents: undefined
+  };
+  var lastArg = {
+    contents: undefined
+  };
+  var lastCallTime = {
+    contents: undefined
+  };
   var shouldInvoke = function (time) {
-    var match = lastCallTime[0];
+    var match = lastCallTime.contents;
     if (match !== undefined) {
       var timeSinceLastCall = time - match | 0;
       if (timeSinceLastCall >= wait) {
@@ -23,7 +29,7 @@ function makeCancelable($staropt$star, fn) {
     }
   };
   var remainingWait = function (time) {
-    var match = lastCallTime[0];
+    var match = lastCallTime.contents;
     if (match !== undefined) {
       var timeSinceLastCall = time - match | 0;
       return wait - timeSinceLastCall | 0;
@@ -32,43 +38,43 @@ function makeCancelable($staropt$star, fn) {
     }
   };
   var timerExpired = function (param) {
-    var match = timerId[0];
+    var match = timerId.contents;
     if (match !== undefined) {
       clearTimeout(Caml_option.valFromOption(match));
     }
     var time = Date.now() | 0;
     if (shouldInvoke(time)) {
-      var x = lastArg[0];
+      var x = lastArg.contents;
       if (x !== undefined) {
-        lastArg[0] = undefined;
-        timerId[0] = undefined;
+        lastArg.contents = undefined;
+        timerId.contents = undefined;
         return Curry._1(fn, Caml_option.valFromOption(x));
       } else {
-        timerId[0] = undefined;
+        timerId.contents = undefined;
         return /* () */0;
       }
     } else {
-      timerId[0] = Caml_option.some(setTimeout(timerExpired, remainingWait(time)));
+      timerId.contents = Caml_option.some(setTimeout(timerExpired, remainingWait(time)));
       return /* () */0;
     }
   };
   var schedule = function (x) {
     var time = Date.now() | 0;
-    lastArg[0] = Caml_option.some(x);
-    lastCallTime[0] = time;
-    timerId[0] = Caml_option.some(setTimeout(timerExpired, wait));
+    lastArg.contents = Caml_option.some(x);
+    lastCallTime.contents = time;
+    timerId.contents = Caml_option.some(setTimeout(timerExpired, wait));
     return /* () */0;
   };
   var scheduled = function (param) {
-    return Belt_Option.isSome(timerId[0]);
+    return Belt_Option.isSome(timerId.contents);
   };
   var cancel = function (param) {
-    var match = timerId[0];
+    var match = timerId.contents;
     if (match !== undefined) {
       clearTimeout(Caml_option.valFromOption(match));
-      timerId[0] = undefined;
-      lastArg[0] = undefined;
-      lastCallTime[0] = undefined;
+      timerId.contents = undefined;
+      lastArg.contents = undefined;
+      lastCallTime.contents = undefined;
       return /* () */0;
     } else {
       return /* () */0;
@@ -78,16 +84,16 @@ function makeCancelable($staropt$star, fn) {
     cancel(/* () */0);
     return Curry._1(fn, x);
   };
-  return /* record */[
-          /* invoke */now,
-          /* schedule */schedule,
-          /* scheduled */scheduled,
-          /* cancel */cancel
-        ];
+  return {
+          invoke: now,
+          schedule: schedule,
+          scheduled: scheduled,
+          cancel: cancel
+        };
 }
 
 function make(wait, fn) {
-  return makeCancelable(wait, fn)[/* schedule */1];
+  return makeCancelable(wait, fn).schedule;
 }
 
 export {

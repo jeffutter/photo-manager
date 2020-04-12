@@ -55,19 +55,19 @@ function BreadCrumbs(Props) {
             var n = Caml_array.caml_array_get(path, idx);
             var p = s.join("/");
             s.push(section);
-            acc.push(/* record */[
-                  /* name */n,
-                  /* path */"/gallery/" + p
-                ]);
+            acc.push({
+                  name: n,
+                  path: "/gallery/" + p
+                });
             return acc;
-          }), /* array */[]);
+          }), []);
     var links = pathObjs.map((function (param, idx) {
             return React.createElement("span", {
                         key: idx.toString()
                       }, React.createElement(NavLink$PhotoManager.make, {
-                            to: param[/* path */1],
+                            to: param.path,
                             className: activeCls,
-                            children: param[/* name */0]
+                            children: param.name
                           }), " / ");
           }));
     var rootNavLink = React.createElement(NavLink$PhotoManager.make, {
@@ -78,14 +78,14 @@ function BreadCrumbs(Props) {
     return ReasonReact.createDomElement("div", {
                 className: cls
               }, $$Array.concat(/* :: */[
-                    /* array */[
+                    [
                       rootNavLink,
                       " / "
                     ],
                     /* :: */[
                       links,
                       /* :: */[
-                        /* array */[name],
+                        [name],
                         /* [] */0
                       ]
                     ]

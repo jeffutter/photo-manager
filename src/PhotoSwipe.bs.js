@@ -6,13 +6,13 @@ import * as ReactPhotoswipe from "react-photoswipe";
 import * as Caml_builtin_exceptions from "../node_modules/bs-platform/lib/es6/caml_builtin_exceptions.js";
 
 function PhotoSwipe(Props) {
-  var match = Props.isOpen;
-  var isOpen = match !== undefined ? match : false;
+  var isOpenOpt = Props.isOpen;
   var items = Props.items;
   var onClose = Props.onClose;
   var options = Props.options;
-  var match$1 = document.getElementById("modal-root");
-  if (match$1 == null) {
+  var isOpen = isOpenOpt !== undefined ? isOpenOpt : false;
+  var match = document.getElementById("modal-root");
+  if (match == null) {
     throw [
           Caml_builtin_exceptions.invalid_argument,
           "ReactDOMRE.renderToElementWithId : no element of id 'modal-root' found in the HTML."
@@ -25,7 +25,7 @@ function PhotoSwipe(Props) {
                         items: items,
                         onClose: onClose,
                         options: options
-                      }, /* array */[])), match$1);
+                      }, [])), match);
   }
 }
 

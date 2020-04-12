@@ -42,8 +42,8 @@ function loggedIn(param) {
   }
 }
 
-function logOut($staropt$star, param) {
-  var setWarning = $staropt$star !== undefined ? $staropt$star : false;
+function logOut(setWarningOpt, param) {
+  var setWarning = setWarningOpt !== undefined ? setWarningOpt : false;
   if (setWarning) {
     localStorage.setItem("loginFlash", "Your login has expired or is invalid.");
   }

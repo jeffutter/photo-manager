@@ -21,8 +21,7 @@ function stars5(_filled, _total, _index, handleClick, _acc) {
     var index = _index;
     var total = _total;
     var filled = _filled;
-    var match = filled > 0;
-    if (match) {
+    if (filled > 0) {
       _acc = /* :: */[
         React.createElement(Star$PhotoManager.make, {
               filled: true,
@@ -35,23 +34,20 @@ function stars5(_filled, _total, _index, handleClick, _acc) {
       _total = total - 1 | 0;
       _filled = filled - 1 | 0;
       continue ;
+    } else if (total > 0) {
+      _acc = /* :: */[
+        React.createElement(Star$PhotoManager.make, {
+              filled: false,
+              index: index,
+              handleClick: handleClick
+            }),
+        acc
+      ];
+      _index = index + 1 | 0;
+      _total = total - 1 | 0;
+      continue ;
     } else {
-      var match$1 = total > 0;
-      if (match$1) {
-        _acc = /* :: */[
-          React.createElement(Star$PhotoManager.make, {
-                filled: false,
-                index: index,
-                handleClick: handleClick
-              }),
-          acc
-        ];
-        _index = index + 1 | 0;
-        _total = total - 1 | 0;
-        continue ;
-      } else {
-        return List.rev(acc);
-      }
+      return List.rev(acc);
     }
   };
 }
@@ -76,7 +72,7 @@ function Stars(Props) {
   var rating = Props.rating;
   return React.createElement(Mutation.make, {
               children: (function (mutation, param) {
-                  var result = param[/* result */0];
+                  var result = param.result;
                   var rating$1;
                   if (typeof result === "number" || result.tag !== /* Data */1) {
                     rating$1 = rating;

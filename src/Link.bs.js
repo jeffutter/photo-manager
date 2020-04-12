@@ -20,11 +20,11 @@ function handleClick(onClick, href, $$event) {
 }
 
 function Link(Props) {
-  var match = Props.className;
-  var className = match !== undefined ? match : "";
+  var classNameOpt = Props.className;
   var href = Props.href;
   var onClick = Props.onClick;
   var children = Props.children;
+  var className = classNameOpt !== undefined ? classNameOpt : "";
   return React.createElement("a", {
               className: className,
               href: href,

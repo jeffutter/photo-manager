@@ -69,12 +69,14 @@ function openLightboxFunc(send, thumbedImageSlugs, slug) {
   return Curry._1(send, /* OpenLightbox */[index]);
 }
 
-var pending = /* record */[/* contents : [] */0];
+var pending = {
+  contents: /* [] */0
+};
 
 var loadPending = Debouncer$PhotoManager.make(200, (function (loadNextPage) {
-        var list = pending[0];
+        var list = pending.contents;
         if (list) {
-          pending[0] = /* [] */0;
+          pending.contents = /* [] */0;
           var chunks = Utils$PhotoManager.chunkList(20, list);
           List.iter((function (chunk) {
                   return Curry._1(loadNextPage, $$Array.of_list(chunk));
@@ -86,46 +88,46 @@ var loadPending = Debouncer$PhotoManager.make(200, (function (loadNextPage) {
       }));
 
 function addToPending(loadNextPage, slug) {
-  pending[0] = /* :: */[
+  pending.contents = /* :: */[
     slug,
-    pending[0]
+    pending.contents
   ];
   return Curry._1(loadPending, loadNextPage);
 }
 
 function Gallery(Props) {
-  var match = Props.name;
-  var name = match !== undefined ? match : "";
-  var match$1 = Props.path;
-  var path = match$1 !== undefined ? match$1 : /* array */[];
-  var match$2 = Props.slug;
-  var slug = match$2 !== undefined ? match$2 : "";
-  var match$3 = Props.descendants;
-  var descendants = match$3 !== undefined ? match$3 : /* array */[];
+  var nameOpt = Props.name;
+  var pathOpt = Props.path;
+  var slugOpt = Props.slug;
+  var descendantsOpt = Props.descendants;
   var loadNextPage = Props.loadNextPage;
-  var match$4 = React.useReducer((function (_state, action) {
+  var name = nameOpt !== undefined ? nameOpt : "";
+  var path = pathOpt !== undefined ? pathOpt : [];
+  var slug = slugOpt !== undefined ? slugOpt : "";
+  var descendants = descendantsOpt !== undefined ? descendantsOpt : [];
+  var match = React.useReducer((function (_state, action) {
           if (action) {
-            return /* record */[
-                    /* lightboxIsOpen */true,
-                    /* currentImage */action[0]
-                  ];
+            return {
+                    lightboxIsOpen: true,
+                    currentImage: action[0]
+                  };
           } else {
-            return /* record */[
-                    /* lightboxIsOpen */false,
-                    /* currentImage */0
-                  ];
+            return {
+                    lightboxIsOpen: false,
+                    currentImage: 0
+                  };
           }
-        }), /* record */[
-        /* lightboxIsOpen */false,
-        /* currentImage */0
-      ]);
-  var dispatch = match$4[1];
-  var state = match$4[0];
-  var match$5 = splitDescendants(/* tuple */[
+        }), {
+        lightboxIsOpen: false,
+        currentImage: 0
+      });
+  var dispatch = match[1];
+  var state = match[0];
+  var match$1 = splitDescendants(/* tuple */[
         /* [] */0,
         /* [] */0
       ], $$Array.to_list(descendants));
-  var thumbedImageSlugs = match$5[0];
+  var thumbedImageSlugs = match$1[0];
   var openLightbox = function (param) {
     return openLightboxFunc(dispatch, thumbedImageSlugs, param);
   };
@@ -148,9 +150,9 @@ function Gallery(Props) {
                       h: image.height,
                       title: image.name
                     };
-            }), match$5[1]));
+            }), match$1[1]));
   var swipeOptions = {
-    index: state[/* currentImage */1]
+    index: state.currentImage
   };
   var showPhotoSwipe = swipeImages.length !== 0;
   return React.createElement(ReactVirtualized.WindowScroller, {
@@ -176,7 +178,7 @@ function Gallery(Props) {
                                   onScroll: scrollerOptions.onChildScroll,
                                   scrollTop: scrollerOptions.scrollTop
                                 }), showPhotoSwipe ? React.createElement(PhotoSwipe$PhotoManager.make, {
-                                    isOpen: state[/* lightboxIsOpen */0],
+                                    isOpen: state.lightboxIsOpen,
                                     items: swipeImages,
                                     onClose: (function (_event) {
                                         return Curry._1(dispatch, /* CloseLightbox */0);

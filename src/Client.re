@@ -30,9 +30,9 @@ let context =
   });
 
 let errorHandler = (error: ReasonApolloTypes.errorResponse) =>
-  switch (error##networkError |> Js.Nullable.toOption) {
+  switch (error.networkError |> Js.Nullable.toOption) {
   | Some(error) =>
-    if (error##statusCode == 401) {
+    if (error.statusCode == 401) {
       Cookies.logOut(~setWarning=true, ());
       ReasonReact.Router.push("/login");
     } else {

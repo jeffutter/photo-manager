@@ -19,7 +19,9 @@ function registerServiceWorker(prim) {
 }
 
 function conf(json) {
-  return /* record */[/* sentry_dsn */Json_decode.field("sentry_dsn", Json_decode.string, json)];
+  return {
+          sentry_dsn: Json_decode.field("sentry_dsn", Json_decode.string, json)
+        };
 }
 
 var Decode = {
@@ -32,7 +34,7 @@ window.addEventListener("load", (function (param) {
                     })).then((function (text) {
                     return Promise.resolve(conf(Json.parseOrRaise(text)));
                   })).then((function (conf) {
-                  Sentry$PhotoManager.init(conf[/* sentry_dsn */0]);
+                  Sentry$PhotoManager.init(conf.sentry_dsn);
                   return Promise.resolve(/* () */0);
                 })).catch((function (err) {
                 console.log("Error loading Sentry. Bad response from server", err);

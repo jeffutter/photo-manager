@@ -52,12 +52,13 @@ let mapUrlToRoute = (url: ReasonReact.Router.url) =>
   | _ => LoginForm
   };
 
-type loadMoreOptions = (~variables: Js.Json.t=?, unit) => Js.Promise.t(unit);
+type loadMoreOptions =
+  (~variables: option(Js.Json.t), unit) => Js.Promise.t(unit);
 
 let loadNextPage =
     (loadMore: loadMoreOptions, slug: string, slugs: array(string)) => {
   let loadMoreQuery = GalleryQueries.MoreQuery.make(~slug, ~slugs, ());
-  loadMore(~variables=loadMoreQuery##variables, ()) |> ignore;
+  loadMore(~variables=Some(loadMoreQuery##variables), ()) |> ignore;
 };
 
 module Query = ReasonApollo.CreateQuery(GalleryQueries.GalleryQuery);

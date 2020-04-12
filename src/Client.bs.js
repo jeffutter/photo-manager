@@ -11,10 +11,10 @@ import * as Cookies$PhotoManager from "./Cookies.bs.js";
 
 var fragmentMatcher = ApolloInMemoryCache.createIntrospectionFragmentMatcher({
       __schema: {
-        types: /* array */[{
+        types: [{
             kind: "INTERFACE",
             name: "Child",
-            possibleTypes: /* array */[
+            possibleTypes: [
               {
                 name: "Gallery"
               },
@@ -55,7 +55,7 @@ var errorLink = ApolloLinks.createErrorLink(errorHandler);
 
 var httpLink = ApolloLinks.createHttpLink("/graphiql", undefined, undefined, undefined, undefined, undefined, /* () */0);
 
-var instance = ReasonApollo.createApolloClient(ApolloLink.from(/* array */[
+var instance = ReasonApollo.createApolloClient(ApolloLink.from([
           context,
           errorLink,
           httpLink

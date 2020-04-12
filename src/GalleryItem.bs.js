@@ -101,9 +101,9 @@ var detailsCls = Curry._1(Css.style, /* :: */[
     ]);
 
 function GalleryItem(Props) {
-  var match = Props.lightBG;
-  var lightBG = match !== undefined ? match : true;
+  var lightBGOpt = Props.lightBG;
   var children = Props.children;
+  var lightBG = lightBGOpt !== undefined ? lightBGOpt : true;
   return Curry._2(children, cls(lightBG), detailsCls);
 }
 

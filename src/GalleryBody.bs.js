@@ -131,7 +131,7 @@ function cellRenderer(loadImage, isScrolling, openLightbox, grid, marginCls, opt
 function rowHeight(grid, param) {
   var row;
   try {
-    row = List.nth(grid, param[/* index */0]);
+    row = List.nth(grid, param.index);
   }
   catch (raw_exn){
     var exn = Caml_js_exceptions.internalToOCamlException(raw_exn);
@@ -141,14 +141,9 @@ function rowHeight(grid, param) {
       throw exn;
     }
   }
-  var match = List.for_all((function (item) {
-          if (typeof item === "number") {
-            return false;
-          } else {
-            return item[0] === 121710777;
-          }
-        }), row);
-  if (match) {
+  if (List.for_all((function (item) {
+            return typeof item === "number" ? false : item[0] === 121710777;
+          }), row)) {
     return 300;
   } else {
     return 325;
@@ -156,14 +151,14 @@ function rowHeight(grid, param) {
 }
 
 function GalleryBody(Props) {
-  var match = Props.descendants;
-  var descendants = match !== undefined ? match : /* array */[];
+  var descendantsOpt = Props.descendants;
   var openLightbox = Props.openLightbox;
   var loadImage = Props.loadImage;
   var windowHeight = Props.windowHeight;
   var isScrolling = Props.isScrolling;
   var onScroll = Props.onScroll;
   var scrollTop = Props.scrollTop;
+  var descendants = descendantsOpt !== undefined ? descendantsOpt : [];
   var listDescendants = $$Array.to_list(descendants);
   return React.createElement(ReactVirtualized.AutoSizer, {
               disableHeight: true,
