@@ -44,7 +44,7 @@ let openLightboxFunc = (send, thumbedImageSlugs, slug) => {
 let pending: ref(list(string)) = ref([]);
 
 let loadPending =
-  Debouncer.make(~wait=200, (loadNextPage: array(string) => unit) =>
+  Debounce.debounce1(~timeOut=200, ~fn=(loadNextPage: array(string) => unit) =>
     switch (pending^) {
     | [] => ()
     | list =>

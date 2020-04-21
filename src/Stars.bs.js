@@ -5,7 +5,6 @@ import * as $$Array from "../node_modules/bs-platform/lib/es6/array.js";
 import * as Curry from "../node_modules/bs-platform/lib/es6/curry.js";
 import * as React from "react";
 import * as Caml_option from "../node_modules/bs-platform/lib/es6/caml_option.js";
-import * as ReasonReact from "../node_modules/reason-react/src/ReasonReact.js";
 import * as ReasonApollo from "../node_modules/reason-apollo/src/ReasonApollo.bs.js";
 import * as Star$PhotoManager from "./Star.bs.js";
 import * as GalleryQueries$PhotoManager from "./GalleryQueries.bs.js";
@@ -47,7 +46,7 @@ function stars5(_filled, _total, _index, handleClick, _acc) {
       _total = total - 1 | 0;
       continue ;
     } else {
-      return List.rev(acc);
+      return $$Array.of_list(List.rev(acc));
     }
   };
 }
@@ -80,9 +79,9 @@ function Stars(Props) {
                     var match = result[0].rateImage;
                     rating$1 = match !== undefined ? Caml_option.valFromOption(match).rating : rating;
                   }
-                  return ReasonReact.createDomElement("div", { }, $$Array.of_list(stars(rating$1, (function (param, param$1) {
-                                        return handleClickStar(mutation, slug, param, param$1);
-                                      }))));
+                  return React.createElement("div", undefined, stars(rating$1, (function (param, param$1) {
+                                    return handleClickStar(mutation, slug, param, param$1);
+                                  })));
                 })
             });
 }

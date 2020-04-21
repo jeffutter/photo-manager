@@ -17,7 +17,7 @@ let rec stars5 = (filled, total, index, handleClick, acc) =>
             handleClick,
             [<Star filled=false index handleClick />, ...acc],
           )
-        : List.rev(acc);
+        : Array.of_list(List.rev(acc));
 
 let handleClickStar =
     (
@@ -53,11 +53,10 @@ let make = (~slug: string, ~rating: option(int)) => {
           | None => rating
           }
         };
-      ReasonReact.createDomElement(
-        "div",
-        ~props=Js.Obj.empty(),
-        Array.of_list(stars(rating, handleClickStar(mutation, slug))),
-      );
+
+      <div>
+        {React.array(stars(rating, handleClickStar(mutation, slug)))}
+      </div>;
     }}
   </Mutation>;
 };

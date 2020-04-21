@@ -7,7 +7,7 @@ import * as Curry from "../node_modules/bs-platform/lib/es6/curry.js";
 import * as React from "react";
 import * as ReactVirtualized from "react-virtualized";
 import * as Utils$PhotoManager from "./Utils.bs.js";
-import * as Debouncer$PhotoManager from "./Debouncer.bs.js";
+import * as Debounce$PhotoManager from "./Debounce.bs.js";
 import * as PhotoSwipe$PhotoManager from "./PhotoSwipe.bs.js";
 import * as BreadCrumbs$PhotoManager from "./BreadCrumbs.bs.js";
 import * as GalleryBody$PhotoManager from "./GalleryBody.bs.js";
@@ -73,7 +73,7 @@ var pending = {
   contents: /* [] */0
 };
 
-var loadPending = Debouncer$PhotoManager.make(200, (function (loadNextPage) {
+var loadPending = Debounce$PhotoManager.debounce1((function (loadNextPage) {
         var list = pending.contents;
         if (list) {
           pending.contents = /* [] */0;
@@ -85,14 +85,14 @@ var loadPending = Debouncer$PhotoManager.make(200, (function (loadNextPage) {
         } else {
           return /* () */0;
         }
-      }));
+      }), 200);
 
 function addToPending(loadNextPage, slug) {
   pending.contents = /* :: */[
     slug,
     pending.contents
   ];
-  return Curry._1(loadPending, loadNextPage);
+  return loadPending(loadNextPage);
 }
 
 function Gallery(Props) {
